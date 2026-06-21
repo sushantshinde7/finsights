@@ -119,66 +119,6 @@
   gap: var(--space-3);
 }
 
-/* =========================
-   ROLE SELECT (SYSTEM INPUT)
-========================= */
-
-.role-select {
-  padding: var(--space-2) var(--space-3);
-
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
-
-  background: var(--color-surface);
-  color: var(--color-text-primary);
-
-  font-size: var(--text-sm);
-
-  cursor: pointer;
-
-  transition: all 0.2s ease;
-  
-}
-
-/* hover */
-.role-select:hover {
-  border-color: var(--color-primary);
-  background: var(--color-primary-light);
-}
-
-/* focus (IMPORTANT UX FIX) */
-.role-select:focus {
-  outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px var(--color-primary-light);
-}
-
-/* =========================
-   SELECT DROPDOWN FIX
-========================= */
-
-/* ensure base dropdown respects dark */
-.role-select {
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-}
-
-/* helps reduce white flash issue */
-[data-theme="dark"] .role-select {
-  color-scheme: dark;
-}
-/* option styling (limited but helps) */
-.role-select option {
-  background: var(--color-surface);
-  color: var(--color-text-primary);
-}
-
-/* selected option */
-.role-select option:checked {
-  background: var(--color-primary);
-  color: #fff;
-}
 
 /* =========================
    THEME TOGGLE BUTTON
@@ -248,7 +188,4 @@
     font-size: var(--text-md);
   }
 
-  .role-select {
-    font-size: var(--text-xs);
-  }
 }

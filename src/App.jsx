@@ -6,16 +6,18 @@ import Insights from "./pages/insights/InsightsPage";
 
 function App() {
   const [page, setPage] = useState("dashboard");
-  const [role, setRole] = useState("admin");
 
   const renderPage = () => {
-    if (page === "dashboard") return <Dashboard role={role} />;
-    if (page === "transactions") return <Transactions role={role} />;
-    if (page === "insights") return <Insights role={role} />;
+    if (page === "dashboard") return <Dashboard />;
+    if (page === "transactions") return <Transactions />;
+    if (page === "insights") return <Insights />;
   };
 
   return (
-    <Layout setPage={setPage} activePage={page} role={role} setRole={setRole}>
+    <Layout
+      setPage={setPage}
+      activePage={page}
+    >
       {renderPage()}
     </Layout>
   );

@@ -3,7 +3,7 @@ import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 import "./Layout.css";
 
-const Layout = ({ children, setPage, activePage, role, setRole }) => {
+const Layout = ({ children, setPage, activePage }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   /* Prevent body scroll when drawer open */
@@ -36,11 +36,8 @@ const Layout = ({ children, setPage, activePage, role, setRole }) => {
 
   return (
     <div className="layout">
-      <Navbar
-        role={role}
-        setRole={setRole}
-        sidebarOpen={sidebarOpen}
-        setSidebarOpen={setSidebarOpen}
+      <Navbar sidebarOpen={sidebarOpen}
+              setSidebarOpen={setSidebarOpen} 
       />
 
       <div className="layout-body">
@@ -61,9 +58,7 @@ const Layout = ({ children, setPage, activePage, role, setRole }) => {
           />
         </aside>
 
-        <main className="main-content">
-          {children}
-        </main>
+        <main className="main-content">{children}</main>
       </div>
     </div>
   );

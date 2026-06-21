@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./Navbar.css";
 
-const Navbar = ({ role, setRole, sidebarOpen, setSidebarOpen }) => {
+const Navbar = ({ sidebarOpen, setSidebarOpen }) => {
   const [theme, setTheme] = useState("light");
 
   useEffect(() => {
@@ -43,14 +43,7 @@ const Navbar = ({ role, setRole, sidebarOpen, setSidebarOpen }) => {
           {theme === "light" ? "🌙" : "☀️"}
         </button>
 
-        <select
-          value={role}
-          onChange={(e) => setRole(e.target.value)}
-          className="role-select"
-        >
-          <option value="admin">Admin</option>
-          <option value="viewer">Viewer</option>
-        </select>
+        
       </div>
     </div>
   );

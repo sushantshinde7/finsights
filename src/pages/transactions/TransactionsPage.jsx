@@ -6,7 +6,7 @@ import { useTransactions } from "../../hooks/useTransactions";
 
 import "./transactions.css";
 
-export default function TransactionsPage({ role }) {
+export default function TransactionsPage() {
   const { transactions, addTransaction, updateTransaction, deleteTransaction } =
     useTransactions();
 
@@ -86,11 +86,9 @@ export default function TransactionsPage({ role }) {
       <div className="transactions-header">
         <h2 className="transactions-title">Transactions</h2>
 
-        {role === "admin" && (
-          <button className="add-btn" onClick={() => setShowModal(true)}>
-            + Add
-          </button>
-        )}
+        <button className="add-btn" onClick={() => setShowModal(true)}>
+          + Add
+        </button>
       </div>
 
       {/* ================= UNIFIED PANEL ================= */}
@@ -112,11 +110,8 @@ export default function TransactionsPage({ role }) {
         <div className="panel-table">
           <TransactionsTable
             data={processedTransactions}
-            role={role}
             emptyState={emptyState}
-            onAddClick={
-              role === "admin" ? () => setShowModal(true) : null
-            } /* ✅ IMPORTANT */
+            onAddClick={() => setShowModal(true)}
             onEdit={(tx) => {
               setEditingTx(tx);
               setShowModal(true);

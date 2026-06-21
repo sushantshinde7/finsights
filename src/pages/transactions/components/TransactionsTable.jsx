@@ -3,7 +3,6 @@ import { Pencil, Trash2 } from "lucide-react";
 
 export default function TransactionsTable({
   data,
-  role,
   onEdit,
   onDelete,
   emptyState,
@@ -21,7 +20,7 @@ export default function TransactionsTable({
         </p>
 
         {/* CTA only for admin */}
-        {role === "admin" && onAddClick && (
+        {onAddClick && (
           <button className="empty-cta" onClick={onAddClick}>
             + Add Transaction
           </button>
@@ -38,7 +37,7 @@ export default function TransactionsTable({
             <th>Category</th>
             <th>Amount</th>
             <th>Type</th>
-            {role === "admin" && <th>Actions</th>}
+            <th>Actions</th>
           </tr>
         </thead>
 
@@ -67,7 +66,6 @@ export default function TransactionsTable({
                 </span>
               </td>
 
-              {role === "admin" && (
                 <td className="actions-cell">
                   {/* EDIT */}
                   <button
@@ -87,7 +85,7 @@ export default function TransactionsTable({
                     <Trash2 size={16} />
                   </button>
                 </td>
-              )}
+
             </tr>
           ))}
         </tbody>
