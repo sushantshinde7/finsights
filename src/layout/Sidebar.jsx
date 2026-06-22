@@ -39,8 +39,9 @@ const Sidebar = ({ setPage, activePage }) => {
           </button>
         ))}
       </nav>
-
+      
       <div className="sidebar-footer">
+        <hr />
         <p>Finance Dashboard v1.0</p>
       </div>
     </div>
