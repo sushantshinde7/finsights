@@ -121,6 +121,52 @@
 
 
 /* =========================
+   AUTH BUTTONS
+========================= */
+
+.nav-auth-btn {
+  height: 38px;
+
+  padding: 0 14px;
+
+  border: 1px solid var(--color-border);
+
+  border-radius: 10px;
+
+  background: transparent;
+
+  color: var(--color-text);
+
+  font-size: 0.9rem;
+  font-weight: 500;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.15s ease;
+}
+
+.nav-auth-btn:hover {
+  background: var(--color-surface-hover);
+}
+
+.nav-auth-btn:active {
+  transform: scale(0.98);
+}
+
+.nav-auth-btn.primary {
+  background: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+
+.nav-auth-btn.primary:hover {
+  opacity: 0.92;
+}
+
+/* =========================
    THEME TOGGLE BUTTON
 ========================= */
 

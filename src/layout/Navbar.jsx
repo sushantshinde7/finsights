@@ -36,6 +36,10 @@ const Navbar = ({ sidebarOpen, setSidebarOpen }) => {
       </div>
 
       <div className="navbar-right">
+        <button className="nav-auth-btn">Login</button>
+
+        <button className="nav-auth-btn primary">Sign Up</button>
+
         <button
           className={`theme-toggle ${theme}`}
           onClick={toggleTheme}
