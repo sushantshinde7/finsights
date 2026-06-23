@@ -1,24 +1,27 @@
+import { NavLink } from "react-router-dom";
+
 import "./Sidebar.css";
+
 import {
   LayoutDashboard,
   ArrowLeftRight,
   BarChart3,
 } from "lucide-react";
 
-const Sidebar = ({ setPage, activePage }) => {
+const Sidebar = ({ closeSidebar }) => {
   const navItems = [
     {
-      key: "dashboard",
+      path: "/dashboard",
       label: "Dashboard",
       icon: <LayoutDashboard size={18} />,
     },
     {
-      key: "transactions",
+      path: "/transactions",
       label: "Transactions",
       icon: <ArrowLeftRight size={18} />,
     },
     {
-      key: "insights",
+      path: "/insights",
       label: "Insights",
       icon: <BarChart3 size={18} />,
     },
@@ -26,20 +29,25 @@ const Sidebar = ({ setPage, activePage }) => {
 
   return (
     <div className="sidebar-inner">
-      <nav className="nav-group" aria-label="Sidebar Navigation">
+      <nav
+        className="nav-group"
+        aria-label="Sidebar Navigation"
+      >
         {navItems.map((item) => (
-          <button
-            key={item.key}
-            type="button"
-            className={`nav-item ${activePage === item.key ? "active" : ""}`}
-            onClick={() => setPage(item.key)}
+          <NavLink
+            key={item.path}
+            to={item.path}
+            onClick={closeSidebar}
+            className={({ isActive }) =>
+              `nav-item ${isActive ? "active" : ""}`
+            }
           >
             <span className="nav-icon">{item.icon}</span>
             <span>{item.label}</span>
-          </button>
+          </NavLink>
         ))}
       </nav>
-      
+
       <div className="sidebar-footer">
         <hr />
         <p>Finance Dashboard v1.0</p>

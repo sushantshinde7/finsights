@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
+import { Outlet } from "react-router-dom";
+
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
+
 import "./Layout.css";
 
-const Layout = ({ children, setPage, activePage }) => {
+const Layout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  /* Prevent body scroll when drawer open */
   useEffect(() => {
     if (sidebarOpen) {
       document.body.style.overflow = "hidden";
@@ -19,7 +21,6 @@ const Layout = ({ children, setPage, activePage }) => {
     };
   }, [sidebarOpen]);
 
-  /* ESC key closes sidebar */
   useEffect(() => {
     const handleEsc = (e) => {
       if (e.key === "Escape") {
@@ -36,8 +37,9 @@ const Layout = ({ children, setPage, activePage }) => {
 
   return (
     <div className="layout">
-      <Navbar sidebarOpen={sidebarOpen}
-              setSidebarOpen={setSidebarOpen} 
+      <Navbar
+        sidebarOpen={sidebarOpen}
+        setSidebarOpen={setSidebarOpen}
       />
 
       <div className="layout-body">
@@ -50,15 +52,13 @@ const Layout = ({ children, setPage, activePage }) => {
 
         <aside className={`sidebar ${sidebarOpen ? "open" : ""}`}>
           <Sidebar
-            setPage={(page) => {
-              setPage(page);
-              setSidebarOpen(false);
-            }}
-            activePage={activePage}
+            closeSidebar={() => setSidebarOpen(false)}
           />
         </aside>
 
-        <main className="main-content">{children}</main>
+        <main className="main-content">
+          <Outlet />
+        </main>
       </div>
     </div>
   );
