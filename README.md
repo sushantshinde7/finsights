@@ -1,4 +1,4 @@
-# 📊 Finance Insights Dashboard
+# 📊 Finance Insights Dashboard (personal finance tool)
 
 A financial analytics dashboard built with **React + Vite** — turning raw transaction data into clear, actionable insights through interactive visualizations, derived analytics, and role-based access controls.
 
