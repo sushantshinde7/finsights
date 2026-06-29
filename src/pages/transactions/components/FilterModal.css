@@ -64,6 +64,9 @@
 
 .clear-btn {
   height: 34px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 
   padding: 0 12px;
 
@@ -88,6 +91,14 @@
 .clear-btn:disabled {
   opacity: 0.45;
   cursor: not-allowed;
+}
+
+.clear-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  flex-shrink: 0;
 }
 
 .close-btn {
@@ -135,6 +146,9 @@
 
 .filter-nav {
   height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 
   padding: 0 12px;
 
@@ -166,6 +180,20 @@
   color: var(--color-primary);
 
   font-weight: 600;
+}
+
+.nav-badge {
+  font-size: 11px;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  border-radius: 999px;
+  padding: 1px 5px;
+  margin-left: 3px;
+  font-weight: 500;
+}
+.filter-nav.active .nav-badge {
+  background: var(--color-primary);
+  color: #fff;
 }
 
 .category-scroll {

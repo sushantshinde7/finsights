@@ -69,6 +69,23 @@ export default function FilterModal({
     localFilters.amountRange.min !== MIN_AMOUNT ||
     localFilters.amountRange.max !== MAX_AMOUNT;
 
+  const filterCounts = {
+    type: localFilters.type !== "all" ? 1 : 0,
+    categories: localFilters.categories.length,
+    date: localFilters.dateRange !== "all" ? 1 : 0,
+    amount:
+      localFilters.amountRange.min !== MIN_AMOUNT ||
+      localFilters.amountRange.max !== MAX_AMOUNT
+        ? 1
+        : 0,
+  };
+
+  const activeFilterCount =
+    filterCounts.type +
+    (filterCounts.categories > 0 ? 1 : 0) +
+    filterCounts.date +
+    filterCounts.amount;
+
   return (
     <div className="filter-modal-overlay" onClick={onClose}>
       <div className="filter-modal" onClick={(e) => e.stopPropagation()}>
@@ -86,7 +103,10 @@ export default function FilterModal({
               onClick={clearFilters}
               disabled={!hasActiveFilters}
             >
-              Clear All
+              {hasActiveFilters && (
+                <span className="clear-dot" aria-hidden="true" />
+              )}
+              Clear
             </button>
 
             <button
@@ -112,6 +132,9 @@ export default function FilterModal({
               onClick={() => setActiveSection("type")}
             >
               Type
+              {filterCounts.type > 0 && (
+                <span className="nav-badge">{filterCounts.type}</span>
+              )}
             </button>
 
             <button
@@ -121,6 +144,9 @@ export default function FilterModal({
               onClick={() => setActiveSection("categories")}
             >
               Categories
+              {filterCounts.categories > 0 && (
+                <span className="nav-badge">{filterCounts.categories}</span>
+              )}
             </button>
 
             <button
@@ -130,6 +156,9 @@ export default function FilterModal({
               onClick={() => setActiveSection("date")}
             >
               Date Range
+              {filterCounts.date > 0 && (
+                <span className="nav-badge">{filterCounts.date}</span>
+              )}
             </button>
 
             <button
@@ -139,6 +168,9 @@ export default function FilterModal({
               onClick={() => setActiveSection("amount")}
             >
               Amount
+              {filterCounts.amount > 0 && (
+                <span className="nav-badge">{filterCounts.amount}</span>
+              )}
             </button>
           </aside>
 
@@ -149,7 +181,7 @@ export default function FilterModal({
 
             {activeSection === "type" && (
               <div>
-                <h4>Transaction Type</h4>
+                <h4>Transaction type</h4>
 
                 <div className="option-list">
                   {["all", "income", "expense"].map((type) => (
@@ -195,7 +227,7 @@ export default function FilterModal({
 
             {activeSection === "date" && (
               <div>
-                <h4>Date Range</h4>
+                <h4>Date range</h4>
 
                 <div className="option-list">
                   {DATE_OPTIONS.map((option) => (
@@ -217,7 +249,7 @@ export default function FilterModal({
 
             {activeSection === "amount" && (
               <div>
-                <h4>Amount Range</h4>
+                <h4>Amount range</h4>
 
                 <div className="amount-values">
                   <span>₹{localFilters.amountRange.min}</span>
@@ -275,8 +307,12 @@ export default function FilterModal({
             onClick={applyFilters}
             disabled={!hasActiveFilters}
           >
-            Apply Filters
+            Apply{" "}
+            {activeFilterCount > 0 && (
+              <span className="apply-badge">{activeFilterCount}</span>
+            )}
           </button>
+
         </div>
       </div>
     </div>
