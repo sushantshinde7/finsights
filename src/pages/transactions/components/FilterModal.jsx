@@ -69,6 +69,8 @@ export default function FilterModal({
     localFilters.amountRange.min !== MIN_AMOUNT ||
     localFilters.amountRange.max !== MAX_AMOUNT;
 
+  const hasChanges = JSON.stringify(localFilters) !== JSON.stringify(filters);
+
   const filterCounts = {
     type: localFilters.type !== "all" ? 1 : 0,
     categories: localFilters.categories.length,
@@ -97,7 +99,7 @@ export default function FilterModal({
             <p>
               {activeFilterCount > 0
                 ? `${activeFilterCount} filters selected`
-                : "Refine transaction results"}
+                : "Showing all transactions"}
             </p>
           </div>
 
@@ -327,7 +329,7 @@ export default function FilterModal({
           <button
             className="btn-primary"
             onClick={applyFilters}
-            disabled={!hasActiveFilters}
+            disabled={!hasChanges}
           >
             Apply{" "}
             {activeFilterCount > 0 && (
