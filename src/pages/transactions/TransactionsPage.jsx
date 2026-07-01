@@ -247,6 +247,23 @@ export default function TransactionsPage() {
       return sortOrder === "asc" ? comparison : comparison * -1;
     });
 
+  const summary = useMemo(() => {
+    const income = processedTransactions
+      .filter((tx) => tx.type === "income")
+      .reduce((sum, tx) => sum + tx.amount, 0);
+
+    const expense = processedTransactions
+      .filter((tx) => tx.type === "expense")
+      .reduce((sum, tx) => sum + tx.amount, 0);
+
+    return {
+      count: processedTransactions.length,
+      income,
+      expense,
+      net: income - expense,
+    };
+  }, [processedTransactions]);
+
   const handleAdd = (tx) => {
     addTransaction(tx);
   };
@@ -315,24 +332,120 @@ export default function TransactionsPage() {
 
   return (
     <div className="transactions-container">
+      {/* PAGE HEADER */}
       <div className="transactions-header">
         <h2 className="transactions-title">Transactions</h2>
 
-        <button
-          className="add-btn"
-          onClick={() => {
-            if (!isAuthenticated) {
-              setShowAuthPrompt(true);
-              return;
-            }
+        <div className="header-actions">
+          <button
+            className="btn-add"
+            onClick={() => {
+              if (!isAuthenticated) {
+                setShowAuthPrompt(true);
+                return;
+              }
+              setShowModal(true);
+            }}
+          >
+            <span aria-hidden="true">+</span> Add
+          </button>
 
-            setShowModal(true);
-          }}
-        >
-          + Add
-        </button>
+          <button
+            className="btn-secondary"
+            onClick={() => {
+              if (!isAuthenticated) {
+                setShowAuthPrompt(true);
+                return;
+              }
+              /* import logic later */
+            }}
+          >
+            ↑ Import
+          </button>
+
+          <button
+            className="btn-secondary"
+            onClick={() => {
+              if (!isAuthenticated) {
+                setShowAuthPrompt(true);
+                return;
+              }
+              /* export logic later */
+            }}
+          >
+            ↓ Export
+          </button>
+
+          <div className="sample-wrapper">
+            <button className="btn-secondary btn-sample">
+              Sample <span className="sample-chevron">▾</span>
+            </button>
+            <div className="sample-dropdown">
+              <button
+                className="sample-item"
+                onClick={() => {
+                  /* load sample 1 */
+                }}
+              >
+                <span className="sample-dot dot-blue" />
+                Personal finance
+              </button>
+              <button
+                className="sample-item"
+                onClick={() => {
+                  /* load sample 2 */
+                }}
+              >
+                <span className="sample-dot dot-green" />
+                Business expenses
+              </button>
+              <button
+                className="sample-item sample-item--danger"
+                onClick={resetTransactionView}
+              >
+                Clear sample data
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
+      {/* SUMMARY BAR */}
+      {transactions.length > 0 && (
+        <div
+          className="summary-bar"
+          role="region"
+          aria-label="Transaction summary"
+        >
+          <div className="summary-item">
+            <span className="summary-label">Transactions</span>
+            <span className="summary-value">{summary.count}</span>
+          </div>
+          <div className="summary-item">
+            <span className="summary-label">Income</span>
+            <span className="summary-value summary-income">
+              ₹{summary.income.toLocaleString("en-IN")}
+            </span>
+          </div>
+          <div className="summary-item">
+            <span className="summary-label">Expenses</span>
+            <span className="summary-value summary-expense">
+              ₹{summary.expense.toLocaleString("en-IN")}
+            </span>
+          </div>
+          <div className="summary-item">
+            <span className="summary-label">Net</span>
+            <span
+              className={`summary-value ${summary.net >= 0 ? "summary-net-pos" : "summary-net-neg"}`}
+            >
+              {summary.net >= 0 ? "+" : ""}₹
+              {Math.abs(summary.net).toLocaleString("en-IN")}
+            </span>
+          </div>
+        </div>
+      )}
+
+      {/* CARD */}
       <div className="card transactions-panel">
         <div className="panel-filters">
           <TransactionFilters
@@ -349,9 +462,7 @@ export default function TransactionsPage() {
             onClearFilters={clearFilters}
           />
         </div>
-
         <div className="panel-divider" />
-
         <div className="panel-table">
           <TransactionsTable
             data={processedTransactions}
@@ -361,7 +472,6 @@ export default function TransactionsPage() {
                 setShowAuthPrompt(true);
                 return;
               }
-
               setShowModal(true);
             }}
             onEdit={(tx) => {
@@ -369,7 +479,6 @@ export default function TransactionsPage() {
                 setShowAuthPrompt(true);
                 return;
               }
-
               setEditingTx(tx);
               setShowModal(true);
             }}
@@ -378,6 +487,7 @@ export default function TransactionsPage() {
         </div>
       </div>
 
+      {/* MODALS + TOAST — unchanged */}
       {showFiltersModal && (
         <FilterModal
           isOpen={showFiltersModal}
@@ -389,17 +499,14 @@ export default function TransactionsPage() {
           maxAmount={MAX_AMOUNT}
         />
       )}
-
       {toast && (
         <div className="toast">
           <span>{toast.message}</span>
-
           <button className="toast-action" onClick={toast.onAction}>
             {toast.actionLabel}
           </button>
         </div>
       )}
-
       {showModal && (
         <AddTransactionModal
           key={editingTx ? editingTx.id : "new"}
@@ -413,7 +520,6 @@ export default function TransactionsPage() {
           onUpdate={handleUpdate}
         />
       )}
-
       {showAuthPrompt && (
         <AuthPrompt onClose={() => setShowAuthPrompt(false)} />
       )}

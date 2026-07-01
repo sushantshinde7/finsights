@@ -5,16 +5,18 @@
 .transactions-container {
   display: flex;
   flex-direction: column;
-  gap: var(--space-6);
-  padding: var(--space-4) var(--space-5); /* instead of uniform 16px */
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
 }
 
-/* ================= HEADER ================= */
+/* =========================
+   PAGE HEADER
+========================= */
 
 .transactions-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   gap: var(--space-3);
   flex-wrap: wrap;
 }
@@ -23,55 +25,222 @@
   font-size: var(--text-xl);
   font-weight: var(--font-semibold);
   color: var(--color-text-primary);
+  flex-shrink: 0;
 }
 
-/* ================= PANEL (MAIN FIX) ================= */
-
-.transactions-panel {
-  padding: 0; /* IMPORTANT: control inside */
-  overflow: hidden;
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
-/* FILTER SECTION */
-.panel-filters {
-  padding: var(--space-2) var(--space-5);
-  background: var(--color-surface);
-}
-
-/* DIVIDER */
-.panel-divider {
-  height: 1px;
-  background: var(--color-border);
-}
-
-/* TABLE SECTION */
-.panel-table {
-  padding: 0; /* table should feel edge-aligned */
-}
-
-/* ================= BUTTON ================= */
-
-.add-btn {
-  background: var(--color-primary);
-  color: white;
+/* primary — Add */
+.btn-add {
+  height: 36px;
+  padding: 0 14px;
 
   border: none;
-  padding: 8px 14px;
   border-radius: var(--radius-md);
+
+  background: var(--color-primary);
+  color: #fff;
 
   font-size: var(--text-sm);
   font-weight: var(--font-medium);
 
   cursor: pointer;
-  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+
+  transition: background 0.15s ease;
 }
 
-.add-btn:hover {
+.btn-add:hover {
   background: var(--color-primary-hover);
-  transform: translateY(-1px);
 }
 
-/* ================= TOAST ================= */
+/* secondary — Import, Export, Sample */
+.btn-secondary {
+  height: 36px;
+  padding: 0 13px;
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+
+  font-size: var(--text-sm);
+
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.btn-secondary:hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+
+/* sample dropdown */
+.sample-wrapper {
+  position: relative;
+}
+
+.btn-sample {
+  gap: 15px;
+}
+
+.sample-chevron {
+  font-size: 20px;
+  opacity: 0.6;
+}
+
+.sample-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+
+  padding: 5px;
+  min-width: 170px;
+
+  box-shadow: var(--shadow-md);
+  z-index: 50;
+}
+
+.sample-wrapper:focus-within .sample-dropdown {
+  display: flex;
+  flex-direction: column;
+}
+
+.sample-item {
+  height: 34px;
+  padding: 0 10px;
+
+  border: none;
+  border-radius: 6px;
+
+  background: transparent;
+  color: var(--color-text-primary);
+
+  font-size: var(--text-sm);
+
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  text-align: left;
+}
+
+.sample-item:hover {
+  background: var(--color-surface-muted);
+}
+
+.sample-item--danger {
+  color: var(--color-danger, #dc2626);
+  margin-top: 2px;
+  border-top: 1px solid var(--color-border);
+  border-radius: 0 0 6px 6px;
+  padding-top: 2px;
+}
+
+.sample-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dot-blue  { background: var(--color-primary); }
+.dot-green { background: var(--color-success, #16a34a); }
+
+/* =========================
+   SUMMARY BAR
+========================= */
+
+.summary-bar {
+  display: flex;
+  align-items: stretch;
+
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+
+  overflow: hidden;
+}
+
+.summary-item {
+  flex: 1;
+  padding: 12px 16px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  min-width: 0;
+}
+
+.summary-item + .summary-item {
+  border-left: 1px solid var(--color-border);
+}
+
+.summary-label {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  letter-spacing: 0.02em;
+}
+
+.summary-value {
+  font-size: 15px;
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.summary-income  { color: var(--color-success, #16a34a); }
+.summary-expense { color: var(--color-danger,  #dc2626); }
+.summary-net-pos { color: var(--color-success, #16a34a); }
+.summary-net-neg { color: var(--color-danger,  #dc2626); }
+
+/* =========================
+   PANEL (card)
+========================= */
+
+.transactions-panel {
+  padding: 0;
+  overflow: hidden;
+}
+
+.panel-filters {
+  padding: var(--space-3) var(--space-5);
+  background: var(--color-surface);
+}
+
+.panel-divider {
+  height: 1px;
+  background: var(--color-border);
+}
+
+.panel-table {
+  padding: 0;
+}
+
+/* =========================
+   TOAST
+========================= */
 
 .toast {
   position: fixed;
@@ -80,7 +249,7 @@
   transform: translateX(-50%);
 
   background: #1f2937;
-  color: white;
+  color: #fff;
 
   padding: 10px 14px;
   border-radius: var(--radius-md);
@@ -91,6 +260,8 @@
 
   font-size: var(--text-sm);
   box-shadow: var(--shadow-lg);
+
+  z-index: 999;
 }
 
 .toast-action {
@@ -101,12 +272,14 @@
   font-weight: var(--font-semibold);
 }
 
-/* ================= RESPONSIVE ================= */
+/* =========================
+   RESPONSIVE
+========================= */
 
 @media (max-width: 768px) {
   .transactions-container {
-    gap: var(--space-5);
     padding: var(--space-3);
+    gap: var(--space-3);
   }
 
   .transactions-title {
@@ -118,14 +291,37 @@
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 600px) {
   .transactions-header {
     flex-direction: column;
     align-items: flex-start;
   }
 
-  .add-btn {
+  .header-actions {
     width: 100%;
-    text-align: center;
+  }
+
+  .btn-add,
+  .btn-secondary {
+    flex: 1;
+    justify-content: center;
+  }
+
+  /* summary: 2x2 grid on small screens */
+  .summary-bar {
+    flex-wrap: wrap;
+  }
+
+  .summary-item {
+    flex: 1 1 calc(50% - 1px);
+  }
+
+  .summary-item:nth-child(3) {
+    border-left: none;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .summary-item:nth-child(4) {
+    border-top: 1px solid var(--color-border);
   }
 }
