@@ -13,13 +13,23 @@
 ========================= */
 
 .search-row {
+  position: relative;
   width: 100%;
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-secondary);
+  pointer-events: none;
 }
 
 .search-input {
   width: 100%;
-
-  padding: 10px 14px;
+  height: 40px;
+  padding: 0 14px 0 36px;
 
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
@@ -29,90 +39,63 @@
 
   font-size: var(--text-sm);
 
-  transition: all 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.search-input::placeholder {
+  color: var(--color-text-secondary);
 }
 
 .search-input:focus {
   outline: none;
   border-color: var(--color-primary);
-
-  box-shadow:
-    0 0 0 3px
-    var(--color-primary-light);
+  box-shadow: 0 0 0 3px var(--color-primary-light);
 }
 
 /* =========================
-   FILTER SUMMARY CHIPS
+   TOOLBAR
 ========================= */
 
-.filter-summary-row {
+.filters-toolbar {
   display: flex;
   align-items: center;
-  gap: 8px;
-
-  flex-wrap: wrap;
-
-  padding-top: 2px;
-}
-
-.summary-chip {
-  height: 26px;
-
-  display: inline-flex;
-  align-items: center;
-
-  padding: 0 10px;
-
-  border-radius: 999px;
-
-  border: 1px solid var(--color-border);
-
-  background: var(--color-surface-muted);
-
-  color: var(--color-text-secondary);
-
-  font-size: 12px;
-  font-weight: 500;
-
-  white-space: nowrap;
-}
-/* =========================
-   CONTROLS
-========================= */
-
-.filters {
-  display: flex;
   justify-content: space-between;
-  align-items: center;
-  gap: var(--space-4);
-
-  flex-wrap: wrap;
+  gap: 12px;
+  min-width: 0;
 }
 
-/* =========================
-   FILTER BUTTON
-========================= */
+/* LEFT — filter + reset */
+
+.toolbar-left {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
 
 .filters-trigger {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  position: relative;
-  padding: 8px 14px;
+  gap: 7px;
 
-  border-radius: var(--radius-md);
+  height: 36px;
+  padding: 0 14px;
+
   border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
 
   background: var(--color-surface);
-
   color: var(--color-text-primary);
 
   font-size: var(--text-sm);
   font-weight: var(--font-medium);
 
   cursor: pointer;
-
   transition: all 0.2s ease;
+}
+
+/* when reset is present, square off the right side */
+.toolbar-left:has(.filters-reset-btn) .filters-trigger {
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
 }
 
 .filters-trigger:hover {
@@ -123,10 +106,7 @@
 .filters-badge {
   min-width: 18px;
   height: 18px;
-
-  font-size: 10px;
-
-  padding: 0 6px;
+  padding: 0 5px;
 
   border-radius: 999px;
 
@@ -135,29 +115,62 @@
   justify-content: center;
 
   background: var(--color-primary);
-  color: white;
+  color: #fff;
 
   font-size: 11px;
   font-weight: 600;
 }
 
-/* =========================
-   RIGHT SIDE
-========================= */
+.filters-reset-btn {
+  height: 36px;
+  padding: 0 12px;
 
-.filter-actions {
+  border: 1px solid var(--color-border);
+  border-left: 1px solid var(--color-border);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+
+  background: transparent;
+  color: var(--color-text-secondary);
+
+  font-size: var(--text-sm);
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  position: relative;
+}
+
+/* hairline separator between filter + reset */
+.filters-reset-btn::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 6px;
+  bottom: 6px;
+  width: 1px;
+  background: var(--color-border);
+}
+
+.filters-reset-btn:hover {
+  background: var(--color-surface-muted);
+  color: var(--color-primary);
+}
+
+/* RIGHT — selects + count */
+
+.toolbar-right {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
-
-  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 0;
 }
 
 .filter-select {
-  padding: 8px 12px;
+  height: 36px;
+  padding: 0 10px;
 
-  border-radius: var(--radius-md);
   border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
 
   background: var(--color-surface);
   color: var(--color-text-primary);
@@ -165,6 +178,8 @@
   font-size: var(--text-sm);
 
   cursor: pointer;
+  flex-shrink: 0;
+  width: 120px;
 }
 
 .filter-select:focus {
@@ -173,51 +188,99 @@
 }
 
 .results-count {
+  height: 36px;
+  padding-left: 12px;
+
+  display: flex;
+  align-items: center;
+
+  border-left: 1px solid var(--color-border);
+
   font-size: var(--text-sm);
   color: var(--color-text-secondary);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
 
+/* =========================
+   CHIPS
+========================= */
+
+.filter-summary-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+
+  padding-top: 10px;
+  border-top: 1px dashed var(--color-border);
+}
+
+.summary-chip {
+  height: 24px;
+
+  display: inline-flex;
+  align-items: center;
+
+  padding: 0 10px;
+
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+
+  background: var(--color-surface-muted);
+  color: var(--color-text-secondary);
+
+  font-size: 12px;
+  font-weight: 500;
   white-space: nowrap;
 }
 
 /* =========================
-   TABLET
+   TABLET  ≤ 640px
 ========================= */
 
-@media (max-width: 768px) {
-  .filters {
+@media (max-width: 640px) {
+  .filters-toolbar {
     flex-direction: column;
     align-items: stretch;
+    gap: 8px;
+  }
+
+  .toolbar-left {
+    width: 100%;
   }
 
   .filters-trigger {
-    width: 100%;
+    flex: 1;
     justify-content: center;
   }
 
-  .filter-actions {
+  /* keep radius fix working on mobile too */
+  .toolbar-left:has(.filters-reset-btn) .filters-trigger {
+    border-radius: var(--radius-md) 0 0 var(--radius-md);
+  }
+
+  .toolbar-right {
     width: 100%;
   }
 
   .filter-select {
     flex: 1;
+    width: auto;
   }
 
   .results-count {
-    width: 100%;
+    margin-left: auto;
   }
 }
 
 /* =========================
-   MOBILE
+   MOBILE  ≤ 360px
 ========================= */
 
-@media (max-width: 480px) {
-  .filter-actions {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
+@media (max-width: 360px) {
   .filter-select {
-    width: 100%;
+    flex: 1;
+    min-width: 0;
   }
 }

@@ -1,5 +1,5 @@
 import "./TransactionFilters.css";
-import { SlidersHorizontal } from "lucide-react";
+import { SlidersHorizontal, Search } from "lucide-react";
 
 export default function TransactionFilters({
   searchTerm,
@@ -16,27 +16,27 @@ export default function TransactionFilters({
 }) {
   return (
     <div className="filters-wrapper">
-      {/* SEARCH */}
 
+      {/* SEARCH */}
       <div className="search-row">
+        <Search size={15} className="search-icon" aria-hidden="true" />
         <input
           type="text"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Search category, amount, type, date..."
+          placeholder="Search by category, amount, type, date..."
           className="search-input"
         />
       </div>
 
-      {/* CONTROLS */}
+      {/* TOOLBAR */}
+      <div className="filters-toolbar">
 
-      <div className="filters">
-        <div className="filter-buttons">
+        {/* LEFT — filters */}
+        <div className="toolbar-left">
           <button className="filters-trigger" onClick={onOpenFilters}>
-            <SlidersHorizontal size={16} />
-
+            <SlidersHorizontal size={15} />
             <span>Filters</span>
-
             {activeFilterCount > 0 && (
               <span className="filters-badge">{activeFilterCount}</span>
             )}
@@ -49,19 +49,8 @@ export default function TransactionFilters({
           )}
         </div>
 
-        {/* ACTIVE FILTER SUMMARY */}
-
-        {filterSummary.length > 0 && (
-          <div className="filter-summary-row">
-            {filterSummary.map((item) => (
-              <span key={item} className="summary-chip">
-                {item}
-              </span>
-            ))}
-          </div>
-        )}
-
-        <div className="filter-actions">
+        {/* RIGHT — sort + results */}
+        <div className="toolbar-right">
           <select
             className="filter-select"
             value={sortField}
@@ -77,16 +66,26 @@ export default function TransactionFilters({
             value={sortOrder}
             onChange={(e) => setSortOrder(e.target.value)}
           >
-            <option value="desc">Desc</option>
-            <option value="asc">Asc</option>
+            <option value="desc">Descending</option>
+            <option value="asc">Ascending</option>
           </select>
 
           <div className="results-count">
-            {resultCount} Transaction
-            {resultCount !== 1 ? "s" : ""}
+            {resultCount} result{resultCount !== 1 ? "s" : ""}
           </div>
         </div>
+
       </div>
+
+      {/* CHIPS */}
+      {filterSummary.length > 0 && (
+        <div className="filter-summary-row">
+          {filterSummary.map((item) => (
+            <span key={item} className="summary-chip">{item}</span>
+          ))}
+        </div>
+      )}
+
     </div>
   );
 }
