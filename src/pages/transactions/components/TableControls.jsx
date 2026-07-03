@@ -19,6 +19,7 @@ export default function TableControls({
       {/* SEARCH */}
       <div className="search-row">
         <Search size={15} className="search-icon" aria-hidden="true" />
+
         <input
           type="text"
           value={searchTerm}
@@ -26,13 +27,29 @@ export default function TableControls({
           placeholder="Search by category, amount, type, date..."
           className="search-input"
         />
+        {!searchTerm && <span className="search-shortcut">Ctrl + K</span>}
+        {searchTerm && (
+          <button
+            type="button"
+            className="search-clear-btn"
+            onClick={() => setSearchTerm("")}
+            aria-label="Clear search"
+          >
+            ✕
+          </button>
+        )}
       </div>
 
       {/* TOOLBAR */}
       <div className="filters-toolbar">
         {/* LEFT — filters */}
         <div className="toolbar-left">
-          <button className="filters-trigger" onClick={onOpenFilters}>
+          <button
+            className={`filters-trigger ${
+              activeFilterCount > 0 ? "active" : ""
+            }`}
+            onClick={onOpenFilters}
+          >
             <SlidersHorizontal size={15} />
             <span>Filters</span>
             {activeFilterCount > 0 && (
@@ -73,7 +90,8 @@ export default function TableControls({
           </div>
 
           <div className="results-count">
-            {resultCount} result{resultCount !== 1 ? "s" : ""}
+            {resultCount} result
+            {resultCount !== 1 ? "s" : ""}
           </div>
         </div>
       </div>

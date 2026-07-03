@@ -34,7 +34,8 @@ export default function TransactionsPage() {
     updateTransaction,
     deleteTransaction,
   } = useTransactions();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isGuest, loading } = useAuth();
+  console.log({ isAuthenticated, isGuest, loading });
 
   const [searchTerm, setSearchTerm] = useState(() => {
     return localStorage.getItem("finance-dashboard-search") || "";
@@ -340,6 +341,28 @@ export default function TransactionsPage() {
   };
 
   const emptyState = getEmptyState();
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // Ctrl + K → Focus Search
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+
+        document.querySelector(".search-input")?.focus();
+
+        return;
+      }
+
+      // Escape → Clear Search
+      if (e.key === "Escape" && searchTerm) {
+        setSearchTerm("");
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [searchTerm]);
 
   return (
     <div className="transactions-container">
