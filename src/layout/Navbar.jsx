@@ -1,11 +1,18 @@
 import "./Navbar.css";
-import { Moon, Sun } from "lucide-react";
+import { Moon, Sun, LogOut } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = ({ sidebarOpen, setSidebarOpen }) => {
-  const { theme, toggleTheme } = useTheme();
-  const { isAuthenticated } = useAuth();
+  const { theme, toggleTheme }             = useTheme();
+  const { isAuthenticated, firstName, logout } = useAuth();
+  const navigate                           = useNavigate();
+
+  const handleLogout = async () => {
+    await logout();
+    navigate("/");
+  };
 
   return (
     <div className="navbar">
@@ -24,14 +31,28 @@ const Navbar = ({ sidebarOpen, setSidebarOpen }) => {
       </div>
 
       <div className="navbar-right">
-        {!isAuthenticated ? (
+        {isAuthenticated ? (
           <>
-            <button className="nav-auth-btn">Login</button>
-
-            <button className="nav-auth-btn primary">Sign Up</button>
+            <span className="nav-user-name">{firstName}</span>
+            <button className="nav-auth-btn" onClick={handleLogout}>
+              <LogOut size={15} /> Logout
+            </button>
           </>
         ) : (
-          <button className="nav-auth-btn">Logout</button>
+          <>
+            <button
+              className="nav-auth-btn"
+              onClick={() => navigate("/login")}
+            >
+              Login
+            </button>
+            <button
+              className="nav-auth-btn primary"
+              onClick={() => navigate("/signup")}
+            >
+              Sign Up
+            </button>
+          </>
         )}
 
         <button
@@ -39,7 +60,7 @@ const Navbar = ({ sidebarOpen, setSidebarOpen }) => {
           onClick={toggleTheme}
           aria-label="Toggle theme"
         >
-          <Sun className="theme-icon sun-icon" size={18} />
+          <Sun  className="theme-icon sun-icon"  size={18} />
           <Moon className="theme-icon moon-icon" size={18} />
         </button>
       </div>
