@@ -59,8 +59,8 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="auth-page">
-      <div className="auth-branding auth-branding--login">
+    <div className="auth-page auth-page--login">
+      <aside className="auth-branding auth-branding--login">
         <div className="auth-branding-content">
           <h1>Finsights</h1>
 
@@ -78,17 +78,17 @@ export default function LoginPage() {
             <li>✓ Pick up where you left off</li>
           </ul>
           <div className="auth-note">
-  Secure authentication powered by Firebase.
-</div>
+            Secure authentication powered by Firebase.
+          </div>
         </div>
-      </div>
-      <div className="auth-card">
+      </aside>
+      <main className="auth-card auth-card--login">
         <div className="auth-header">
           <h1 className="auth-title">Sign in</h1>
 
-<p className="auth-subtitle">
-  Access your Finsights account and continue managing your finances.
-</p>
+          <p className="auth-subtitle">
+            Access your Finsights account and continue managing your finances.
+          </p>
         </div>
 
         {serverError && (
@@ -99,8 +99,11 @@ export default function LoginPage() {
 
         <form className="auth-form" onSubmit={handleSubmit} noValidate>
           <div className="auth-field">
-            <label className="auth-label">Email</label>
+            <label htmlFor="email" className="auth-label">
+              Email
+            </label>
             <input
+              id="email"
               className={`auth-input ${errors.email ? "auth-input--error" : ""}`}
               type="email"
               placeholder="you@example.com"
@@ -108,8 +111,13 @@ export default function LoginPage() {
               onChange={(e) => update("email", e.target.value)}
               autoComplete="email"
               autoFocus
+              aria-describedby={errors.email ? "email-error" : undefined}
             />
-            {errors.email && <span className="auth-error">{errors.email}</span>}
+            {errors.email && (
+              <span id="email-error" className="auth-error">
+                Invalid email
+              </span>
+            )}
           </div>
 
           <div className="auth-field">
@@ -145,6 +153,7 @@ export default function LoginPage() {
           className="auth-btn-google"
           onClick={handleGoogle}
           disabled={loading}
+          type="button"
         >
           <GoogleIcon />
           Continue with Google
@@ -156,7 +165,7 @@ export default function LoginPage() {
             Sign up
           </Link>
         </p>
-      </div>
+      </main>
     </div>
   );
 }

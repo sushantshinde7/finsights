@@ -94,8 +94,8 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="auth-page">
-      <div className="auth-branding">
+    <div className="auth-page auth-page--signup">
+      <aside className="auth-branding auth-branding--signup">
         <div className="auth-branding-content">
           <h1>Finsights</h1>
 
@@ -112,11 +112,10 @@ export default function SignupPage() {
             <li>✓ Financial Analytics</li>
             <li>✓ Secure Cloud Storage</li>
           </ul>
-          
         </div>
-      </div>
+      </aside>
 
-      <div className="auth-card">
+      <main className="auth-card auth-card--signup">
         <div className="auth-header">
           <h1 className="auth-title">Create account</h1>
           <p className="auth-subtitle">Start tracking your finances today</p>
@@ -131,8 +130,8 @@ export default function SignupPage() {
         <form className="auth-form" onSubmit={handleSubmit} noValidate>
           <div className="auth-row">
             <div className="auth-field">
-              <label className="auth-label">First name</label>
-              <input
+              <label htmlFor="firstname" className="auth-label">First name</label>
+              <input id="firstname"
                 className={`auth-input ${errors.firstName ? "auth-input--error" : ""}`}
                 type="text"
                 placeholder="Sushant"
@@ -147,8 +146,9 @@ export default function SignupPage() {
             </div>
 
             <div className="auth-field">
-              <label className="auth-label">Last name</label>
+              <label htmlFor="firstname" className="auth-label">Last name</label>
               <input
+                id="firstname"
                 className={`auth-input ${errors.lastName ? "auth-input--error" : ""}`}
                 type="text"
                 placeholder="Shinde"
@@ -163,8 +163,10 @@ export default function SignupPage() {
           </div>
 
           <div className="auth-field">
-            <label className="auth-label">Email</label>
+            <label htmlFor="email" className="auth-label">Email</label>
             <input
+              id="email"
+              aria-invalid={!!errors.email} 
               className={`auth-input ${errors.email ? "auth-input--error" : ""}`}
               type="email"
               placeholder="you@example.com"
@@ -176,8 +178,9 @@ export default function SignupPage() {
           </div>
 
           <div className="auth-field">
-            <label className="auth-label">Password</label>
+            <label htmlFor="password" className="auth-label">Password</label>
             <input
+              id="password"
               className={`auth-input ${errors.password ? "auth-input--error" : ""}`}
               type="password"
               placeholder="••••••••"
@@ -213,8 +216,9 @@ export default function SignupPage() {
           </div>
 
           <div className="auth-field">
-            <label className="auth-label">Confirm password</label>
+            <label htmlFor="confirmpassword" className="auth-label">Confirm password</label>
             <input
+              id="confirmpassword"
               className={`auth-input ${errors.confirm ? "auth-input--error" : ""}`}
               type="password"
               placeholder="••••••••"
@@ -251,7 +255,7 @@ export default function SignupPage() {
             Sign in
           </Link>
         </p>
-      </div>
+      </main>
     </div>
   );
 }
