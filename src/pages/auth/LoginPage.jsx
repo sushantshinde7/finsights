@@ -38,7 +38,7 @@ export default function LoginPage() {
     setLoading(true);
     try {
       await login(form.email, form.password);
-      navigate("/dashboard");
+      navigate(ROUTES.DASHBOARD);
     } catch (err) {
       setServerError(firebaseError(err.code));
     } finally {
@@ -50,7 +50,7 @@ export default function LoginPage() {
     setLoading(true);
     try {
       await loginWithGoogle();
-      navigate("/dashboard");
+      navigate(ROUTES.DASHBOARD);
     } catch (err) {
       setServerError(firebaseError(err.code));
     } finally {
@@ -161,7 +161,7 @@ export default function LoginPage() {
 
         <p className="auth-switch">
           Don't have an account?{" "}
-          <Link to="/signup" className="auth-link">
+          <Link to={ROUTES.SIGNUP} className="auth-link">
             Sign up
           </Link>
         </p>
