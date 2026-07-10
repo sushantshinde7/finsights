@@ -27,7 +27,7 @@ const Navbar = ({ sidebarOpen, setSidebarOpen }) => {
           <span />
         </button>
 
-        <h2>Finance Insights</h2>
+        <h2>Finsights</h2>
       </div>
 
       <div className="navbar-right">
