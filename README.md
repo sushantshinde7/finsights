@@ -6,7 +6,7 @@ Finsights is a modern React-based personal finance application that helps users 
 
 Built with a frontend-first architecture, the project showcases real-world React application patterns including authentication, route protection, state management, financial analytics, responsive UI design, and scalable project organization.
 
-🔗 **Live Demo:** https://finance-insights-dashboard.vercel.app/
+🔗 **Live Demo:** [ Finsights ](https://finsights-web.vercel.app/)
 
 ---
 
