@@ -124,7 +124,7 @@ export default function LoginPage() {
           <div className="auth-field">
             <div className="auth-label-row">
               <label className="auth-label">Password</label>
-              <Link to="/forgot-password" className="auth-forgot">
+              <Link to={ROUTES.FORGOT_PASSWORD} className="auth-forgot">
                 Forgot password?
               </Link>
             </div>
