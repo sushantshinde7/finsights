@@ -397,6 +397,12 @@
   height: 36px;
 }
 
+.btn-primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+
 @media (max-width: 768px) {
   .filter-modal-overlay {
     padding: 12px;

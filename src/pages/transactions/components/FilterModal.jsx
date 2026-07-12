@@ -90,7 +90,13 @@ export default function FilterModal({
 
   return (
     <div className="filter-modal-overlay" onClick={onClose}>
-      <div className="filter-modal" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="filter-modal"
+        onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="filter-modal-title"
+      >
         {/* HEADER */}
         <button
           className="filter-modal-close"
@@ -101,7 +107,7 @@ export default function FilterModal({
         </button>
         <div className="filter-header">
           <div className="filter-header-left">
-            <h3>Filters</h3>
+            <h3 id="filter-modal-title">Filters</h3>
             <p>
               {activeFilterCount > 0
                 ? `${activeFilterCount} filters selected`
@@ -190,6 +196,7 @@ export default function FilterModal({
                     <label key={type} className="radio-item">
                       <input
                         type="radio"
+                        name="transaction-type"
                         checked={localFilters.type === type}
                         onChange={() => updateFilter("type", type)}
                       />
@@ -282,6 +289,10 @@ export default function FilterModal({
                     max={MAX_AMOUNT}
                     value={localFilters.amountRange.min}
                     className="thumb thumb-left"
+                    aria-label="Minimum amount"
+                    aria-valuemin={MIN_AMOUNT}
+                    aria-valuemax={MAX_AMOUNT}
+                    aria-valuenow={localFilters.amountRange.min}
                     onChange={(e) =>
                       updateFilter("amountRange", {
                         ...localFilters.amountRange,
@@ -299,6 +310,10 @@ export default function FilterModal({
                     max={MAX_AMOUNT}
                     value={localFilters.amountRange.max}
                     className="thumb thumb-right"
+                    aria-label="Maximum amount"
+                    aria-valuemin={MIN_AMOUNT}
+                    aria-valuemax={MAX_AMOUNT}
+                    aria-valuenow={localFilters.amountRange.max}
                     onChange={(e) =>
                       updateFilter("amountRange", {
                         ...localFilters.amountRange,
