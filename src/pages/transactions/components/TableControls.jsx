@@ -17,7 +17,7 @@ export default function TableControls({
   return (
     <div className="filters-wrapper">
       {/* SEARCH */}
-      <div className="search-row">
+      <div className="search-row" role="search">
         <Search size={15} className="search-icon" aria-hidden="true" />
 
         <input
@@ -49,6 +49,8 @@ export default function TableControls({
               activeFilterCount > 0 ? "active" : ""
             }`}
             onClick={onOpenFilters}
+            aria-haspopup="dialog"
+            aria-label={`Filters${activeFilterCount > 0 ? `, ${activeFilterCount} active` : ""}`}
           >
             <SlidersHorizontal size={15} />
             <span>Filters</span>
@@ -70,6 +72,7 @@ export default function TableControls({
             <select
               className="sort-select"
               value={sortField}
+              aria-label="Sort by"
               onChange={(e) => setSortField(e.target.value)}
             >
               <option value="date">Date</option>
@@ -82,6 +85,7 @@ export default function TableControls({
             <select
               className="sort-select"
               value={sortOrder}
+              aria-label="Sort order"
               onChange={(e) => setSortOrder(e.target.value)}
             >
               <option value="desc">Descending</option>
