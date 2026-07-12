@@ -31,15 +31,14 @@ export default function AddTransactionModal({
   }, [mode, initialData]);
 
   useEffect(() => {
-  const handleEscape = (e) => {
-    if (e.key === "Escape") onClose();
-  };
+    const handleEscape = (e) => {
+      if (e.key === "Escape") onClose();
+    };
 
-  document.addEventListener("keydown", handleEscape);
+    document.addEventListener("keydown", handleEscape);
 
-  return () =>
-    document.removeEventListener("keydown", handleEscape);
-}, [onClose]);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, [onClose]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -90,42 +89,68 @@ export default function AddTransactionModal({
         </h3>
 
         <div className="modal-form">
-          <input
-            type="date"
-            autoFocus
-            name="date"
-            value={form.date}
-            onChange={handleChange}
-            className="modal-input"
-          />
+          <div className="modal-field">
+            <label htmlFor="tx-date" className="modal-label">
+              Date
+            </label>
+            <input
+              id="tx-date"
+              type="date"
+              autoFocus
+              name="date"
+              value={form.date}
+              onChange={handleChange}
+              className="modal-input"
+              max={new Date().toISOString().split("T")[0]}
+            />
+          </div>
 
-          <input
-            type="number"
-            name="amount"
-            placeholder="Enter amount"
-            value={form.amount}
-            onChange={handleChange}
-            className="modal-input"
-          />
+          <div className="modal-field">
+            <label htmlFor="tx-amount" className="modal-label">
+              Amount (₹)
+            </label>
+            <input
+              id="tx-amount"
+              type="number"
+              name="amount"
+              placeholder="0"
+              min="1"
+              value={form.amount}
+              onChange={handleChange}
+              className="modal-input"
+            />
+          </div>
 
-          <input
-            type="text"
-            name="category"
-            placeholder="e.g. Food, Salary"
-            value={form.category}
-            onChange={handleChange}
-            className="modal-input"
-          />
+          <div className="modal-field">
+            <label htmlFor="tx-category" className="modal-label">
+              Category
+            </label>
+            <input
+              id="tx-category"
+              type="text"
+              name="category"
+              placeholder="e.g. Food, Salary"
+              value={form.category}
+              onChange={handleChange}
+              className="modal-input"
+            />
+          </div>
 
-          <select
-            name="type"
-            value={form.type}
-            onChange={handleChange}
-            className="modal-input"
-          >
-            <option value="expense">Expense</option>
-            <option value="income">Income</option>
-          </select>
+          <div className="modal-field">
+            <label htmlFor="tx-type" className="modal-label">
+              Type
+            </label>
+            <select
+              id="tx-type"
+              name="type"
+              value={form.type}
+              onChange={handleChange}
+              className="modal-input"
+            >
+              <option value="expense">Expense</option>
+              <option value="income">Income</option>
+            </select>
+          </div>
         </div>
 
         <div className="modal-actions">

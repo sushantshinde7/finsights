@@ -40,6 +40,18 @@
 }
 
 
+.modal-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.modal-label {
+  font-size: 13px;
+  font-weight: var(--font-medium);
+  color: var(--color-text-primary);
+}
+
 /* =========================
    CLOSE BUTTON
 ========================= */
