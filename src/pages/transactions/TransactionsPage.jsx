@@ -105,6 +105,22 @@ export default function TransactionsPage() {
     return [...new Set(transactions.map((tx) => tx.category))].sort();
   }, [transactions]);
 
+  const overviewStats = useMemo(() => {
+    const totalVolume = transactions.reduce((sum, tx) => sum + tx.amount, 0);
+
+    return {
+      transactionCount: transactions.length,
+      categoryCount: categories.length,
+      datasetLabel:
+        activeSample === "sample1"
+          ? "Personal Finance"
+          : activeSample === "sample2"
+            ? "Senior Professional"
+            : "Custom Dataset",
+      totalVolume,
+    };
+  }, [transactions, categories, activeSample]);
+
   const activeFilterCount = useMemo(() => {
     let count = 0;
 
@@ -364,99 +380,135 @@ export default function TransactionsPage() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [searchTerm]);
 
+  const balanceStatus =
+    summary.net > 0
+      ? "Healthy Surplus"
+      : summary.net < 0
+        ? "Overspending"
+        : "Break-even";
+
   return (
-    <div className="transactions-container">
+    <section
+      className="transactions-overview"
+      aria-label="Transactions overview"
+    >
       {/* PAGE HEADER */}
       <div className="transactions-header">
-        <h2 className="transactions-title">Transactions</h2>
+        <div className="transactions-heading">
+          <h1 className="transactions-title">Transactions</h1>
 
-        <div className="header-actions">
-          <button
-            className="btn-add"
-            onClick={() => {
-              if (!isAuthenticated) {
-                setShowAuthPrompt(true);
-                return;
-              }
-              setShowModal(true);
-            }}
-          >
-            <span aria-hidden="true">+</span> Add
-          </button>
+          <p className="transactions-subtitle">
+            Manage, search, filter and organize your financial activity.
+          </p>
 
-          <button
-            className="btn-secondary"
-            onClick={() => {
-              if (!isAuthenticated) {
-                setShowAuthPrompt(true);
-                return;
-              }
-              /* import logic later */
-            }}
-          >
-            ↑ Import
-          </button>
-
-          <button
-            className="btn-secondary"
-            disabled={transactions.length === 0}
-            onClick={() => {
-              if (!isAuthenticated) {
-                setShowAuthPrompt(true);
-                return;
-              }
-              /* export logic later */
-            }}
-          >
-            ↓ Export
-          </button>
-
-          <div className="sample-wrapper">
-            <button className="btn-secondary btn-sample">
-              Sample <span className="sample-chevron">▾</span>
+          <div className="header-actions">
+            <button
+              className="btn-add"
+              onClick={() => {
+                if (!isAuthenticated) {
+                  setShowAuthPrompt(true);
+                  return;
+                }
+                setShowModal(true);
+              }}
+            >
+              <span aria-hidden="true">+</span> Add Transaction
             </button>
 
-            <div className="sample-dropdown">
-              <button
-                className={`sample-item ${activeSample === "sample1" ? "sample-item--active" : ""}`}
-                onClick={() => handleLoadSample("sample1")}
-              >
-                <span className="sample-dot dot-blue" />
-                Personal finance
-                {activeSample === "sample1" && (
-                  <span className="sample-check">✓</span>
-                )}
+            <button
+              className="btn-secondary"
+              onClick={() => {
+                if (!isAuthenticated) {
+                  setShowAuthPrompt(true);
+                  return;
+                }
+                /* import logic later */
+              }}
+            >
+              ↑ Import
+            </button>
+
+            <button
+              className="btn-secondary"
+              disabled={transactions.length === 0}
+              onClick={() => {
+                if (!isAuthenticated) {
+                  setShowAuthPrompt(true);
+                  return;
+                }
+                /* export logic later */
+              }}
+            >
+              ↓ Export
+            </button>
+
+            <div className="sample-wrapper">
+              <button className="btn-secondary btn-sample">
+                Sample <span className="sample-chevron">▾</span>
               </button>
 
-              <button
-                className={`sample-item ${activeSample === "sample2" ? "sample-item--active" : ""}`}
-                onClick={() => handleLoadSample("sample2")}
-              >
-                <span className="sample-dot dot-green" />
-                Senior professional
-                {activeSample === "sample2" && (
-                  <span className="sample-check">✓</span>
-                )}
-              </button>
+              <div className="sample-dropdown">
+                <button
+                  className={`sample-item ${activeSample === "sample1" ? "sample-item--active" : ""}`}
+                  onClick={() => handleLoadSample("sample1")}
+                >
+                  <span className="sample-dot dot-blue" />
+                  Personal finance
+                  {activeSample === "sample1" && (
+                    <span className="sample-check">✓</span>
+                  )}
+                </button>
 
-              <button
-                className="sample-item sample-item--danger"
-                onClick={() => handleLoadSample("clear")}
-              >
-                Clear all data
-              </button>
+                <button
+                  className={`sample-item ${activeSample === "sample2" ? "sample-item--active" : ""}`}
+                  onClick={() => handleLoadSample("sample2")}
+                >
+                  <span className="sample-dot dot-green" />
+                  Senior professional
+                  {activeSample === "sample2" && (
+                    <span className="sample-check">✓</span>
+                  )}
+                </button>
+
+                <button
+                  className="sample-item sample-item--danger"
+                  onClick={() => handleLoadSample("clear")}
+                >
+                  Clear all data
+                </button>
+              </div>
             </div>
           </div>
+
+          {transactions.length > 0 && (
+            <>
+              <div className="transactions-context">
+                <p>
+                  All your income and expense records in one place. Search by
+                  category or date, filter by type or amount, and switch between
+                  sample datasets to explore the tool.
+                </p>
+              </div>
+
+              <div className="transactions-meta">
+                <span className="meta-pill">{overviewStats.datasetLabel}</span>
+
+                <span className="meta-pill">
+                  {overviewStats.transactionCount} Transactions
+                </span>
+
+                <span className="meta-pill">
+                  {overviewStats.categoryCount} Categories
+                </span>
+              </div>
+            </>
+          )}
         </div>
       </div>
 
       {/* SUMMARY BAR */}
       {transactions.length > 0 && (
-        <div
-          className="summary-bar"
-          role="region"
-          aria-label="Transaction summary"
-        >
+        <section className="summary-bar" aria-label="Transaction summary">
           <div className="summary-item">
             <span className="summary-label">Transactions</span>
             <span className="summary-value">{summary.count}</span>
@@ -474,15 +526,20 @@ export default function TransactionsPage() {
             </span>
           </div>
           <div className="summary-item">
-            <span className="summary-label">Net</span>
+            <span className="summary-label">Net Balance</span>
+
             <span
-              className={`summary-value ${summary.net >= 0 ? "summary-net-pos" : "summary-net-neg"}`}
+              className={`summary-value ${
+                summary.net >= 0 ? "summary-net-pos" : "summary-net-neg"
+              }`}
             >
               {summary.net >= 0 ? "+" : ""}₹
               {Math.abs(summary.net).toLocaleString("en-IN")}
             </span>
+
+            <span className="summary-status">{balanceStatus}</span>
           </div>
-        </div>
+        </section>
       )}
 
       {/* CARD */}
@@ -563,7 +620,6 @@ export default function TransactionsPage() {
       {showAuthPrompt && (
         <AuthPrompt onClose={() => setShowAuthPrompt(false)} />
       )}
-    </div>
+    </section>
   );
 }
-
