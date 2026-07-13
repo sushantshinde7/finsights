@@ -394,7 +394,7 @@ export default function TransactionsPage() {
     >
       {/* PAGE HEADER */}
       <div className="transactions-header">
-        <div className="transactions-heading">
+        <div className="transactions-header-top">
           <h1 className="transactions-title">Transactions</h1>
 
           <p className="transactions-subtitle">
@@ -482,21 +482,17 @@ export default function TransactionsPage() {
 
           {transactions.length > 0 && (
             <>
-              <div className="transactions-context">
-                <p>
-                  All your income and expense records in one place. Search by
-                  category or date, filter by type or amount, and switch between
-                  sample datasets to explore the tool.
-                </p>
-              </div>
+              <p className="transactions-context">
+                All your income and expense records in one place. Search by
+                category or date, filter by type or amount, and switch between
+                sample datasets to explore the tool.
+              </p>
 
               <div className="transactions-meta">
                 <span className="meta-pill">{overviewStats.datasetLabel}</span>
-
                 <span className="meta-pill">
                   {overviewStats.transactionCount} Transactions
                 </span>
-
                 <span className="meta-pill">
                   {overviewStats.categoryCount} Categories
                 </span>

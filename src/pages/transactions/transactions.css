@@ -1,66 +1,63 @@
 /* =========================
-   CONTAINER
-========================= */
-
-.transactions-container {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-  padding: var(--space-4) var(--space-5);
-}
-
-/* =========================
    PAGE HEADER
 ========================= */
 
-.transactions-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-3);
-  flex-wrap: wrap;
-}
-
-.transactions-title {
-  font-size: var(--text-xl);
-  font-weight: var(--font-semibold);
-  color: var(--color-text-primary);
-  flex-shrink: 0;
-}
-
 .header-actions {
   display: flex;
+  justify-content: flex-end;
   align-items: center;
+  padding: 12px 0;
   gap: 8px;
-  flex-wrap: wrap;
+
+  width: 100%;
 }
 
 
-.transactions-overview {
+.transactions-header {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+
+  gap: 12px;
+
+  width: 100%;
+  padding: var(--space-5);
+
+  background: var(--color-surface-muted);
+  border-radius: var(--radius-md);
 }
 
-.transactions-heading {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+/* TITLE — the star, own row, heavy */
+.transactions-title {
+  font-size: var(--text-3xl, 28px);
+  font-weight: var(--font-bold, 800);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--color-text-primary);
 }
 
+/* SUBTITLE — own row, secondary, quiet */
 .transactions-subtitle {
-  color: var(--color-text-secondary);
   font-size: var(--text-sm);
+  color: var(--color-text-secondary);
   line-height: 1.5;
+  max-width: 60ch;
+  margin-top: -4px; /* pulls it closer to title without touching it */
 }
 
+
+
+/* CONTEXT — own row, readable, real info not decoration */
 .transactions-context {
   color: var(--color-text-secondary);
-  font-size: var(--text-sm);
+  font-size: 13px;
   line-height: 1.6;
-  max-width: 70ch;
-}
 
+  max-width: 100ch;
+
+  padding: 12px 0;
+  border-top: 1px dashed var(--color-border);
+}
+/* META — own row, badges, sits at the very bottom */
 .transactions-meta {
   display: flex;
   flex-wrap: wrap;
@@ -68,17 +65,13 @@
 }
 
 .meta-pill {
-  height: 28px;
+  height: 26px;
   padding: 0 12px;
-
   display: inline-flex;
   align-items: center;
-
   border-radius: 999px;
-
-  background: var(--color-surface-muted);
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
-
   color: var(--color-text-secondary);
   font-size: 12px;
   font-weight: 500;
@@ -89,26 +82,20 @@
   color: var(--color-text-secondary);
 }
 
-
 /* primary — Add */
 .btn-add {
   height: 36px;
   padding: 0 14px;
-
   border: none;
   border-radius: var(--radius-md);
-
   background: var(--color-primary);
   color: #fff;
-
   font-size: var(--text-sm);
   font-weight: var(--font-medium);
-
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   gap: 5px;
-
   transition: background 0.15s ease;
 }
 
@@ -120,26 +107,31 @@
 .btn-secondary {
   height: 36px;
   padding: 0 13px;
-
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-
   background: var(--color-surface);
   color: var(--color-text-primary);
-
   font-size: var(--text-sm);
-
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-
   transition: border-color 0.15s ease, background 0.15s ease;
 }
 
 .btn-secondary:hover {
   border-color: var(--color-primary);
   background: var(--color-primary-light);
+}
+
+.btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-secondary:disabled:hover {
+  border-color: var(--color-border);
+  background: var(--color-surface);
 }
 
 /* sample dropdown */
@@ -163,7 +155,7 @@
 }
 
 .sample-chevron {
-  font-size: 20px;
+  font-size: 16px;
   opacity: 0.6;
 }
 
@@ -172,14 +164,11 @@
   position: absolute;
   top: calc(100% + 6px);
   right: 0;
-
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-
   padding: 5px;
   min-width: 170px;
-
   box-shadow: var(--shadow-md);
   z-index: 50;
 }
@@ -192,21 +181,17 @@
 .sample-item {
   height: 34px;
   padding: 0 10px;
-
   border: none;
   border-radius: 6px;
-
   background: transparent;
   color: var(--color-text-primary);
-
   font-size: var(--text-sm);
-
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 8px;
-
   text-align: left;
+  width: 100%;
 }
 
 .sample-item:hover {
@@ -218,7 +203,7 @@
   margin-top: 2px;
   border-top: 1px solid var(--color-border);
   border-radius: 0 0 6px 6px;
-  padding-top: 2px;
+  padding-top: 6px;
 }
 
 .sample-dot {
@@ -349,11 +334,27 @@
   }
 
   .transactions-title {
-    font-size: var(--text-lg);
+    font-size: var(--text-xl);
   }
 
   .panel-filters {
     padding: 0 0 var(--space-4) 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .transactions-heading,
+  .transactions-meta-row {
+    grid-template-columns: 1fr;
+  }
+
+  .header-actions,
+  .transactions-meta {
+    justify-self: start;
+  }
+
+  .transactions-header {
+    padding: var(--space-3) var(--space-4);
   }
 }
 
@@ -368,9 +369,9 @@
   }
 
   .btn-add,
-  .btn-secondary {
-    flex: 1;
-    justify-content: center;
+  .btn-secondary,
+  .sample-wrapper {
+    flex: 0 1 auto;
   }
 
   /* summary: 2x2 grid on small screens */
