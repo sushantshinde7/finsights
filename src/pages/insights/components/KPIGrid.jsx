@@ -3,30 +3,30 @@ import "./KPIGrid.css";
 export default function KPIGrid({
   income,
   expense,
-  balance,
-  savingsRate,
   topCategory,
   formatCurrency,
 }) {
   return (
-    <div className="kpi-grid">
-      <div className="kpi-card income">
+    <div className="kpi-strip">
+      <div className="kpi-item">
         <span className="kpi-label">Total income</span>
-        <h3 className="kpi-value">{formatCurrency(income)}</h3>
+        <span className="kpi-value income">{formatCurrency(income)}</span>
       </div>
-      <div className="kpi-card expense">
+
+      <div className="kpi-divider" aria-hidden="true" />
+
+      <div className="kpi-item">
         <span className="kpi-label">Total expenses</span>
-        <h3 className="kpi-value">{formatCurrency(expense)}</h3>
+        <span className="kpi-value expense">{formatCurrency(expense)}</span>
       </div>
-      <div className="kpi-card balance">
-        <span className="kpi-label">Savings rate</span>
-        <h3 className="kpi-value">{savingsRate}%</h3>
-      </div>
-      <div className="kpi-card highlight">
+
+      <div className="kpi-divider" aria-hidden="true" />
+
+      <div className="kpi-item">
         <span className="kpi-label">Top spending category</span>
-        <h3 className="kpi-value kpi-value--category">
+        <span className="kpi-value category">
           {topCategory?.name || "—"}
-        </h3>
+        </span>
       </div>
     </div>
   );
