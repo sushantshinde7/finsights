@@ -1,38 +1,44 @@
+.charts-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.charts-intro {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+  max-width: 68ch;
+}
+
 .insights-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 18px;
+  gap: var(--space-4);
 }
 
-/* span */
 .span-2 {
   grid-column: span 2;
 }
 
-/* card */
+/* card — aligned to shared design language */
 .chart-card {
-  background: white;
-  border: 1px solid rgba(15, 23, 42, 0.06);
-  border-radius: 18px;
-  padding: 18px;
-  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.05);
-  transition: all 0.25s ease;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  box-shadow: var(--shadow-sm);
 
   display: flex;
   flex-direction: column;
 }
 
-.chart-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
-}
-
 .chart-title {
-  font-size: 14px;
-  font-weight: 700;
-  color: #334155;
-  margin-bottom: 14px;
-  letter-spacing: -0.2px;
+  font-size: 13px;
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
+  letter-spacing: -0.01em;
+  margin-bottom: var(--space-3);
 }
 
 /* fix recharts height */
@@ -47,16 +53,12 @@
 
 .chart-empty {
   flex: 1;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   text-align: center;
-
   font-size: var(--text-sm);
   color: var(--color-text-secondary);
-
   padding: var(--space-4);
 }
 
@@ -71,12 +73,12 @@
   }
 
   .chart-card {
-    padding: 16px;
+    padding: var(--space-3);
   }
 }
 
 @media (max-width: 480px) {
   .chart-title {
-    font-size: 13px;
+    font-size: 12.5px;
   }
 }

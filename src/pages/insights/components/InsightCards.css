@@ -1,101 +1,166 @@
-.insight-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+.insights-narrative-block {
+  display: flex;
+  flex-direction: column;
   gap: var(--space-4);
-  margin-bottom: var(--space-6);
 }
 
-/* CARD */
-.insight-card {
+/* =========================
+   FEATURED INSIGHT
+========================= */
+
+.insight-featured {
+  position: relative;
+  overflow: hidden;
+
   background: var(--color-surface);
-  border-radius: var(--radius-lg);
-  padding: var(--space-4);
-
   border: 1px solid var(--color-border);
-  box-shadow: var(--shadow-sm);
+  border-radius: var(--radius-lg);
 
-  transition: all 0.2s ease;
+  padding: var(--space-5);
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
 }
 
-.insight-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+.insight-featured::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
 }
 
-/* TITLE */
-.insight-card h4 {
-  font-size: var(--text-xs);
+.insight-featured.status-good::before   { background: #16a34a; }
+.insight-featured.status-warning::before { background: #f59e0b; }
+.insight-featured.status-bad::before    { background: #ef4444; }
+
+.featured-top {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.featured-tag {
+  font-size: 11px;
+  font-weight: var(--font-semibold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   color: var(--color-text-secondary);
-  margin-bottom: 6px;
-  font-weight: var(--font-medium);
 }
 
-.insight-card.neutral {
-  border-color: var(--color-border);
+.featured-badge {
+  height: 22px;
+  padding: 0 10px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: var(--font-semibold);
   background: var(--color-surface-muted);
+  color: var(--color-text-primary);
 }
 
-/* MAIN VALUE (NEW) */
-.insight-value {
+.featured-text {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--color-text-primary);
+  max-width: 68ch;
+}
+
+.featured-stat {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.featured-stat-value {
   font-size: 20px;
   font-weight: var(--font-semibold);
-  color: var(--color-text-primary);
-
-  margin-bottom: 6px;
 }
 
-.insight-value.small {
-  font-size: 16px;
-}
-
-/* DESCRIPTION */
-.insight-card p {
-  font-size: var(--text-sm);
-  color: var(--color-text-secondary);
-  line-height: 1.5;
-}
-
-/* SEMANTIC LEFT BORDER */
-.insight-card.danger {
-  border-left: 3px solid #ef4444;
-}
-
-.insight-card.warning {
-  border-left: 3px solid #f59e0b;
-}
-
-.insight-card.info {
-  border-left: 3px solid #3b82f6;
-}
-
-/* VALUE COLORS */
-.up {
+.featured-stat-value.up {
   color: #ef4444;
 }
 
-.down {
+.featured-stat-value.down {
   color: #16a34a;
 }
 
-/* RESPONSIVE */
-@media (max-width: 1024px) {
-  .insight-grid {
+.featured-stat-caption {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+/* =========================
+   SECONDARY FACTS
+========================= */
+
+.insight-secondary-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-3);
+}
+
+.insight-fact {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+
+  background: var(--color-surface-muted);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+}
+
+.fact-label {
+  font-size: 11px;
+  font-weight: var(--font-medium);
+  color: var(--color-text-secondary);
+}
+
+.fact-value {
+  font-size: 17px;
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fact-value.good {
+  color: #16a34a;
+}
+
+.fact-value.warn {
+  color: #b45309;
+}
+
+.fact-caption {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 768px) {
+  .insight-secondary-row {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (max-width: 768px) {
-  .insight-grid {
+@media (max-width: 480px) {
+  .insight-secondary-row {
     grid-template-columns: 1fr;
   }
-}
 
-@media (max-width: 480px) {
-  .insight-value {
-    font-size: 18px;
+  .insight-featured {
+    padding: var(--space-4);
   }
 
-  .insight-card p {
-    font-size: 13px;
+  .featured-text {
+    font-size: 14px;
   }
 }
