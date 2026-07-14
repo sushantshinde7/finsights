@@ -11,6 +11,12 @@ import { useTransactions } from "../../context/TransactionContext";
 import { useAuth } from "../../context/AuthContext";
 
 import "./transactions.css";
+import {
+  Plus,
+  Upload,
+  Download,
+  ChevronDown,
+} from "lucide-react";
 
 const MIN_AMOUNT = 0;
 const MAX_AMOUNT = 100000;
@@ -412,11 +418,11 @@ export default function TransactionsPage() {
                 setShowModal(true);
               }}
             >
-              <span aria-hidden="true">+</span> Add Transaction
+              <span aria-hidden="true"><Plus size={16} /></span> Add Transaction
             </button>
 
             <button
-              className="btn-secondary"
+              className="btn-transfer"
               onClick={() => {
                 if (!isAuthenticated) {
                   setShowAuthPrompt(true);
@@ -425,11 +431,11 @@ export default function TransactionsPage() {
                 /* import logic later */
               }}
             >
-              ↑ Import
+              <span aria-hidden="true"><Upload size={15} /> </span> Import
             </button>
 
             <button
-              className="btn-secondary"
+              className="btn-transfer"
               disabled={transactions.length === 0}
               onClick={() => {
                 if (!isAuthenticated) {
@@ -439,12 +445,12 @@ export default function TransactionsPage() {
                 /* export logic later */
               }}
             >
-              ↓ Export
+              <span aria-hidden="true"><Download size={15} /></span> Export
             </button>
 
             <div className="sample-wrapper">
-              <button className="btn-secondary btn-sample">
-                Sample <span className="sample-chevron">▾</span>
+              <button className="btn-transfer btn-sample">
+                Sample <span aria-hidden="true"><ChevronDown size={15} /></span>
               </button>
 
               <div className="sample-dropdown">
@@ -483,9 +489,7 @@ export default function TransactionsPage() {
           {transactions.length > 0 && (
             <>
               <p className="transactions-context">
-                All your income and expense records in one place. Search by
-                category or date, filter by type or amount, and switch between
-                sample datasets to explore the tool.
+                View, search and manage your complete transaction history in one place. Filter by category, amount or date, sort records instantly, and switch between sample datasets to explore different financial scenarios and workflows.
               </p>
 
               <div className="transactions-meta">
@@ -508,18 +512,21 @@ export default function TransactionsPage() {
           <div className="summary-item">
             <span className="summary-label">Transactions</span>
             <span className="summary-value">{summary.count}</span>
+            <span className="summary-helper">placeholder</span>
           </div>
           <div className="summary-item">
             <span className="summary-label">Income</span>
             <span className="summary-value summary-income">
               ₹{summary.income.toLocaleString("en-IN")}
             </span>
+            <span className="summary-helper">placeholder</span>
           </div>
           <div className="summary-item">
             <span className="summary-label">Expenses</span>
             <span className="summary-value summary-expense">
               ₹{summary.expense.toLocaleString("en-IN")}
             </span>
+            <span className="summary-helper">placeholder</span>
           </div>
           <div className="summary-item">
             <span className="summary-label">Net Balance</span>
