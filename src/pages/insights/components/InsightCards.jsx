@@ -4,7 +4,8 @@ export default function InsightCards({
   expenseChange,
   biggestTx,
   highestMonth,
-  savingsRate,
+  topCategory,
+  expense,
   formatCurrency,
 }) {
   const isIncrease = expenseChange >= 0;
@@ -21,6 +22,11 @@ export default function InsightCards({
 
   const behaviorStatus =
     expenseChange > 20 ? "bad" : expenseChange > 0 ? "warning" : "good";
+
+  const concentration =
+    topCategory && expense > 0
+      ? Math.round((topCategory.value / expense) * 100)
+      : null;
 
   return (
     <div className="insights-narrative-block">
@@ -67,19 +73,19 @@ export default function InsightCards({
           </div>
         )}
 
-        <div className="insight-fact">
-          <span className="fact-label">Savings rate</span>
-          <span className={`fact-value ${savingsRate >= 20 ? "good" : "warn"}`}>
-            {savingsRate}%
-          </span>
-          <span className="fact-caption">
-            {savingsRate >= 40
-              ? "Well above the 20% target"
-              : savingsRate >= 20
-              ? "Meeting the recommended target"
-              : "Below the recommended 20%"}
-          </span>
-        </div>
+        {concentration !== null && (
+          <div className="insight-fact">
+            <span className="fact-label">Category concentration</span>
+            <span className={`fact-value ${concentration >= 50 ? "warn" : "good"}`}>
+              {concentration}%
+            </span>
+            <span className="fact-caption">
+              {concentration >= 50
+                ? `${topCategory.name} alone makes up over half your spend`
+                : `${topCategory.name} leads, but spend is fairly spread out`}
+            </span>
+          </div>
+        )}
       </div>
     </div>
   );
