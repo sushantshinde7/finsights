@@ -113,7 +113,10 @@ const HomePage = () => {
       {/* DASHBOARD */}
       <section className="showcase-section">
         <div className="showcase-content">
-          <span className="showcase-label">Dashboard</span>
+          <span className="showcase-label">
+            <span className="showcase-label-dot showcase-label-dot--dashboard" aria-hidden="true" />
+            Dashboard
+          </span>
 
           <h2>Financial Overview At A Glance</h2>
 
@@ -133,23 +136,32 @@ const HomePage = () => {
 
         <div className="showcase-preview">
           <div className="placeholder-card">
-            <h4>Dashboard Preview</h4>
-            <p>Screenshot coming soon</p>
+            <div className="mock-dashboard">
+              <div className="mock-stats-row">
+                <span className="mock-chip mock-chip--balance" />
+                <span className="mock-chip mock-chip--income" />
+                <span className="mock-chip mock-chip--expense" />
+                <span className="mock-chip mock-chip--savings" />
+              </div>
+              <div className="mock-charts-row">
+                <span className="mock-block" />
+                <span className="mock-block" />
+              </div>
+            </div>
+            <Link to={ROUTES.DASHBOARD} className="mock-cta">
+              Explore Dashboard <ArrowRight size={13} />
+            </Link>
           </div>
         </div>
       </section>
 
       {/* TRANSACTIONS */}
-      <section className="showcase-section showcase-section--reverse">
-        <div className="showcase-preview">
-          <div className="placeholder-card">
-            <h4>Transactions Preview</h4>
-            <p>Screenshot coming soon</p>
-          </div>
-        </div>
-
+      <section className="showcase-section showcase-section--reverse showcase-section--panel">
         <div className="showcase-content">
-          <span className="showcase-label">Transactions</span>
+          <span className="showcase-label">
+            <span className="showcase-label-dot showcase-label-dot--transactions" aria-hidden="true" />
+            Transactions
+          </span>
 
           <h2>Powerful Transaction Management</h2>
 
@@ -167,12 +179,35 @@ const HomePage = () => {
             <li>Sample Datasets</li>
           </ul>
         </div>
+
+        <div className="showcase-preview">
+          <div className="placeholder-card">
+            <div className="mock-transactions">
+              <div className="mock-toolbar">
+                <span className="mock-search" />
+                <span className="mock-filter" />
+              </div>
+              <div className="mock-rows">
+                <span className="mock-row mock-row--income" />
+                <span className="mock-row mock-row--expense" />
+                <span className="mock-row mock-row--income" />
+                <span className="mock-row mock-row--expense" />
+              </div>
+            </div>
+            <Link to={ROUTES.TRANSACTIONS} className="mock-cta">
+              Explore Transactions <ArrowRight size={13} />
+            </Link>
+          </div>
+        </div>
       </section>
 
       {/* INSIGHTS */}
       <section className="showcase-section">
         <div className="showcase-content">
-          <span className="showcase-label">Insights</span>
+          <span className="showcase-label">
+            <span className="showcase-label-dot showcase-label-dot--insights" aria-hidden="true" />
+            Insights
+          </span>
 
           <h2>Turn Data Into Financial Intelligence</h2>
 
@@ -192,8 +227,20 @@ const HomePage = () => {
 
         <div className="showcase-preview">
           <div className="placeholder-card">
-            <h4>Insights Preview</h4>
-            <p>Screenshot coming soon</p>
+            <div className="mock-insights">
+              <span className="mock-verdict" />
+              <div className="mock-insight-row">
+                <span className="mock-pie" />
+                <span className="mock-bars">
+                  <span />
+                  <span />
+                  <span />
+                </span>
+              </div>
+            </div>
+            <Link to={ROUTES.INSIGHTS} className="mock-cta">
+              Explore Insights <ArrowRight size={13} />
+            </Link>
           </div>
         </div>
       </section>

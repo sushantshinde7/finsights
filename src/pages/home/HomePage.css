@@ -43,29 +43,10 @@
   letter-spacing: -0.02em;
   font-weight: var(--font-bold, 700);
   color: var(--color-text-primary);
-  background: linear-gradient(135deg, var(--color-text-primary), #6366f1);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-size: 200% auto;
-  animation: textShine 4s linear infinite;
-  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.1);
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s ease, text-shadow 0.3s ease;
-  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes textShine {
-  to { background-position: 200% center; }
 }
 
 .hero-title-line {
-  text-wrap: block;
-}
-
-.hero-title:hover {
-  transform: translateY(-2px); /* Pure visual lift, doesn't affect layout flow */
-  text-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  display: block;
 }
 
 .hero-description {
@@ -205,12 +186,24 @@
   align-items: center;
 }
 
-.showcase-section--reverse {
-  grid-template-columns: 1fr 1fr;
+.showcase-section--reverse .showcase-content {
+  order: 2;
+}
+
+.showcase-section--reverse .showcase-preview {
+  order: 1;
+}
+
+.showcase-section--panel {
+  background: var(--color-surface-muted);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6) var(--space-5);
 }
 
 .showcase-label {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   margin-bottom: var(--space-3);
   font-size: 11px;
   font-weight: var(--font-semibold);
@@ -218,6 +211,17 @@
   text-transform: uppercase;
   color: var(--color-text-secondary);
 }
+
+.showcase-label-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.showcase-label-dot--dashboard { background: var(--color-primary); }
+.showcase-label-dot--transactions { background: #8b5cf6; }
+.showcase-label-dot--insights { background: #16a34a; }
 
 .showcase-content h2 {
   margin-bottom: var(--space-3);
@@ -245,9 +249,164 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: var(--space-4);
+  gap: var(--space-5);
+  padding: var(--space-6);
   color: var(--color-text-secondary);
 }
+
+/* =========================
+   ABSTRACT PAGE MOCKUPS
+   Same skeleton language as the hero preview — shapes, not
+   screenshots, loosely echoing each page's real layout.
+========================= */
+
+.mock-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.mock-cta:hover {
+  text-decoration: underline;
+}
+
+/* Dashboard mock: 4-chip stat row + 2-block chart row */
+.mock-dashboard {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.mock-stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-2);
+}
+
+.mock-chip {
+  height: 44px;
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+  border-top: 3px solid transparent;
+}
+
+.mock-chip--balance { border-top-color: var(--color-primary); }
+.mock-chip--income  { border-top-color: #16a34a; }
+.mock-chip--expense { border-top-color: #ef4444; }
+.mock-chip--savings { border-top-color: #8b5cf6; }
+
+.mock-charts-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-2);
+}
+
+.mock-charts-row .mock-block {
+  height: 90px;
+  border-radius: var(--radius-md);
+  background: var(--color-primary-light);
+}
+
+/* Transactions mock: toolbar strip + alternating list rows */
+.mock-transactions {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.mock-toolbar {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.mock-search {
+  flex: 1;
+  height: 28px;
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+}
+
+.mock-filter {
+  width: 60px;
+  height: 28px;
+  border-radius: var(--radius-md);
+  background: var(--color-primary-light);
+}
+
+.mock-rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.mock-row {
+  height: 30px;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-muted);
+  border-left: 3px solid transparent;
+}
+
+.mock-row--income  { border-left-color: #16a34a; }
+.mock-row--expense { border-left-color: #ef4444; }
+
+/* Insights mock: verdict bar + pie + mini bar cluster */
+.mock-insights {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.mock-verdict {
+  display: block;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+  border-left: 3px solid var(--color-primary);
+}
+
+.mock-insight-row {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-3);
+}
+
+.mock-pie {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: conic-gradient(
+    var(--color-primary) 0turn 0.35turn,
+    #16a34a 0.35turn 0.6turn,
+    #8b5cf6 0.6turn 0.8turn,
+    #ef4444 0.8turn 1turn
+  );
+}
+
+.mock-bars {
+  flex: 1;
+  height: 76px;
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-2);
+}
+
+.mock-bars span {
+  flex: 1;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  background: var(--color-primary-light);
+}
+
+.mock-bars span:nth-child(1) { height: 55%; }
+.mock-bars span:nth-child(2) { height: 85%; }
+.mock-bars span:nth-child(3) { height: 40%; }
 
 .guest-section,
 .cta-section {
@@ -306,29 +465,28 @@
   color: var(--color-primary);
 }
 
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 /* =========================
    RESPONSIVE
    Aligned to the same 1024 / 768 / 480 breakpoints used across
    Dashboard, Insights, and Transactions.
 ========================= */
 
+@media (min-width: 1024px) {
+  .home-page {
+    gap: calc(var(--space-6) * 2);
+  }
+}
+
 @media (max-width: 1024px) {
   .hero-section,
   .showcase-section,
   .showcase-section--reverse {
     grid-template-columns: 1fr;
+  }
+
+  .showcase-section--reverse .showcase-content,
+  .showcase-section--reverse .showcase-preview {
+    order: initial;
   }
 
   .feature-grid,
