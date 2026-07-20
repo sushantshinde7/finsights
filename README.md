@@ -2,7 +2,7 @@
 
 **Personal Finance Management & Financial Analytics Application**
 
-Finsights is a modern React-based personal finance application that helps users manage transactions, explore spending patterns, and visualize financial activity through interactive dashboards and analytics.
+Finsights is a modern React-based personal finance application that helps users manage transactions, explore spending patterns, and visualize financial activity through interactive dashboards,insights and analytics.
 
 Built with a frontend-first architecture, the project showcases real-world React application patterns including authentication, route protection, state management, financial analytics, responsive UI design, and scalable project organization.
 
