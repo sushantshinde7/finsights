@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 
 import "./HomePage.css";
+import LiveLedgerPreview from "./LiveLedgerPreview";
 
 const HomePage = () => {
   return (
@@ -182,18 +183,7 @@ const HomePage = () => {
 
         <div className="showcase-preview">
           <div className="placeholder-card">
-            <div className="mock-transactions">
-              <div className="mock-toolbar">
-                <span className="mock-search" />
-                <span className="mock-filter" />
-              </div>
-              <div className="mock-rows">
-                <span className="mock-row mock-row--income" />
-                <span className="mock-row mock-row--expense" />
-                <span className="mock-row mock-row--income" />
-                <span className="mock-row mock-row--expense" />
-              </div>
-            </div>
+            <LiveLedgerPreview />
             <Link to={ROUTES.TRANSACTIONS} className="mock-cta">
               Explore Transactions <ArrowRight size={13} />
             </Link>
