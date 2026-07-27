@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Briefcase,
   ShoppingCart,
@@ -6,6 +6,7 @@ import {
   Laptop,
   UtensilsCrossed,
 } from "lucide-react";
+import { useInView } from "./useInView";
 import "./LiveLedgerPreview.css";
 
 const TRANSACTIONS = [
@@ -47,28 +48,10 @@ const COUNT_DURATION = 350; // ms for the net figure to tween per step
 const formatINR = (n) => `₹${Math.abs(Math.round(n)).toLocaleString("en-IN")}`;
 
 export default function LiveLedgerPreview() {
-  const containerRef = useRef(null);
-  const [hasPlayed, setHasPlayed] = useState(false);
+  const [containerRef, hasPlayed] = useInView(0.4);
   const [splitReady, setSplitReady] = useState(false);
   const [visibleCount, setVisibleCount] = useState(0);
   const [displayedNet, setDisplayedNet] = useState(0);
-
-  // Play once, when the widget scrolls into view — not on page load,
-  // and never again after that (no looping).
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el || hasPlayed) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) setHasPlayed(true);
-      },
-      { threshold: 0.4 },
-    );
-
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [hasPlayed]);
 
   // Split bar draws in first
   useEffect(() => {
