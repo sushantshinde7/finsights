@@ -12,6 +12,8 @@ import {
 
 import "./HomePage.css";
 import LiveLedgerPreview from "./LiveLedgerPreview";
+import LiveSnapshotPreview from "./LiveSnapshotPreview";
+import InsightVerdictPreview from "./InsightVerdictPreview";
 
 const HomePage = () => {
   return (
@@ -137,18 +139,7 @@ const HomePage = () => {
 
         <div className="showcase-preview">
           <div className="placeholder-card">
-            <div className="mock-dashboard">
-              <div className="mock-stats-row">
-                <span className="mock-chip mock-chip--balance" />
-                <span className="mock-chip mock-chip--income" />
-                <span className="mock-chip mock-chip--expense" />
-                <span className="mock-chip mock-chip--savings" />
-              </div>
-              <div className="mock-charts-row">
-                <span className="mock-block" />
-                <span className="mock-block" />
-              </div>
-            </div>
+            <LiveSnapshotPreview />
             <Link to={ROUTES.DASHBOARD} className="mock-cta">
               Explore Dashboard <ArrowRight size={13} />
             </Link>
@@ -217,17 +208,7 @@ const HomePage = () => {
 
         <div className="showcase-preview">
           <div className="placeholder-card">
-            <div className="mock-insights">
-              <span className="mock-verdict" />
-              <div className="mock-insight-row">
-                <span className="mock-pie" />
-                <span className="mock-bars">
-                  <span />
-                  <span />
-                  <span />
-                </span>
-              </div>
-            </div>
+            <InsightVerdictPreview />
             <Link to={ROUTES.INSIGHTS} className="mock-cta">
               Explore Insights <ArrowRight size={13} />
             </Link>

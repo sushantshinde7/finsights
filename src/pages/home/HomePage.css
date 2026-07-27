@@ -274,43 +274,8 @@
   text-decoration: underline;
 }
 
-/* Dashboard mock: 4-chip stat row + 2-block chart row */
-.mock-dashboard {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
-
-.mock-stats-row {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--space-2);
-}
-
-.mock-chip {
-  height: 44px;
-  border-radius: var(--radius-md);
-  background: var(--color-surface-muted);
-  border-top: 3px solid transparent;
-}
-
-.mock-chip--balance { border-top-color: var(--color-primary); }
-.mock-chip--income  { border-top-color: #16a34a; }
-.mock-chip--expense { border-top-color: #ef4444; }
-.mock-chip--savings { border-top-color: #8b5cf6; }
-
-.mock-charts-row {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-2);
-}
-
-.mock-charts-row .mock-block {
-  height: 90px;
-  border-radius: var(--radius-md);
-  background: var(--color-primary-light);
-}
+/* Dashboard preview is now the animated LiveSnapshotPreview
+   component — see LiveSnapshotPreview.css */
 
 /* Transactions preview is now the animated LiveLedgerPreview
    component — see LiveLedgerPreview.css */
