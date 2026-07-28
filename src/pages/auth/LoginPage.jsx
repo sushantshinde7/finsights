@@ -78,9 +78,6 @@ export default function LoginPage() {
             <li>✓ Review financial insights</li>
             <li>✓ Pick up where you left off</li>
           </ul>
-          <div className="auth-note">
-            Secure authentication powered by Firebase.
-          </div>
         </div>
       </aside>
       <main className="auth-card auth-card--login">
@@ -144,6 +141,10 @@ export default function LoginPage() {
           <button className="auth-btn-primary" type="submit" disabled={loading}>
             {loading ? "Signing in…" : "Sign in"}
           </button>
+
+          <div className="auth-card-footnote">
+            Secure authentication powered by Firebase.
+          </div>
         </form>
 
         <div className="auth-divider">

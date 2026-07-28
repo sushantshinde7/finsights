@@ -147,9 +147,9 @@ export default function SignupPage() {
             </div>
 
             <div className="auth-field">
-              <label htmlFor="firstname" className="auth-label">Last name</label>
+              <label htmlFor="lastname" className="auth-label">Last name</label>
               <input
-                id="firstname"
+                id="lastname"
                 className={`auth-input ${errors.lastName ? "auth-input--error" : ""}`}
                 type="text"
                 placeholder="Shinde"

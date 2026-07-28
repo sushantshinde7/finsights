@@ -70,6 +70,8 @@
 .auth-branding-content p {
   margin-bottom: 32px;
 
+  text-align: left;
+
   font-size: 18px;
   line-height: 1.7;
 
@@ -123,14 +125,12 @@
   color: var(--color-text-primary);
 }
 
-.auth-note {
-  margin-top: 32px;
-  padding-top: 24px;
+.auth-card-footnote {
+  margin-top: 1px;
 
   font-size: 14px;
+  text-align: center;
   color: var(--color-text-secondary);
-
-  border-top: 1px solid var(--color-border);
 }
 
 /* =========================
@@ -490,17 +490,51 @@
 @media (max-width: 900px) {
   .auth-page {
     grid-template-columns: 1fr;
+    align-items: start;       /* was center — let content stack, not vertically center */
+    min-height: 100vh;
+    padding: 40px 20px 0;      /* no bottom padding: nothing to cap the card's overflow */
+    gap: 24px;
   }
 
   .auth-branding {
+    display: flex;
+    padding: 0;
+    text-align: center;
+  }
+
+  .auth-branding-content {
+    max-width: 480px;
+    padding: 0 20px;
+    box-sizing: border-box;
+  }
+
+  .auth-branding-content h1 {
+    margin-bottom: 12px;
+  }
+
+  .auth-branding-content h2 {
+    font-size: 36px;          /* up from GPT's 32px — still reads as a headline */
+    max-width: none;          /* resets the 8ch login constraint for mobile */
+    margin-bottom: 10px;
+  }
+
+  .auth-branding-content p {
+    margin-bottom: 0;
+    font-size: 16px;
+  }
+
+  .auth-features {
     display: none;
   }
 
   .auth-card {
-    margin: auto;
+    margin: 0 auto;           /* horizontal centering only, no vertical margin */
+  }
+
+  .auth-card--signup {
+    min-height: 620px;        /* guarantees the card runs past the fold, so the "peek" is reliable, not accidental */
   }
 }
-
 /* =========================
    MOBILE
 ========================= */
