@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 
 import "./HomePage.css";
+import HeroPreview from "./HeroPreview";
 import LiveLedgerPreview from "./LiveLedgerPreview";
 import LiveSnapshotPreview from "./LiveSnapshotPreview";
 import InsightVerdictPreview from "./InsightVerdictPreview";
@@ -36,9 +37,9 @@ const HomePage = () => {
           </h1>
 
           <p className="hero-description">
-            Track expenses, monitor income, and turn your transaction
-            history into clear, actionable insights through interactive
-            dashboards and modern financial tools.
+            Track expenses, monitor income, and turn your transaction history
+            into clear, actionable insights through interactive dashboards and
+            modern financial tools.
           </p>
 
           <div className="hero-actions">
@@ -53,23 +54,7 @@ const HomePage = () => {
         </div>
 
         <div className="hero-preview">
-          <div className="preview-card">
-            <div className="preview-header">
-              <span />
-              <span />
-              <span />
-            </div>
-
-            <div className="preview-body">
-              <div className="preview-stat" />
-              <div className="preview-stat" />
-              <div className="preview-stat" />
-
-              <div className="preview-chart" />
-
-              <p>Dashboard Preview</p>
-            </div>
-          </div>
+          <HeroPreview />
         </div>
       </section>
 
@@ -88,8 +73,8 @@ const HomePage = () => {
             <CreditCard size={24} />
             <h3>Track</h3>
             <p>
-              Organize income and expenses with powerful transaction
-              management tools.
+              Organize income and expenses with powerful transaction management
+              tools.
             </p>
           </article>
 
@@ -117,16 +102,19 @@ const HomePage = () => {
       <section className="showcase-section">
         <div className="showcase-content">
           <span className="showcase-label">
-            <span className="showcase-label-dot showcase-label-dot--dashboard" aria-hidden="true" />
+            <span
+              className="showcase-label-dot showcase-label-dot--dashboard"
+              aria-hidden="true"
+            />
             Dashboard
           </span>
 
           <h2>Financial Overview At A Glance</h2>
 
           <p>
-            Monitor balances, income, expenses, and trends through an
-            intuitive dashboard designed to provide instant visibility into
-            your financial health.
+            Monitor balances, income, expenses, and trends through an intuitive
+            dashboard designed to provide instant visibility into your financial
+            health.
           </p>
 
           <ul>
@@ -151,7 +139,10 @@ const HomePage = () => {
       <section className="showcase-section showcase-section--reverse showcase-section--panel">
         <div className="showcase-content">
           <span className="showcase-label">
-            <span className="showcase-label-dot showcase-label-dot--transactions" aria-hidden="true" />
+            <span
+              className="showcase-label-dot showcase-label-dot--transactions"
+              aria-hidden="true"
+            />
             Transactions
           </span>
 
@@ -186,15 +177,18 @@ const HomePage = () => {
       <section className="showcase-section">
         <div className="showcase-content">
           <span className="showcase-label">
-            <span className="showcase-label-dot showcase-label-dot--insights" aria-hidden="true" />
+            <span
+              className="showcase-label-dot showcase-label-dot--insights"
+              aria-hidden="true"
+            />
             Insights
           </span>
 
           <h2>Turn Data Into Financial Intelligence</h2>
 
           <p>
-            Transform transaction history into meaningful insights through
-            trend analysis, category breakdowns, and behavioral indicators.
+            Transform transaction history into meaningful insights through trend
+            analysis, category breakdowns, and behavioral indicators.
           </p>
 
           <ul>
@@ -305,11 +299,7 @@ const HomePage = () => {
             Portfolio
           </a>
 
-          <a
-            href="https://linkedin.com"
-            target="_blank"
-            rel="noreferrer"
-          >
+          <a href="https://linkedin.com" target="_blank" rel="noreferrer">
             LinkedIn
           </a>
         </div>
