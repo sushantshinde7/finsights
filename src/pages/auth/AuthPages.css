@@ -4,9 +4,14 @@
 
 .auth-page {
   min-height: 100vh;
+  height: 100vh;              /* was: only min-height — now it's a fixed reference */
   display: grid;
   grid-template-columns: 1fr 520px;
-  align-items: center;
+  align-items: stretch;       /* was: center */
+}
+
+.auth-card {
+  align-self: center;         /* add this — centers the card against the fixed row height too */
 }
 
 /* =========================
@@ -42,17 +47,16 @@
 .auth-branding {
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 48px;
+  justify-content: flex-start;   /* was: center */
+  padding: 48px clamp(48px, 8vw, 120px);
 }
 
 .auth-branding-content {
   max-width: 520px;
 }
 
-.auth-branding-content h1 {
+.auth-brand {
   margin-bottom: 48px;
-
   font-size: 20px;
   font-weight: 700;
   color: var(--color-primary);
@@ -140,7 +144,7 @@
 .auth-card {
   width: 100%;
   justify-self: center;
-
+  align-self: center;  
   padding: 32px;
 
   display: flex;
@@ -163,12 +167,13 @@
    CARD VARIANTS
 ========================= */
 
-.auth-card--signup {
-  max-width: 500px;
+.auth-card--login,
+.auth-card--forgot {
+  max-width: 460px;
 }
 
-.auth-card--login {
-  max-width: 460px;
+.auth-card--signup {
+  max-width: 480px;   /* only 20px more, just enough for the name row to breathe */
 }
 
 /* =========================

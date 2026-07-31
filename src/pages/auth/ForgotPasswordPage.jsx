@@ -38,15 +38,15 @@ export default function ForgotPasswordPage() {
     <div className="auth-page auth-page--forgot">
       <aside className="auth-branding auth-branding--forgot">
         <div className="auth-branding-content">
-          <h1>Finsights</h1>
+          {/* Logotype, not a heading — the card's <h1> is the page's real heading */}
+          <p className="auth-brand">Finsights</p>
+
           <h2>Reset your password.</h2>
+
           <p>
             Enter the email linked to your account and we'll send you
             a secure link to choose a new password.
           </p>
-          <div className="auth-note">
-            The reset link expires after 1 hour for your security.
-          </div>
         </div>
       </aside>
 
@@ -56,7 +56,7 @@ export default function ForgotPasswordPage() {
           /* ── Success state ───────────────────────────────── */
           <div className="auth-success">
             <div className="auth-success-icon" aria-hidden="true">✉</div>
-            <h2 className="auth-title">Check your inbox</h2>
+            <h1 className="auth-title">Check your inbox</h1>
             <p className="auth-subtitle">
               We sent a password reset link to{" "}
               <strong>{email}</strong>.
@@ -105,6 +105,10 @@ export default function ForgotPasswordPage() {
               >
                 {loading ? "Sending…" : "Send reset link"}
               </button>
+
+              <div className="auth-card-footnote">
+                The reset link expires after 1 hour for your security.
+              </div>
             </form>
 
             <p className="auth-switch">

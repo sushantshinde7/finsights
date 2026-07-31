@@ -63,7 +63,8 @@ export default function LoginPage() {
     <div className="auth-page auth-page--login">
       <aside className="auth-branding auth-branding--login">
         <div className="auth-branding-content">
-          <h1>Finsights</h1>
+          {/* Logotype, not a heading — the card's <h1> is the page's real heading */}
+          <p className="auth-brand">Finsights</p>
 
           <h2>Welcome back.</h2>
 
@@ -71,22 +72,13 @@ export default function LoginPage() {
             Continue tracking expenses, monitoring budgets, and understanding
             your financial habits.
           </p>
-
-          <ul className="auth-features">
-            <li>✓ View recent transactions</li>
-            <li>✓ Monitor budgets and spending</li>
-            <li>✓ Review financial insights</li>
-            <li>✓ Pick up where you left off</li>
-          </ul>
         </div>
       </aside>
+
       <main className="auth-card auth-card--login">
         <div className="auth-header">
           <h1 className="auth-title">Sign in</h1>
-
-          <p className="auth-subtitle">
-            Access your Finsights account and continue managing your finances.
-          </p>
+          <p className="auth-subtitle">Enter your details to continue.</p>
         </div>
 
         {serverError && (
@@ -120,12 +112,15 @@ export default function LoginPage() {
 
           <div className="auth-field">
             <div className="auth-label-row">
-              <label className="auth-label">Password</label>
+              <label htmlFor="password" className="auth-label">
+                Password
+              </label>
               <Link to={ROUTES.FORGOT_PASSWORD} className="auth-forgot">
                 Forgot password?
               </Link>
             </div>
             <input
+              id="password"
               className={`auth-input ${errors.password ? "auth-input--error" : ""}`}
               type="password"
               placeholder="••••••••"
