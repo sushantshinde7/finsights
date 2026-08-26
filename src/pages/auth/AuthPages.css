@@ -1,17 +1,26 @@
 /* =========================
+   AUTH LAYOUT TOKENS
+   Single source of truth for anything that should be
+   IDENTICAL across signup/login/forgot-password.
+   If a value lives here, no page-variant selector may override it.
+========================= */
+
+.auth-page {
+  --auth-card-width: 460px;        /* every card, every page — no exceptions */
+  --auth-card-col: 560px;          /* fixed right-column width (card + its own breathing room) */
+  --auth-top-offset: clamp(64px, 10vh, 120px); /* both columns anchor here, not to center */
+  --auth-hero-gutter: clamp(48px, 8vw, 120px);
+}
+
+/* =========================
    PAGE LAYOUT
 ========================= */
 
 .auth-page {
   min-height: 100vh;
-  height: 100vh;              /* was: only min-height — now it's a fixed reference */
   display: grid;
-  grid-template-columns: 1fr 520px;
-  align-items: stretch;       /* was: center */
-}
-
-.auth-card {
-  align-self: center;         /* add this — centers the card against the fixed row height too */
+  grid-template-columns: 1fr var(--auth-card-col);
+  align-items: start;              /* anchor, don't center — see tokens above */
 }
 
 /* =========================
@@ -40,19 +49,32 @@
     var(--color-bg);
 }
 
+/* Forgot-password page background (was missing — fell back to plain --color-bg) */
+.auth-page--forgot {
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(124, 58, 237, 0.08),
+      transparent 35%
+    ),
+    var(--color-bg);
+}
+
 /* =========================
    BRANDING PANEL
 ========================= */
 
 .auth-branding {
   display: flex;
-  align-items: center;
-  justify-content: flex-start;   /* was: center */
-  padding: 48px clamp(48px, 8vw, 120px);
+  justify-content: center;
+  padding-top: var(--auth-top-offset);
+  padding-left: var(--auth-hero-gutter);
+  padding-right: var(--auth-hero-gutter);
+  padding-bottom: 48px;
 }
 
 .auth-branding-content {
-  max-width: 520px;
+  max-width: 520px;                /* same for every page — content length differs, box doesn't */
 }
 
 .auth-brand {
@@ -64,10 +86,10 @@
 
 .auth-branding-content h2 {
   margin-bottom: 20px;
-
-  font-size: 48px;
+  
+  font-size: 48px;                 /* same size on every page — copy length varies, scale doesn't */
   line-height: 1.1;
-
+  
   color: var(--color-text-primary);
 }
 
@@ -83,34 +105,10 @@
 }
 
 /* =========================
-   BRANDING VARIANTS
-========================= */
-
-/* Signup focuses on product value */
-.auth-branding--signup .auth-branding-content {
-  max-width: 560px;
-}
-
-.auth-branding--signup h2 {
-  font-size: 52px;
-}
-
-/* Login focuses on returning users */
-.auth-branding--login {
-  position: relative;
-}
-
-.auth-branding--login .auth-branding-content {
-  max-width: 500px;
-}
-
-.auth-branding--login h2 {
-  max-width: 8ch;
-  font-size: 44px;
-}
-
-/* =========================
    FEATURE LIST
+   (currently unused by any page — kept in case a future
+   page needs it, but do not reintroduce it into signup's
+   hero; that pattern was deliberately retired.)
 ========================= */
 
 .auth-features {
@@ -130,9 +128,9 @@
 }
 
 .auth-card-footnote {
-  margin-top: 1px;
+  margin-top: 4px;
 
-  font-size: 14px;
+  font-size: 13px;
   text-align: center;
   color: var(--color-text-secondary);
 }
@@ -143,8 +141,11 @@
 
 .auth-card {
   width: 100%;
+  max-width: var(--auth-card-width);   /* fixed — identical on every page */
   justify-self: center;
-  align-self: center;  
+
+  margin-top: var(--auth-top-offset);  /* anchors to the SAME y as the hero, not to viewport center */
+
   padding: 32px;
 
   display: flex;
@@ -161,19 +162,6 @@
   box-shadow:
     0 20px 50px rgba(0, 0, 0, 0.08),
     0 4px 12px rgba(0, 0, 0, 0.04);
-}
-
-/* =========================
-   CARD VARIANTS
-========================= */
-
-.auth-card--login,
-.auth-card--forgot {
-  max-width: 460px;
-}
-
-.auth-card--signup {
-  max-width: 480px;   /* only 20px more, just enough for the name row to breathe */
 }
 
 /* =========================
@@ -352,7 +340,6 @@
    FORGOT PASSWORD VARIANTS
 ========================= */
 
-
 /* Success state */
 .auth-success {
   display: flex;
@@ -495,9 +482,9 @@
 @media (max-width: 900px) {
   .auth-page {
     grid-template-columns: 1fr;
-    align-items: start;       /* was center — let content stack, not vertically center */
+    align-items: start;
     min-height: 100vh;
-    padding: 40px 20px 0;      /* no bottom padding: nothing to cap the card's overflow */
+    padding: 40px 20px 0;
     gap: 24px;
   }
 
@@ -513,15 +500,20 @@
     box-sizing: border-box;
   }
 
-  .auth-branding-content h1 {
+  .auth-brand {
     margin-bottom: 12px;
   }
 
   .auth-branding-content h2 {
-    font-size: 36px;          /* up from GPT's 32px — still reads as a headline */
-    max-width: none;          /* resets the 8ch login constraint for mobile */
+    font-size: 36px;
     margin-bottom: 10px;
   }
+  
+  .auth-branding--signup h2 {
+     white-space: nowrap;
+     font-size: 28px;
+  }
+
 
   .auth-branding-content p {
     margin-bottom: 0;
@@ -533,13 +525,14 @@
   }
 
   .auth-card {
-    margin: 0 auto;           /* horizontal centering only, no vertical margin */
+    margin: 0 auto;      /* horizontal centering only — no vertical anchor offset on mobile/tablet */
   }
 
   .auth-card--signup {
-    min-height: 620px;        /* guarantees the card runs past the fold, so the "peek" is reliable, not accidental */
+    min-height: 620px;
   }
 }
+
 /* =========================
    MOBILE
 ========================= */

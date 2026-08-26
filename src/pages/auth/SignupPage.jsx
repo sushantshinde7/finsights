@@ -98,7 +98,7 @@ export default function SignupPage() {
     <div className="auth-page auth-page--signup">
       <aside className="auth-branding auth-branding--signup">
         <div className="auth-branding-content">
-          <h1>Finsights</h1>
+          <p className="auth-brand">Finsights</p>
 
           <h2>Take control of your finances.</h2>
 
@@ -131,8 +131,11 @@ export default function SignupPage() {
         <form className="auth-form" onSubmit={handleSubmit} noValidate>
           <div className="auth-row">
             <div className="auth-field">
-              <label htmlFor="firstname" className="auth-label">First name</label>
-              <input id="firstname"
+              <label htmlFor="firstname" className="auth-label">
+                First name
+              </label>
+              <input
+                id="firstname"
                 className={`auth-input ${errors.firstName ? "auth-input--error" : ""}`}
                 type="text"
                 placeholder="Sushant"
@@ -147,7 +150,9 @@ export default function SignupPage() {
             </div>
 
             <div className="auth-field">
-              <label htmlFor="lastname" className="auth-label">Last name</label>
+              <label htmlFor="lastname" className="auth-label">
+                Last name
+              </label>
               <input
                 id="lastname"
                 className={`auth-input ${errors.lastName ? "auth-input--error" : ""}`}
@@ -164,10 +169,12 @@ export default function SignupPage() {
           </div>
 
           <div className="auth-field">
-            <label htmlFor="email" className="auth-label">Email</label>
+            <label htmlFor="email" className="auth-label">
+              Email
+            </label>
             <input
               id="email"
-              aria-invalid={!!errors.email} 
+              aria-invalid={!!errors.email}
               className={`auth-input ${errors.email ? "auth-input--error" : ""}`}
               type="email"
               placeholder="you@example.com"
@@ -179,7 +186,9 @@ export default function SignupPage() {
           </div>
 
           <div className="auth-field">
-            <label htmlFor="password" className="auth-label">Password</label>
+            <label htmlFor="password" className="auth-label">
+              Password
+            </label>
             <input
               id="password"
               className={`auth-input ${errors.password ? "auth-input--error" : ""}`}
@@ -217,7 +226,9 @@ export default function SignupPage() {
           </div>
 
           <div className="auth-field">
-            <label htmlFor="confirmpassword" className="auth-label">Confirm password</label>
+            <label htmlFor="confirmpassword" className="auth-label">
+              Confirm password
+            </label>
             <input
               id="confirmpassword"
               className={`auth-input ${errors.confirm ? "auth-input--error" : ""}`}
