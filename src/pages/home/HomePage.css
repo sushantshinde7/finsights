@@ -2,6 +2,8 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-6);
+  max-width: 1280px;
+  margin: 0 auto;
   padding: var(--space-4) var(--space-5);
 }
 
@@ -150,25 +152,32 @@
   color: var(--color-text-primary);
 }
 
-.feature-grid,
-.tech-grid {
+/* =========================
+   FEATURE GRID
+   Track -> Analyze -> Improve is a real sequence, so a step
+   eyebrow is earned here (not just decorative numbering).
+========================= */
+
+.feature-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: var(--space-4);
 }
 
-.feature-card,
-.tech-card {
-  padding: var(--space-5);
+.feature-card {
+  position: relative;
+  overflow: hidden;
+  padding: var(--space-6) var(--space-5);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   background: var(--color-surface);
   box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.feature-card {
-  position: relative;
-  overflow: hidden;
+.feature-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md, 0 10px 24px rgba(0, 0, 0, 0.08));
 }
 
 .feature-card::before {
@@ -185,29 +194,34 @@
 .feature-card--transactions { --accent-color: #8b5cf6; }
 .feature-card--insights { --accent-color: #16a34a; }
 
+.feature-card-step {
+  display: block;
+  font-size: 11px;
+  font-weight: var(--font-semibold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-color, var(--color-primary));
+  margin-bottom: var(--space-3);
+}
+
 .feature-card-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 48px;
+  height: 48px;
   border-radius: var(--radius-md);
   background: color-mix(in srgb, var(--accent-color, var(--color-primary)) 14%, transparent);
   color: var(--accent-color, var(--color-primary));
 }
 
-.tech-card {
-  color: var(--color-primary);
-}
-
-.feature-card h3,
-.tech-card h3 {
+.feature-card h3 {
   margin: var(--space-4) 0 var(--space-3);
+  font-size: var(--text-lg, 1.2rem);
   color: var(--color-text-primary);
 }
 
-.feature-card p,
-.tech-card p {
+.feature-card p {
   color: var(--color-text-secondary);
   line-height: 1.6;
 }
@@ -401,6 +415,9 @@
 .guest-section p {
   color: var(--color-text-secondary);
   line-height: 1.6;
+  max-width: 60ch;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .guest-actions {
@@ -416,24 +433,125 @@
   color: var(--color-text-secondary);
 }
 
-.cta-section {
-  text-align: center;
-  padding: var(--space-6) var(--space-5);
+/* =========================
+   TECH STACK
+   Deliberately NOT the same card pattern as .feature-grid —
+   one shared panel divided into columns, tags instead of prose,
+   so the bottom of the page doesn't repeat the same shape twice.
+========================= */
+
+.tech-stack-card {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.tech-stack-col {
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.tech-stack-col + .tech-stack-col {
+  border-left: 1px solid var(--color-border);
+}
+
+.tech-stack-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: var(--font-semibold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+.tech-stack-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
   background: var(--color-primary);
+  flex-shrink: 0;
+}
+.tech-stack-dot--auth { background: #8b5cf6; }
+.tech-stack-dot--analytics { background: #16a34a; }
+
+.tech-tag-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.tech-tag {
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: 12.5px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--color-surface-muted);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+}
+
+/* =========================
+   CTA
+   Fixed bug: this section used to have its text color set
+   twice (white, then overridden by a later rule further down
+   the file) which is why the text was unreadable. Colors for
+   this section now live only here. Background is a fixed dark
+   gradient (not a theme token) so contrast holds in both themes.
+========================= */
+
+.cta-section {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  text-align: center;
+  padding: var(--space-7, 4rem) var(--space-5);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, #0f172a 0%, var(--color-primary) 100%);
+}
+
+.cta-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 18% 15%, rgba(255, 255, 255, 0.12), transparent 55%);
+  pointer-events: none;
+}
+
+.cta-section h2,
+.cta-section p,
+.cta-button {
+  position: relative;
+  z-index: 1;
 }
 
 .cta-section h2 {
   color: #fff;
+  font-size: clamp(1.75rem, 1.3rem + 1.5vw, 2.5rem);
 }
 
 .cta-section p {
-  color: #fff;
-  opacity: 0.85;
+  color: rgba(255, 255, 255, 0.82);
+  max-width: 52ch;
+  margin: var(--space-3) auto 0;
   line-height: 1.6;
 }
 
 .cta-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
   background: #fff;
   color: var(--color-primary);
 }
@@ -444,32 +562,19 @@
   transform: translateY(-1px);
 }
 
-.guest-section h2,
-.cta-section h2 {
-  color: var(--color-text-primary);
-}
-
-.guest-section p,
-.cta-section p {
-  color: var(--color-text-secondary);
-  line-height: 1.6;
-}
-
-.cta-button {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  margin-top: var(--space-4);
-}
+/* =========================
+   FOOTER
+   A real 3-tier grid system instead of flex-wrap:
+   desktop  -> 3 columns, vertically centered
+   tablet   -> brand full width, nav + socials split below
+   mobile   -> fully stacked and centered
+========================= */
 
 .home-footer {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-5);
-  padding: var(--space-6) var(--space-5) var(--space-4);
-  margin-top: var(--space-4);
+  margin-top: var(--space-6);
+  padding: var(--space-7, 3.5rem) var(--space-5) var(--space-5);
   border-top: 1px solid var(--color-border);
-  background: var(--color-surface-muted);
+  background: color-mix(in srgb, var(--color-primary) 6%, var(--color-surface));
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
 }
 
@@ -477,11 +582,21 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: var(--space-5);
-  flex-wrap: wrap;
+  gap: var(--space-6);
+  padding-bottom: var(--space-5);
+}
+
+/* Brand: always left, never centered, at any width */
+.footer-brand {
+  text-align: left;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .footer-brand h3 {
+  font-size: var(--text-lg, 1.15rem);
+  font-weight: var(--font-bold, 700);
+  letter-spacing: -0.01em;
   color: var(--color-text-primary);
   margin-bottom: 4px;
 }
@@ -489,23 +604,51 @@
 .footer-brand p {
   color: var(--color-text-secondary);
   font-size: var(--text-sm);
-  max-width: 32ch;
+  max-width: 34ch;
+  line-height: 1.5;
+}
+
+/* Nav + socials: always right, stacked as one column, never shrinks */
+.footer-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-3);
+  flex-shrink: 0;
 }
 
 .footer-nav {
   display: flex;
-  gap: var(--space-4);
+  gap: var(--space-3);
 }
 
 .footer-nav a {
+  position: relative;
   text-decoration: none;
   color: var(--color-text-secondary);
   font-size: var(--text-sm);
   font-weight: var(--font-medium);
+  padding-bottom: 2px;
+  transition: color 0.15s ease;
+}
+
+.footer-nav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 100%;
+  bottom: 0;
+  height: 1px;
+  background: var(--color-primary);
+  transition: right 0.2s ease;
 }
 
 .footer-nav a:hover {
-  color: var(--color-primary);
+  color: var(--color-text-primary);
+}
+
+.footer-nav a:hover::after {
+  right: 0;
 }
 
 .footer-socials {
@@ -533,27 +676,10 @@
 
 .footer-bottom {
   padding-top: var(--space-4);
-  border-top: 1px dashed var(--color-border);
+  border-top: 1px solid var(--color-border);
   font-size: 12px;
   color: var(--color-text-secondary);
   text-align: center;
-}
-
-.home-footer h3 {
-  color: var(--color-text-primary);
-}
-
-.home-footer p {
-  color: var(--color-text-secondary);
-}
-
-.footer-links a {
-  text-decoration: none;
-  color: var(--color-text-secondary);
-}
-
-.footer-links a:hover {
-  color: var(--color-primary);
 }
 
 /* =========================
@@ -569,7 +695,12 @@
 }
 
 @media (max-width: 1024px) {
-  .hero-section,
+  .hero-section {
+    grid-template-columns: 1fr;
+    min-height: auto;
+    padding-block: var(--space-6);
+  }
+
   .showcase-section,
   .showcase-section--reverse {
     grid-template-columns: 1fr;
@@ -580,11 +711,36 @@
     order: initial;
   }
 
-  .feature-grid,
-  .tech-grid {
+  .feature-grid {
     grid-template-columns: 1fr;
   }
 
+  .tech-stack-card {
+    grid-template-columns: 1fr;
+  }
+
+  .tech-stack-col + .tech-stack-col {
+    border-left: none;
+    border-top: 1px solid var(--color-border);
+  }
+
+  /* Footer tier 2: brand full width on top, nav + socials
+     share the row underneath it, split left/right. */
+  .footer-top {
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "brand  brand"
+      "nav    socials";
+    align-items: start;
+  }
+
+  .footer-nav {
+    justify-self: start;
+  }
+
+  .footer-socials {
+    justify-self: end;
+  }
 }
 
 @media (max-width: 768px) {
@@ -594,12 +750,25 @@
   }
 }
 
+/* Only true mobile stacks — brand still left-aligned, nav/socials
+   drop below it left-aligned too, so nothing snaps to center. */
 @media (max-width: 640px) {
   .footer-top {
     flex-direction: column;
     align-items: flex-start;
+    gap: var(--space-4);
+  }
+
+  .footer-right {
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .footer-nav {
+    flex-wrap: wrap;
   }
 }
+
 
 @media (max-width: 480px) {
   .home-page {

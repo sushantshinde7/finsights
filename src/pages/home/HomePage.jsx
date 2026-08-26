@@ -63,6 +63,7 @@ const HomePage = () => {
 
         <div className="feature-grid">
           <article className="feature-card feature-card--transactions">
+            <span className="feature-card-step">Step 01</span>
             <span className="feature-card-icon">
               <Icons.CreditCard size={22} />
             </span>
@@ -74,6 +75,7 @@ const HomePage = () => {
           </article>
 
           <article className="feature-card feature-card--dashboard">
+            <span className="feature-card-step">Step 02</span>
             <span className="feature-card-icon">
               <Icons.BarChart3 size={22} />
             </span>
@@ -85,6 +87,7 @@ const HomePage = () => {
           </article>
 
           <article className="feature-card feature-card--insights">
+            <span className="feature-card-step">Step 03</span>
             <span className="feature-card-icon">
               <Icons.TrendingUp size={22} />
             </span>
@@ -277,23 +280,48 @@ const HomePage = () => {
           <h2>Built With Modern Technologies</h2>
         </div>
 
-        <div className="tech-grid">
-          <div className="tech-card">
-            <Icons.Layers size={22} />
-            <h3>Frontend</h3>
-            <p>React 19, Vite, React Router, Context API</p>
+        <div className="tech-stack-card">
+          <div className="tech-stack-col">
+            <span className="tech-stack-label">
+              <span className="tech-stack-dot" aria-hidden="true" />
+              Frontend
+            </span>
+            <ul className="tech-tag-list">
+              <li className="tech-tag">React 19</li>
+              <li className="tech-tag">Vite</li>
+              <li className="tech-tag">React Router</li>
+              <li className="tech-tag">Context API</li>
+            </ul>
           </div>
 
-          <div className="tech-card">
-            <Icons.ShieldCheck size={22} />
-            <h3>Authentication</h3>
-            <p>Firebase Authentication, Google Sign-In, Protected Routes</p>
+          <div className="tech-stack-col">
+            <span className="tech-stack-label">
+              <span
+                className="tech-stack-dot tech-stack-dot--auth"
+                aria-hidden="true"
+              />
+              Authentication
+            </span>
+            <ul className="tech-tag-list">
+              <li className="tech-tag">Firebase Auth</li>
+              <li className="tech-tag">Google Sign-In</li>
+              <li className="tech-tag">Protected Routes</li>
+            </ul>
           </div>
 
-          <div className="tech-card">
-            <Icons.Database size={22} />
-            <h3>Analytics</h3>
-            <p>Recharts, Financial Insights, Visualization Engine</p>
+          <div className="tech-stack-col">
+            <span className="tech-stack-label">
+              <span
+                className="tech-stack-dot tech-stack-dot--analytics"
+                aria-hidden="true"
+              />
+              Analytics
+            </span>
+            <ul className="tech-tag-list">
+              <li className="tech-tag">Recharts</li>
+              <li className="tech-tag">Financial Insights</li>
+              <li className="tech-tag">Visualization Engine</li>
+            </ul>
           </div>
         </div>
       </section>
@@ -320,46 +348,45 @@ const HomePage = () => {
             <h3>Finsights</h3>
             <p>Personal Finance Management & Financial Analytics Platform</p>
           </div>
-
-          <nav className="footer-nav">
-            <Link to={ROUTES.DASHBOARD}>Dashboard</Link>
-            <Link to={ROUTES.TRANSACTIONS}>Transactions</Link>
-            <Link to={ROUTES.INSIGHTS}>Insights</Link>
-          </nav>
-
-          <div className="footer-socials">
-            <a
-              href="https://github.com/sushantshinde7"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="GitHub"
-            >
-              <FaGithub size={18} />
-            </a>
-
-            <a
-              href="https://linkedin.com/in/sushantshinde7"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="LinkedIn"
-            >
-              <FaLinkedin size={18} />
-            </a>
-
-            <a
-              href="https://sushantdev.vercel.app"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Portfolio"
-            >
-              <Icons.Globe size={18} />
-            </a>
+          <div className="footer-right">
+            <nav className="footer-nav">
+              <Link to={ROUTES.DASHBOARD}>Dashboard</Link>
+              <Link to={ROUTES.TRANSACTIONS}>Transactions</Link>
+              <Link to={ROUTES.INSIGHTS}>Insights</Link>
+            </nav>
+            <div className="footer-socials">
+              <a
+                href="https://github.com/sushantshinde7"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="GitHub"
+              >
+                <FaGithub size={16} />
+              </a>
+              <a
+                href="https://linkedin.com/in/sushantshinde7"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="LinkedIn"
+              >
+                <FaLinkedin size={16} />
+              </a>
+              <a
+                href="https://sushantdev.vercel.app"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Portfolio"
+              >
+                <Icons.Globe size={16} />
+              </a>
+            </div>
           </div>
         </div>
-
         <div className="footer-bottom">
           <span>
-            © {new Date().getFullYear()} Finsights. Built by Sushant Shinde.
+            {" "}
+            © {new Date().getFullYear()} Finsights. Built by Sushant
+            Shinde.{" "}
           </span>
         </div>
       </footer>
