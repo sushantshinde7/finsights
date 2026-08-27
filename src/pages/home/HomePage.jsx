@@ -126,16 +126,25 @@ const SOCIAL_LINKS = [
     href: "https://github.com/sushantshinde7",
     label: "GitHub",
     Icon: FaGithub,
+    colorClass: "footer-social--github",
   },
   {
     href: "https://linkedin.com/in/sushantshinde7",
     label: "LinkedIn",
     Icon: FaLinkedin,
+    colorClass: "footer-social--linkedin",
+  },
+  {
+    href: "mailto:sushantshinde2024@gmail.com",
+    label: "Email",
+    Icon: Icons.Mail,
+    colorClass: "footer-social--email",
   },
   {
     href: "https://sushantdev.vercel.app",
     label: "Portfolio",
     Icon: Icons.Globe,
+    colorClass: "footer-social--portfolio",
   },
 ];
 
@@ -196,16 +205,18 @@ const HomePage = () => {
         </div>
 
         <div className="feature-grid">
-          {FEATURES.map(({ step, icon: Icon, title, description, accentClass }) => (
-            <article key={title} className={`feature-card ${accentClass}`}>
-              <span className="feature-card-step">{step}</span>
-              <span className="feature-card-icon" aria-hidden="true">
-                <Icon size={22} />
-              </span>
-              <h3>{title}</h3>
-              <p>{description}</p>
-            </article>
-          ))}
+          {FEATURES.map(
+            ({ step, icon: Icon, title, description, accentClass }) => (
+              <article key={title} className={`feature-card ${accentClass}`}>
+                <span className="feature-card-step">{step}</span>
+                <span className="feature-card-icon" aria-hidden="true">
+                  <Icon size={22} />
+                </span>
+                <h3>{title}</h3>
+                <p>{description}</p>
+              </article>
+            ),
+          )}
         </div>
       </section>
 
@@ -265,7 +276,7 @@ const HomePage = () => {
               </div>
             </div>
           </section>
-        )
+        ),
       )}
 
       {/* GUEST MODE */}
@@ -291,6 +302,21 @@ const HomePage = () => {
 
       {/* TECH STACK */}
       <section className="section">
+        <a
+          href="https://github.com/sushantshinde7/finsights"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="oss-banner"
+        >
+          <FaGithub size={15} aria-hidden="true" />
+          <span>Open source on GitHub</span>
+          <Icons.ArrowRight
+            size={14}
+            className="oss-banner-arrow"
+            aria-hidden="true"
+          />
+        </a>
+
         <div className="section-heading">
           <h2>Built With Modern Technologies</h2>
         </div>
@@ -348,13 +374,14 @@ const HomePage = () => {
             </nav>
 
             <div className="footer-socials">
-              {SOCIAL_LINKS.map(({ href, label, Icon }) => (
+              {SOCIAL_LINKS.map(({ href, label, Icon, colorClass }) => (
                 <a
                   key={label}
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}
+                  className={colorClass}
                 >
                   <Icon size={16} aria-hidden="true" />
                 </a>
@@ -364,7 +391,9 @@ const HomePage = () => {
         </div>
 
         <div className="footer-bottom">
-          <p>© {new Date().getFullYear()} Finsights. Built by Sushant Shinde.</p>
+          <p>
+            © {new Date().getFullYear()} Finsights. Built by Sushant Shinde.
+          </p>
         </div>
       </footer>
     </div>

@@ -441,6 +441,44 @@
    so the bottom of the page doesn't repeat the same shape twice.
 ========================= */
 
+.oss-banner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: fit-content;
+  margin: 0 auto var(--space-6);
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.oss-banner:hover {
+  color: var(--color-text-primary);
+  border-color: var(--color-primary);
+  background: var(--color-surface-muted);
+  transform: translateY(-1px);
+}
+
+.oss-banner-arrow {
+  transition: transform 0.15s ease;
+}
+
+.oss-banner:hover .oss-banner-arrow {
+  transform: translateX(2px);
+}
+
+.oss-banner:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+
 .tech-stack-card {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -670,11 +708,30 @@
   transition: all 0.15s ease;
 }
 
-.footer-socials a:hover {
-  color: var(--color-primary);
-  border-color: var(--color-primary);
-  background: var(--color-primary-light);
+.footer-social--github:hover {
+  color: #24292f;
+  border-color: #24292f;
+  background: color-mix(in srgb, #24292f 12%, transparent);
 }
+
+.footer-social--linkedin:hover {
+  color: #0a66c2;
+  border-color: #0a66c2;
+  background: color-mix(in srgb, #0a66c2 12%, transparent);
+}
+
+.footer-social--email:hover {
+  color: #ff3d3d;
+  border-color: #ff3d3d;
+  background: color-mix(in srgb, #ff3d3d 12%, transparent);
+}
+
+.footer-social--portfolio:hover {
+  color: #0d9488;
+  border-color: #0d9488;
+  background: color-mix(in srgb, #0d9488 12%, transparent);
+}
+
 
 .footer-bottom {
   padding-top: var(--space-4);
