@@ -9,8 +9,142 @@ import LiveLedgerPreview from "./LiveLedgerPreview";
 import LiveSnapshotPreview from "./LiveSnapshotPreview";
 import InsightVerdictPreview from "./InsightVerdictPreview";
 
+// Static content lives outside the component so it isn't
+// recreated on every render, and so each card/column/section
+// is a single source of truth instead of hand-duplicated JSX.
+
+const FEATURES = [
+  {
+    step: "Step 01",
+    icon: Icons.CreditCard,
+    title: "Track",
+    description:
+      "Organize income and expenses with powerful transaction management tools.",
+    accentClass: "feature-card--transactions",
+  },
+  {
+    step: "Step 02",
+    icon: Icons.BarChart3,
+    title: "Analyze",
+    description:
+      "Visualize financial activity through charts, trends, and performance indicators.",
+    accentClass: "feature-card--dashboard",
+  },
+  {
+    step: "Step 03",
+    icon: Icons.TrendingUp,
+    title: "Improve",
+    description:
+      "Gain insights into spending behavior and make informed financial decisions.",
+    accentClass: "feature-card--insights",
+  },
+];
+
+const SHOWCASES = [
+  {
+    id: "dashboard",
+    label: "Dashboard",
+    accent: "dashboard",
+    title: "Financial Overview At A Glance",
+    description:
+      "Monitor balances, income, expenses, and trends through an intuitive dashboard designed to provide instant visibility into your financial health.",
+    checklist: [
+      "Total Balance Tracking",
+      "Income & Expense KPIs",
+      "Balance Trend Visualization",
+      "Expense Breakdown Charts",
+    ],
+    Preview: LiveSnapshotPreview,
+    route: ROUTES.DASHBOARD,
+    ctaLabel: "Explore Dashboard",
+    reverse: false,
+    panel: false,
+  },
+  {
+    id: "transactions",
+    label: "Transactions",
+    accent: "transactions",
+    title: "Powerful Transaction Management",
+    description:
+      "Manage financial records efficiently with advanced tools that go beyond basic CRUD functionality.",
+    checklist: [
+      "Search Transactions",
+      "Advanced Filters",
+      "Sorting & Ordering",
+      "Pagination",
+      "Add, Edit & Delete",
+      "Sample Datasets",
+    ],
+    Preview: LiveLedgerPreview,
+    route: ROUTES.TRANSACTIONS,
+    ctaLabel: "Explore Transactions",
+    reverse: true,
+    panel: true,
+  },
+  {
+    id: "insights",
+    label: "Insights",
+    accent: "insights",
+    title: "Turn Data Into Financial Intelligence",
+    description:
+      "Transform transaction history into meaningful insights through trend analysis, category breakdowns, and behavioral indicators.",
+    checklist: [
+      "Spending Behavior Analysis",
+      "Top Category Detection",
+      "Income vs Expense Trends",
+      "KPI Summaries",
+      "Balance Movement Tracking",
+    ],
+    Preview: InsightVerdictPreview,
+    route: ROUTES.INSIGHTS,
+    ctaLabel: "Explore Insights",
+    reverse: false,
+    panel: false,
+  },
+];
+
+const TECH_STACK = [
+  {
+    label: "Frontend",
+    dotClass: "",
+    tags: ["React 19", "Vite", "React Router", "Context API"],
+  },
+  {
+    label: "Authentication",
+    dotClass: "tech-stack-dot--auth",
+    tags: ["Firebase Auth", "Google Sign-In", "Protected Routes"],
+  },
+  {
+    label: "Analytics",
+    dotClass: "tech-stack-dot--analytics",
+    tags: ["Recharts", "Financial Insights", "Visualization Engine"],
+  },
+];
+
+const SOCIAL_LINKS = [
+  {
+    href: "https://github.com/sushantshinde7",
+    label: "GitHub",
+    Icon: FaGithub,
+  },
+  {
+    href: "https://linkedin.com/in/sushantshinde7",
+    label: "LinkedIn",
+    Icon: FaLinkedin,
+  },
+  {
+    href: "https://sushantdev.vercel.app",
+    label: "Portfolio",
+    Icon: Icons.Globe,
+  },
+];
+
 const HomePage = () => {
   return (
+    // If your app's Layout component doesn't already render a
+    // <main>, promote this to <main className="home-page">.
+    // Two <main> landmarks on one page is a worse a11y issue
+    // than none, so this isn't changed automatically.
     <div className="home-page">
       {/* HERO */}
       <section className="hero-section">
@@ -62,196 +196,77 @@ const HomePage = () => {
         </div>
 
         <div className="feature-grid">
-          <article className="feature-card feature-card--transactions">
-            <span className="feature-card-step">Step 01</span>
-            <span className="feature-card-icon">
-              <Icons.CreditCard size={22} />
-            </span>
-            <h3>Track</h3>
-            <p>
-              Organize income and expenses with powerful transaction management
-              tools.
-            </p>
-          </article>
-
-          <article className="feature-card feature-card--dashboard">
-            <span className="feature-card-step">Step 02</span>
-            <span className="feature-card-icon">
-              <Icons.BarChart3 size={22} />
-            </span>
-            <h3>Analyze</h3>
-            <p>
-              Visualize financial activity through charts, trends, and
-              performance indicators.
-            </p>
-          </article>
-
-          <article className="feature-card feature-card--insights">
-            <span className="feature-card-step">Step 03</span>
-            <span className="feature-card-icon">
-              <Icons.TrendingUp size={22} />
-            </span>
-            <h3>Improve</h3>
-            <p>
-              Gain insights into spending behavior and make informed financial
-              decisions.
-            </p>
-          </article>
+          {FEATURES.map(({ step, icon: Icon, title, description, accentClass }) => (
+            <article key={title} className={`feature-card ${accentClass}`}>
+              <span className="feature-card-step">{step}</span>
+              <span className="feature-card-icon" aria-hidden="true">
+                <Icon size={22} />
+              </span>
+              <h3>{title}</h3>
+              <p>{description}</p>
+            </article>
+          ))}
         </div>
       </section>
 
-      {/* DASHBOARD */}
-      <section className="showcase-section">
-        <div className="showcase-content showcase-content--dashboard">
-          <span className="showcase-label">
-            <span
-              className="showcase-label-dot showcase-label-dot--dashboard"
-              aria-hidden="true"
-            />
-            Dashboard
-          </span>
+      {/* DASHBOARD / TRANSACTIONS / INSIGHTS SHOWCASES */}
+      {SHOWCASES.map(
+        ({
+          id,
+          label,
+          accent,
+          title,
+          description,
+          checklist,
+          Preview,
+          route,
+          ctaLabel,
+          reverse,
+          panel,
+        }) => (
+          <section
+            key={id}
+            className={[
+              "showcase-section",
+              reverse && "showcase-section--reverse",
+              panel && "showcase-section--panel",
+            ]
+              .filter(Boolean)
+              .join(" ")}
+          >
+            <div className={`showcase-content showcase-content--${accent}`}>
+              <span className="showcase-label">
+                <span
+                  className={`showcase-label-dot showcase-label-dot--${accent}`}
+                  aria-hidden="true"
+                />
+                {label}
+              </span>
 
-          <h2>Financial Overview At A Glance</h2>
+              <h2>{title}</h2>
+              <p>{description}</p>
 
-          <p>
-            Monitor balances, income, expenses, and trends through an intuitive
-            dashboard designed to provide instant visibility into your financial
-            health.
-          </p>
+              <ul className="showcase-check-list">
+                {checklist.map((item) => (
+                  <li key={item}>
+                    <Icons.Check size={12} aria-hidden="true" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-          <ul className="showcase-check-list">
-            <li>
-              <Icons.Check size={12} /> Total Balance Tracking
-            </li>
-            <li>
-              <Icons.Check size={12} /> Income & Expense KPIs
-            </li>
-            <li>
-              <Icons.Check size={12} /> Balance Trend Visualization
-            </li>
-            <li>
-              <Icons.Check size={12} /> Expense Breakdown Charts
-            </li>
-          </ul>
-        </div>
-
-        <div className="showcase-preview">
-          <div className="placeholder-card">
-            <LiveSnapshotPreview />
-            <Link to={ROUTES.DASHBOARD} className="mock-cta">
-              Explore Dashboard <Icons.ArrowRight size={13} />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* TRANSACTIONS */}
-      <section className="showcase-section showcase-section--reverse showcase-section--panel">
-        <div className="showcase-content showcase-content--transactions">
-          <span className="showcase-label">
-            <span
-              className="showcase-label-dot showcase-label-dot--transactions"
-              aria-hidden="true"
-            />
-            Transactions
-          </span>
-
-          <h2>Powerful Transaction Management</h2>
-
-          <p>
-            Manage financial records efficiently with advanced tools that go
-            beyond basic CRUD functionality.
-          </p>
-
-          <ul className="showcase-check-list">
-            <li>
-              <Icons.Check size={12} />
-              Search Transactions
-            </li>
-            <li>
-              <Icons.Check size={12} />
-              Advanced Filters
-            </li>
-            <li>
-              <Icons.Check size={12} />
-              Sorting & Ordering
-            </li>
-            <li>
-              <Icons.Check size={12} />
-              Pagination
-            </li>
-            <li>
-              <Icons.Check size={12} />
-              Add, Edit & Delete
-            </li>
-            <li>
-              <Icons.Check size={12} />
-              Sample Datasets
-            </li>
-          </ul>
-        </div>
-
-        <div className="showcase-preview">
-          <div className="placeholder-card">
-            <LiveLedgerPreview />
-            <Link to={ROUTES.TRANSACTIONS} className="mock-cta">
-              Explore Transactions <Icons.ArrowRight size={13} />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* INSIGHTS */}
-      <section className="showcase-section">
-        <div className="showcase-content showcase-content--insights">
-          <span className="showcase-label">
-            <span
-              className="showcase-label-dot showcase-label-dot--insights"
-              aria-hidden="true"
-            />
-            Insights
-          </span>
-
-          <h2>Turn Data Into Financial Intelligence</h2>
-
-          <p>
-            Transform transaction history into meaningful insights through trend
-            analysis, category breakdowns, and behavioral indicators.
-          </p>
-
-          <ul className="showcase-check-list">
-            <li>
-              <Icons.Check size={12} />
-              Spending Behavior Analysis
-            </li>
-            <li>
-              <Icons.Check size={12} />
-              Top Category Detection
-            </li>
-            <li>
-              <Icons.Check size={12} />
-              Income vs Expense Trends
-            </li>
-            <li>
-              <Icons.Check size={12} />
-              KPI Summaries
-            </li>
-            <li>
-              <Icons.Check size={12} />
-              Balance Movement Tracking
-            </li>
-          </ul>
-        </div>
-
-        <div className="showcase-preview">
-          <div className="placeholder-card">
-            <InsightVerdictPreview />
-            <Link to={ROUTES.INSIGHTS} className="mock-cta">
-              Explore Insights <Icons.ArrowRight size={13} />
-            </Link>
-          </div>
-        </div>
-      </section>
+            <div className="showcase-preview">
+              <div className="placeholder-card">
+                <Preview />
+                <Link to={route} className="mock-cta">
+                  {ctaLabel} <Icons.ArrowRight size={13} aria-hidden="true" />
+                </Link>
+              </div>
+            </div>
+          </section>
+        )
+      )}
 
       {/* GUEST MODE */}
       <section className="guest-section">
@@ -281,48 +296,24 @@ const HomePage = () => {
         </div>
 
         <div className="tech-stack-card">
-          <div className="tech-stack-col">
-            <span className="tech-stack-label">
-              <span className="tech-stack-dot" aria-hidden="true" />
-              Frontend
-            </span>
-            <ul className="tech-tag-list">
-              <li className="tech-tag">React 19</li>
-              <li className="tech-tag">Vite</li>
-              <li className="tech-tag">React Router</li>
-              <li className="tech-tag">Context API</li>
-            </ul>
-          </div>
-
-          <div className="tech-stack-col">
-            <span className="tech-stack-label">
-              <span
-                className="tech-stack-dot tech-stack-dot--auth"
-                aria-hidden="true"
-              />
-              Authentication
-            </span>
-            <ul className="tech-tag-list">
-              <li className="tech-tag">Firebase Auth</li>
-              <li className="tech-tag">Google Sign-In</li>
-              <li className="tech-tag">Protected Routes</li>
-            </ul>
-          </div>
-
-          <div className="tech-stack-col">
-            <span className="tech-stack-label">
-              <span
-                className="tech-stack-dot tech-stack-dot--analytics"
-                aria-hidden="true"
-              />
-              Analytics
-            </span>
-            <ul className="tech-tag-list">
-              <li className="tech-tag">Recharts</li>
-              <li className="tech-tag">Financial Insights</li>
-              <li className="tech-tag">Visualization Engine</li>
-            </ul>
-          </div>
+          {TECH_STACK.map(({ label, dotClass, tags }) => (
+            <div className="tech-stack-col" key={label}>
+              <span className="tech-stack-label">
+                <span
+                  className={`tech-stack-dot ${dotClass}`}
+                  aria-hidden="true"
+                />
+                {label}
+              </span>
+              <ul className="tech-tag-list">
+                {tags.map((tag) => (
+                  <li className="tech-tag" key={tag}>
+                    {tag}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -337,7 +328,7 @@ const HomePage = () => {
 
         <Link to={ROUTES.SIGNUP} className="cta-button">
           Get Started
-          <Icons.ArrowRight size={18} />
+          <Icons.ArrowRight size={18} aria-hidden="true" />
         </Link>
       </section>
 
@@ -348,46 +339,32 @@ const HomePage = () => {
             <h3>Finsights</h3>
             <p>Personal Finance Management & Financial Analytics Platform</p>
           </div>
+
           <div className="footer-right">
-            <nav className="footer-nav">
+            <nav className="footer-nav" aria-label="Footer">
               <Link to={ROUTES.DASHBOARD}>Dashboard</Link>
               <Link to={ROUTES.TRANSACTIONS}>Transactions</Link>
               <Link to={ROUTES.INSIGHTS}>Insights</Link>
             </nav>
+
             <div className="footer-socials">
-              <a
-                href="https://github.com/sushantshinde7"
-                target="_blank"
-                rel="noreferrer"
-                aria-label="GitHub"
-              >
-                <FaGithub size={16} />
-              </a>
-              <a
-                href="https://linkedin.com/in/sushantshinde7"
-                target="_blank"
-                rel="noreferrer"
-                aria-label="LinkedIn"
-              >
-                <FaLinkedin size={16} />
-              </a>
-              <a
-                href="https://sushantdev.vercel.app"
-                target="_blank"
-                rel="noreferrer"
-                aria-label="Portfolio"
-              >
-                <Icons.Globe size={16} />
-              </a>
+              {SOCIAL_LINKS.map(({ href, label, Icon }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                >
+                  <Icon size={16} aria-hidden="true" />
+                </a>
+              ))}
             </div>
           </div>
         </div>
+
         <div className="footer-bottom">
-          <span>
-            {" "}
-            © {new Date().getFullYear()} Finsights. Built by Sushant
-            Shinde.{" "}
-          </span>
+          <p>© {new Date().getFullYear()} Finsights. Built by Sushant Shinde.</p>
         </div>
       </footer>
     </div>
