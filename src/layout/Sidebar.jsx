@@ -72,8 +72,12 @@ const Sidebar = ({ closeSidebar }) => {
       </div>
 
       <div className="sidebar-footer">
-        <hr />
-        <p>Finsights v1.0</p>
+        <div className="sidebar-footer-divider" />
+        <p>
+          <span>Finsights</span>
+          <span className="footer-separator">·</span>
+          <span>v1.0.0</span>
+        </p>
       </div>
     </div>
   );
