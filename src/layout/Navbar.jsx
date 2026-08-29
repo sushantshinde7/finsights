@@ -1,18 +1,13 @@
 import "./Navbar.css";
-import { Moon, Sun, LogOut } from "lucide-react";
+import { Moon, Sun, User } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 const Navbar = ({ sidebarOpen, setSidebarOpen }) => {
-  const { theme, toggleTheme }             = useTheme();
+  const { theme, toggleTheme } = useTheme();
   const { isAuthenticated, firstName, logout } = useAuth();
-  const navigate                           = useNavigate();
-
-  const handleLogout = async () => {
-    await logout();
-    navigate("/");
-  };
+  const navigate = useNavigate();
 
   return (
     <div className="navbar">
@@ -32,18 +27,13 @@ const Navbar = ({ sidebarOpen, setSidebarOpen }) => {
 
       <div className="navbar-right">
         {isAuthenticated ? (
-          <>
+          <div className="nav-user">
+            <User size={15} />
             <span className="nav-user-name">{firstName}</span>
-            <button className="nav-auth-btn" onClick={handleLogout}>
-              <LogOut size={15} /> Logout
-            </button>
-          </>
+          </div>
         ) : (
           <>
-            <button
-              className="nav-auth-btn"
-              onClick={() => navigate("/login")}
-            >
+            <button className="nav-auth-btn" onClick={() => navigate("/login")}>
               Login
             </button>
             <button
@@ -60,7 +50,7 @@ const Navbar = ({ sidebarOpen, setSidebarOpen }) => {
           onClick={toggleTheme}
           aria-label="Toggle theme"
         >
-          <Sun  className="theme-icon sun-icon"  size={18} />
+          <Sun className="theme-icon sun-icon" size={18} />
           <Moon className="theme-icon moon-icon" size={18} />
         </button>
       </div>
