@@ -16,7 +16,7 @@
 
   /* Text */
   --color-text-primary: #0f172a;
-  --color-text-secondary: #64748b;
+  --color-text-secondary: #475569;
 
   /* Primary */
   --color-primary: #2563eb;
@@ -97,8 +97,8 @@
   --color-border: #1f2937;
 
   /* Text */
-  --color-text-primary: #e5e7eb;
-  --color-text-secondary: #9ca3af;
+  --color-text-primary: #f1f5f9;
+  --color-text-secondary: #cbd5e1;
 
   /* Primary (slightly brighter for contrast) */
   --color-primary: #3b82f6;
