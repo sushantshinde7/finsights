@@ -1,11 +1,12 @@
 .layout {
   min-height: 100vh;
   background: var(--color-bg);
+  isolation: isolate;
 }
 
 .layout-body {
   display: flex;
-  height: calc(100vh - 64px);
+  height: calc(100vh - 56px);
   position: relative;
 }
 
@@ -14,7 +15,7 @@
 ========================= */
 
 .sidebar {
-  width: 180px;
+  width: 192px;
   min-width: 180px;
   height: 100%;
 
@@ -34,14 +35,16 @@
 .main-content {
   flex: 1;
   min-width: 0;
+  max-width: 1600px;
   height: 100%;
   overflow-y: auto;
-
+  scrollbar-gutter: stable;
   padding: var(--space-6);
   background: var(--color-bg);
 
   display: flex;
   flex-direction: column;
+  border-left: 1px solid var(--color-border);
 }
 
 /* =========================
@@ -93,7 +96,7 @@
     inset: 56px 0 0 0;
 
     background: rgba(15, 23, 42, 0.38);
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(4px);
 
     animation: fadeBackdrop 240ms ease;
 

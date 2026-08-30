@@ -37,10 +37,7 @@ const Layout = () => {
 
   return (
     <div className="layout">
-      <Navbar
-        sidebarOpen={sidebarOpen}
-        setSidebarOpen={setSidebarOpen}
-      />
+      <Navbar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
       <div className="layout-body">
         {sidebarOpen && (
@@ -50,10 +47,11 @@ const Layout = () => {
           />
         )}
 
-        <aside className={`sidebar ${sidebarOpen ? "open" : ""}`}>
-          <Sidebar
-            closeSidebar={() => setSidebarOpen(false)}
-          />
+        <aside
+          className={`sidebar ${sidebarOpen ? "open" : ""}`}
+          aria-hidden={!sidebarOpen}
+        >
+          <Sidebar closeSidebar={() => setSidebarOpen(false)} />
         </aside>
 
         <main className="main-content">
