@@ -153,6 +153,13 @@
   color: var(--color-text-primary);
 }
 
+
+.section--panel {
+  background: var(--color-surface-panel);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6) var(--space-5);
+}
+
 /* =========================
    FEATURE GRID
    Track -> Analyze -> Improve is a real sequence, so a step
@@ -192,8 +199,8 @@
 }
 
 .feature-card--dashboard { --accent-color: var(--color-primary); }
-.feature-card--transactions { --accent-color: #8b5cf6; }
-.feature-card--insights { --accent-color: #16a34a; }
+.feature-card--transactions { --accent-color: var(--color-chart-purple); }
+.feature-card--insights { --accent-color: var(--color-chart-green); }
 
 .feature-card-step {
   display: block;
@@ -268,8 +275,9 @@
 }
 
 .showcase-label-dot--dashboard { background: var(--color-primary); }
-.showcase-label-dot--transactions { background: #8b5cf6; }
-.showcase-label-dot--insights { background: #16a34a; }
+.showcase-label-dot--transactions { background: var(--color-chart-purple); }
+.showcase-label-dot--insights { background: var(--color-chart-green); }
+
 
 .showcase-content h2 {
   margin-bottom: var(--space-3);
@@ -282,8 +290,9 @@
 }
 
 .showcase-content--dashboard { --accent-color: var(--color-primary); }
-.showcase-content--transactions { --accent-color: #8b5cf6; }
-.showcase-content--insights { --accent-color: #16a34a; }
+.showcase-content--transactions { --accent-color: var(--color-chart-purple); }
+.showcase-content--insights { --accent-color: var(--color-chart-green); }
+
 
 .showcase-check-list {
   list-style: none;
@@ -377,10 +386,10 @@
   border-radius: 50%;
   flex-shrink: 0;
   background: conic-gradient(
-    var(--color-primary) 0turn 0.35turn,
-    #16a34a 0.35turn 0.6turn,
-    #8b5cf6 0.6turn 0.8turn,
-    #ef4444 0.8turn 1turn
+    var(--color-chart-blue) 0turn 0.35turn,
+    var(--color-chart-green) 0.35turn 0.6turn,
+    var(--color-chart-purple) 0.6turn 0.8turn,
+    var(--color-chart-red) 0.8turn 1turn
   );
 }
 
@@ -518,8 +527,8 @@
   background: var(--color-primary);
   flex-shrink: 0;
 }
-.tech-stack-dot--auth { background: #8b5cf6; }
-.tech-stack-dot--analytics { background: #16a34a; }
+.tech-stack-dot--auth { background: var(--color-chart-purple); }
+.tech-stack-dot--analytics { background: var(--color-chart-green); }
 
 .tech-tag-list {
   list-style: none;

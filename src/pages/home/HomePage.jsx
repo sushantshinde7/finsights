@@ -116,7 +116,7 @@ const TECH_STACK = [
   {
     label: "Frontend",
     dotClass: "",
-    tags: ["React 19", "Vite", "React Router", "Context API"],
+    tags: ["React 19", "Vite", "React Router", "Context API", "Framer Motion", "Lucide Icons"],
   },
   {
     label: "Authentication",
@@ -193,9 +193,9 @@ const HomePage = () => {
             </motion.h1>
 
             <motion.p className="hero-description" variants={fadeUp}>
-              Track expenses, monitor income, and turn your transaction
-              history into clear, actionable insights through interactive
-              dashboards and modern financial tools.
+              Track expenses, monitor income, and turn your transaction history
+              into clear, actionable insights through interactive dashboards and
+              modern financial tools.
             </motion.p>
 
             <motion.div className="hero-actions" variants={fadeUp}>
@@ -220,7 +220,7 @@ const HomePage = () => {
         </section>
 
         {/* FEATURES */}
-        <section className="section">
+        <section className="section section--panel">
           <motion.div
             className="section-heading"
             initial="hidden"
@@ -335,8 +335,7 @@ const HomePage = () => {
                 <div className="placeholder-card">
                   <Preview />
                   <Link to={route} className="mock-cta">
-                    {ctaLabel}{" "}
-                    <Icons.ArrowRight size={13} aria-hidden="true" />
+                    {ctaLabel} <Icons.ArrowRight size={13} aria-hidden="true" />
                   </Link>
                 </div>
               </motion.div>
@@ -356,8 +355,8 @@ const HomePage = () => {
             <h2>Explore Before You Sign Up</h2>
             <p>
               Browse the dashboard, transactions, and insights pages without
-              creating an account. Sign up only when you're ready to manage
-              your own financial data.
+              creating an account. Sign up only when you're ready to manage your
+              own financial data.
             </p>
 
             <div className="guest-actions">
@@ -416,7 +415,11 @@ const HomePage = () => {
             variants={staggerContainer(0.12)}
           >
             {TECH_STACK.map(({ label, dotClass, tags }) => (
-              <motion.div className="tech-stack-col" key={label} variants={fadeIn}>
+              <motion.div
+                className="tech-stack-col"
+                key={label}
+                variants={fadeIn}
+              >
                 <span className="tech-stack-label">
                   <span
                     className={`tech-stack-dot ${dotClass}`}
