@@ -55,20 +55,9 @@
   font-weight: var(--font-semibold);
 }
 
-.overview-status-chip.status-good {
-  background: rgba(22, 163, 74, 0.1);
-  color: #16a34a;
-}
-
-.overview-status-chip.status-warning {
-  background: rgba(245, 158, 11, 0.12);
-  color: #b45309;
-}
-
-.overview-status-chip.status-bad {
-  background: rgba(239, 68, 68, 0.1);
-  color: #dc2626;
-}
+.overview-status-chip.status-good    { background: var(--color-success-bg); color: var(--color-success); }
+.overview-status-chip.status-warning { background: var(--color-warning-bg); color: var(--color-warning); }
+.overview-status-chip.status-bad     { background: var(--color-danger-bg);  color: var(--color-danger); }
 
 .verdict-headline {
   font-size: 22px;
@@ -114,14 +103,8 @@
   gap: 4px;
 }
 
-.verdict-stat-trend.up {
-  color: #ef4444;
-}
-
-.verdict-stat-trend.down {
-  color: #16a34a;
-}
-
+.verdict-stat-trend.up   { color: var(--color-danger); }
+.verdict-stat-trend.down { color: var(--color-success); }
 /* =========================
    COMPOSITION (formerly .kpi-strip)
    — same row, now a continuation of the verdict, not a new card
@@ -136,17 +119,9 @@
 }
 
 /* status color threads through as a quiet left accent on the whole surface */
-.insights-overview.status-good {
-  border-left: 3px solid #16a34a;
-}
-
-.insights-overview.status-warning {
-  border-left: 3px solid #f59e0b;
-}
-
-.insights-overview.status-bad {
-  border-left: 3px solid #ef4444;
-}
+.insights-overview.status-good    { border-left: 3px solid var(--color-success); }
+.insights-overview.status-warning { border-left: 3px solid var(--color-warning); }
+.insights-overview.status-bad     { border-left: 3px solid var(--color-danger); }
 
 .composition-item {
   flex: 1;
@@ -184,13 +159,8 @@
   color: var(--color-text-primary);
 }
 
-.composition-value.income {
-  color: #16a34a;
-}
-
-.composition-value.expense {
-  color: #ef4444;
-}
+.composition-value.income  { color: var(--color-success); }
+.composition-value.expense { color: var(--color-danger); }
 
 .composition-value.category {
   font-size: 16px;
