@@ -40,6 +40,10 @@
   --color-danger: #dc2626;
   --color-danger-bg: #fef2f2;
 
+  --color-warning: #b45309;
+  --color-warning-bg: #fffbeb;
+  --color-text-tertiary: #94a3b8;
+
   /* Chart / category colors — NOT brand colors, used for data
      visualization, category dots, and per-page identity accents
      (e.g. Transactions=purple, Insights=green) so pages stop
@@ -114,7 +118,7 @@
   --color-border-subtle: #1a2436;
   --color-surface-hover: #1f2937;
   --color-overlay: rgba(0, 0, 0, 0.6);
-  
+
   /* Text */
   --color-text-primary: #f1f5f9;
   --color-text-secondary: #cbd5e1;
@@ -134,6 +138,10 @@
 
   --color-danger: #ef4444;
   --color-danger-bg: rgba(239, 68, 68, 0.15);
+
+  --color-warning: #fbbf24;
+  --color-warning-bg: rgba(245, 158, 11, 0.15);
+  --color-text-tertiary: #64748b;
 
   /* Chart / category colors */
   --color-chart-blue: #60a5fa;
