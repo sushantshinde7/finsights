@@ -1,8 +1,10 @@
+import { useCountUp } from "../../../lib/motion";
 import "./StatCard.css";
 
-const StatCard = ({ title, value, icon, type, change }) => {
+const StatCard = ({ title, numericValue, format, icon, type, change }) => {
   const isPositive = change > 0;
   const isNeutral = change === 0;
+  const displayValue = useCountUp(numericValue, { format });
 
   return (
     <div className={`card stat-card ${type}`}>
@@ -16,7 +18,7 @@ const StatCard = ({ title, value, icon, type, change }) => {
 
       {/* BODY — value and trend share the row instead of stacking */}
       <div className="stat-body">
-        <span className="stat-value">{value}</span>
+        <span className="stat-value">{displayValue}</span>
 
         {change !== undefined && (
           <div className="stat-trend">
