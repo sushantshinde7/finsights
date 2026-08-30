@@ -13,7 +13,6 @@
   padding: var(--space-4);
 
   overflow: hidden; /* important */
-  
 }
 
 /* =========================
@@ -33,11 +32,11 @@
 
   background: radial-gradient(
     circle,
-    rgba(52, 195, 252, 0.10) 0%,
+    rgba(52, 195, 252, 0.1) 0%,
     rgba(52, 195, 252, 0.06) 30%,
     transparent 70%
   );
-  
+
   filter: blur(2px);
   pointer-events: none;
 }
@@ -55,7 +54,7 @@
 .stat-card.expense::after {
   background: radial-gradient(
     circle,
-    rgba(248, 110, 110, 0.10) 0%,
+    rgba(248, 110, 110, 0.1) 0%,
     rgba(248, 110, 110, 0.06) 30%,
     transparent 70%
   );
@@ -64,8 +63,7 @@
 .stat-card.savings::after {
   background: radial-gradient(
     circle,
-    rgba(139, 92, 246, 0.14) 0%,
-    rgba(139, 92, 246, 0.08) 30%,
+    var(--color-accent-light) 0%,
     transparent 70%
   );
 }
@@ -92,7 +90,7 @@
 .stat-card.balance-bad::after {
   background: radial-gradient(
     circle,
-    rgba(248, 110, 110, 0.10) 0%,
+    rgba(248, 110, 110, 0.1) 0%,
     rgba(248, 110, 110, 0.06) 30%,
     transparent 70%
   );
@@ -140,19 +138,19 @@
   color: var(--color-danger);
 }
 
-.stat-card.savings .stat-icon {
-  background: rgba(139, 92, 246, 0.12);
-  color: #7c3aed;
-}
 
 .stat-card.balance-good .stat-icon {
   background: var(--color-success-bg);
   color: var(--color-success);
 }
 
+.stat-card.savings .stat-icon {
+  background: var(--color-accent-light);
+  color: var(--color-accent);
+}
 .stat-card.balance-warning .stat-icon {
-  background: rgba(245, 158, 11, 0.12);
-  color: #b45309;
+  background: var(--color-warning-bg);
+  color: var(--color-warning);
 }
 
 .stat-card.balance-bad .stat-icon {
@@ -196,13 +194,8 @@
 }
 
 /* VERY subtle color hint (optional but controlled) */
-.stat-card.income .stat-value {
-  color: #15803d; /* slightly toned green */
-}
-
-.stat-card.expense .stat-value {
-  color: #b91c1c; /* slightly toned red */
-}
+.stat-card.income .stat-value  { color: var(--color-success); }
+.stat-card.expense .stat-value { color: var(--color-danger); }
 
 /* =========================
    TREND
