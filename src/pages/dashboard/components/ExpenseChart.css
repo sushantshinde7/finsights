@@ -111,7 +111,7 @@
 
 .expense-legend-more {
   font-size: 11px;
-  color: var(--color-text-tertiary, var(--color-text-secondary));
+  color: var(--color-text-tertiary);
   font-style: italic;
 }
 

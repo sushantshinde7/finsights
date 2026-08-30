@@ -1,7 +1,14 @@
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import "./ExpenseChart.css";
 
-const COLORS = ["#3b82f6", "#22c55e", "#f59e0b", "#ef4444", "#8b5cf6"];
+const COLORS = [
+  "var(--color-chart-blue)",
+  "var(--color-chart-green)",
+  "var(--color-chart-amber)",
+  "var(--color-chart-red)",
+  "var(--color-chart-purple)",
+];
+
 const LEGEND_LIMIT = 5;
 
 const ExpenseChart = ({ transactions }) => {
