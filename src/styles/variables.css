@@ -11,9 +11,14 @@
 
   --color-surface-elevated: #ffffff;
   --color-surface-muted: #f1f5f9;
-  --color-surface-panel: var(--color-surface-muted); /* semantic name for alternating-section bg */
+  --color-surface-panel: var(
+    --color-surface-muted
+  ); /* semantic name for alternating-section bg */
 
   --color-border: #e2e8f0;
+  --color-border-subtle: #f1f5f9;
+  --color-surface-hover: #f1f5f9;
+  --color-overlay: rgba(15, 23, 42, 0.5);
 
   /* Text */
   --color-text-primary: #0f172a;
@@ -95,18 +100,21 @@
 ========================= */
 
 [data-theme="dark"] {
-   /* Base */
+  /* Base */
   --color-bg: #0b1220;
   --color-surface: #111827;
   --color-surface-2: #1f2937;
-  --color-surface-3: #2b3b52;         /* was #374151 — smaller, matches light-mode step */
+  --color-surface-3: #2b3b52; /* was #374151 — smaller, matches light-mode step */
 
   --color-surface-elevated: #1f2937;
   --color-surface-muted: #0f172a;
   --color-surface-panel: var(--color-surface-muted);
 
-  --color-border: #263244;            /* was #1f2937, identical to surface-2 — invisible borders on panels */
-
+  --color-border: #263244; /* was #1f2937, identical to surface-2 — invisible borders on panels */
+  --color-border-subtle: #1a2436;
+  --color-surface-hover: #1f2937;
+  --color-overlay: rgba(0, 0, 0, 0.6);
+  
   /* Text */
   --color-text-primary: #f1f5f9;
   --color-text-secondary: #cbd5e1;
