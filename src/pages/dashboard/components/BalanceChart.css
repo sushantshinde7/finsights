@@ -42,7 +42,7 @@
 
 /* TOOLTIP */
 .chart-tooltip {
-  background: white;
+  background: var(--color-surface-elevated);
   padding: 6px 10px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--color-border);
