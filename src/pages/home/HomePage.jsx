@@ -1,7 +1,16 @@
 import { Link } from "react-router-dom";
+import { motion, MotionConfig } from "framer-motion";
 import { ROUTES } from "../../routes/routes";
 import * as Icons from "lucide-react";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
+
+import {
+  fadeUp,
+  fadeIn,
+  slideIn,
+  staggerContainer,
+  viewportOnce,
+} from "../../lib/motion";
 
 import "./HomePage.css";
 import HeroPreview from "./HeroPreview";
@@ -150,253 +159,349 @@ const SOCIAL_LINKS = [
 
 const HomePage = () => {
   return (
-    // If your app's Layout component doesn't already render a
-    // <main>, promote this to <main className="home-page">.
-    // Two <main> landmarks on one page is a worse a11y issue
-    // than none, so this isn't changed automatically.
-    <div className="home-page">
-      {/* HERO */}
-      <section className="hero-section">
-        <div className="hero-content">
-          <span className="hero-badge">
-            <span className="hero-badge-dot" aria-hidden="true" />
-            Finsights · Personal Finance, Simplified
-          </span>
-
-          <h1 className="hero-title">
-            <span className="hero-title-line">
-              Turn Everyday Transactions Into Financial Clarity.
-            </span>
-            <span className="hero-title-line">
-              Track, Analyze, and Grow With Confidence.
-            </span>
-          </h1>
-
-          <p className="hero-description">
-            Track expenses, monitor income, and turn your transaction history
-            into clear, actionable insights through interactive dashboards and
-            modern financial tools.
-          </p>
-
-          <div className="hero-actions">
-            <Link to={ROUTES.DASHBOARD} className="btn-primary">
-              Explore Demo
-            </Link>
-
-            <Link to={ROUTES.SIGNUP} className="btn-secondary">
-              Create Account
-            </Link>
-          </div>
-        </div>
-
-        <div className="hero-preview">
-          <HeroPreview />
-        </div>
-      </section>
-
-      {/* FEATURES */}
-      <section className="section">
-        <div className="section-heading">
-          <h2>Everything You Need To Understand Your Finances</h2>
-          <p>
-            Finsights combines transaction management, analytics, and
-            visualization into a single modern experience.
-          </p>
-        </div>
-
-        <div className="feature-grid">
-          {FEATURES.map(
-            ({ step, icon: Icon, title, description, accentClass }) => (
-              <article key={title} className={`feature-card ${accentClass}`}>
-                <span className="feature-card-step">{step}</span>
-                <span className="feature-card-icon" aria-hidden="true">
-                  <Icon size={22} />
-                </span>
-                <h3>{title}</h3>
-                <p>{description}</p>
-              </article>
-            ),
-          )}
-        </div>
-      </section>
-
-      {/* DASHBOARD / TRANSACTIONS / INSIGHTS SHOWCASES */}
-      {SHOWCASES.map(
-        ({
-          id,
-          label,
-          accent,
-          title,
-          description,
-          checklist,
-          Preview,
-          route,
-          ctaLabel,
-          reverse,
-          panel,
-        }) => (
-          <section
-            key={id}
-            className={[
-              "showcase-section",
-              reverse && "showcase-section--reverse",
-              panel && "showcase-section--panel",
-            ]
-              .filter(Boolean)
-              .join(" ")}
+    // MotionConfig makes every motion.* element in this subtree
+    // respect prefers-reduced-motion automatically. When you add
+    // motion to other pages, lift this to your App root instead
+    // of repeating it per page.
+    <MotionConfig reducedMotion="user">
+      {/* If your app's Layout component doesn't already render a
+      <main>, promote this to <main className="home-page">.
+      Two <main> landmarks on one page is a worse a11y issue
+      than none, so this isn't changed automatically. */}
+      <div className="home-page">
+        {/* HERO — animates on mount, not on scroll, since it's
+        already in view on load. */}
+        <section className="hero-section">
+          <motion.div
+            className="hero-content"
+            initial="hidden"
+            animate="visible"
+            variants={staggerContainer(0.12, 0.1)}
           >
-            <div className={`showcase-content showcase-content--${accent}`}>
-              <span className="showcase-label">
-                <span
-                  className={`showcase-label-dot showcase-label-dot--${accent}`}
-                  aria-hidden="true"
-                />
-                {label}
+            <motion.span className="hero-badge" variants={fadeUp}>
+              <span className="hero-badge-dot" aria-hidden="true" />
+              Finsights · Personal Finance, Simplified
+            </motion.span>
+
+            <motion.h1 className="hero-title" variants={fadeUp}>
+              <span className="hero-title-line">
+                Turn Everyday Transactions Into Financial Clarity.
               </span>
+              <span className="hero-title-line">
+                Track, Analyze, and Grow With Confidence.
+              </span>
+            </motion.h1>
 
-              <h2>{title}</h2>
-              <p>{description}</p>
+            <motion.p className="hero-description" variants={fadeUp}>
+              Track expenses, monitor income, and turn your transaction
+              history into clear, actionable insights through interactive
+              dashboards and modern financial tools.
+            </motion.p>
 
-              <ul className="showcase-check-list">
-                {checklist.map((item) => (
-                  <li key={item}>
-                    <Icons.Check size={12} aria-hidden="true" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
+            <motion.div className="hero-actions" variants={fadeUp}>
+              <Link to={ROUTES.DASHBOARD} className="btn-primary">
+                Explore Demo
+              </Link>
+
+              <Link to={ROUTES.SIGNUP} className="btn-secondary">
+                Create Account
+              </Link>
+            </motion.div>
+          </motion.div>
+
+          <motion.div
+            className="hero-preview"
+            initial={{ opacity: 0, scale: 0.96 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <HeroPreview />
+          </motion.div>
+        </section>
+
+        {/* FEATURES */}
+        <section className="section">
+          <motion.div
+            className="section-heading"
+            initial="hidden"
+            whileInView="visible"
+            viewport={viewportOnce}
+            variants={fadeUp}
+          >
+            <h2>Everything You Need To Understand Your Finances</h2>
+            <p>
+              Finsights combines transaction management, analytics, and
+              visualization into a single modern experience.
+            </p>
+          </motion.div>
+
+          <motion.div
+            className="feature-grid"
+            initial="hidden"
+            whileInView="visible"
+            viewport={viewportOnce}
+            variants={staggerContainer(0.1)}
+          >
+            {FEATURES.map(
+              ({ step, icon: Icon, title, description, accentClass }) => (
+                // Wrapped in a plain motion.div so the entrance
+                // animation doesn't touch .feature-card's own
+                // transform — that's still owned entirely by its
+                // CSS :hover rule.
+                <motion.div key={title} variants={fadeUp}>
+                  <article className={`feature-card ${accentClass}`}>
+                    <span className="feature-card-step">{step}</span>
+                    <span className="feature-card-icon" aria-hidden="true">
+                      <Icon size={22} />
+                    </span>
+                    <h3>{title}</h3>
+                    <p>{description}</p>
+                  </article>
+                </motion.div>
+              ),
+            )}
+          </motion.div>
+        </section>
+
+        {/* DASHBOARD / TRANSACTIONS / INSIGHTS SHOWCASES */}
+        {SHOWCASES.map(
+          ({
+            id,
+            label,
+            accent,
+            title,
+            description,
+            checklist,
+            Preview,
+            route,
+            ctaLabel,
+            reverse,
+            panel,
+          }) => (
+            <section
+              key={id}
+              className={[
+                "showcase-section",
+                reverse && "showcase-section--reverse",
+                panel && "showcase-section--panel",
+              ]
+                .filter(Boolean)
+                .join(" ")}
+            >
+              <motion.div
+                className={`showcase-content showcase-content--${accent}`}
+                initial="hidden"
+                whileInView="visible"
+                viewport={viewportOnce}
+                // Content slides in from the side it visually sits on,
+                // so reversed (Transactions) rows feel intentional
+                // rather than identical to the others.
+                variants={slideIn(reverse ? "right" : "left")}
+              >
+                <span className="showcase-label">
+                  <span
+                    className={`showcase-label-dot showcase-label-dot--${accent}`}
+                    aria-hidden="true"
+                  />
+                  {label}
+                </span>
+
+                <h2>{title}</h2>
+                <p>{description}</p>
+
+                <motion.ul
+                  className="showcase-check-list"
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={viewportOnce}
+                  variants={staggerContainer(0.06, 0.15)}
+                >
+                  {checklist.map((item) => (
+                    <motion.li key={item} variants={fadeUp}>
+                      <Icons.Check size={12} aria-hidden="true" />
+                      {item}
+                    </motion.li>
+                  ))}
+                </motion.ul>
+              </motion.div>
+
+              <motion.div
+                className="showcase-preview"
+                initial="hidden"
+                whileInView="visible"
+                viewport={viewportOnce}
+                variants={slideIn(reverse ? "left" : "right")}
+              >
+                <div className="placeholder-card">
+                  <Preview />
+                  <Link to={route} className="mock-cta">
+                    {ctaLabel}{" "}
+                    <Icons.ArrowRight size={13} aria-hidden="true" />
+                  </Link>
+                </div>
+              </motion.div>
+            </section>
+          ),
+        )}
+
+        {/* GUEST MODE */}
+        <motion.section
+          className="guest-section"
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportOnce}
+          variants={fadeUp}
+        >
+          <div className="guest-content">
+            <h2>Explore Before You Sign Up</h2>
+            <p>
+              Browse the dashboard, transactions, and insights pages without
+              creating an account. Sign up only when you're ready to manage
+              your own financial data.
+            </p>
+
+            <div className="guest-actions">
+              <Link to={ROUTES.DASHBOARD} className="btn-primary">
+                Explore Demo
+              </Link>
+              <span className="guest-stat">
+                No sign-up needed · 3 live pages to explore
+              </span>
+            </div>
+          </div>
+        </motion.section>
+
+        {/* TECH STACK */}
+        <section className="section">
+          {/* Wrapped so entrance animation doesn't touch the
+          anchor's own transform — .oss-banner:hover owns that. */}
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={viewportOnce}
+            variants={fadeUp}
+            style={{ display: "flex", justifyContent: "center" }}
+          >
+            <a
+              href="https://github.com/sushantshinde7/finsights"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="oss-banner"
+            >
+              <FaGithub size={15} aria-hidden="true" />
+              <span>Open source on GitHub</span>
+              <Icons.ArrowRight
+                size={14}
+                className="oss-banner-arrow"
+                aria-hidden="true"
+              />
+            </a>
+          </motion.div>
+
+          <motion.div
+            className="section-heading"
+            initial="hidden"
+            whileInView="visible"
+            viewport={viewportOnce}
+            variants={fadeUp}
+          >
+            <h2>Built With Modern Technologies</h2>
+          </motion.div>
+
+          <motion.div
+            className="tech-stack-card"
+            initial="hidden"
+            whileInView="visible"
+            viewport={viewportOnce}
+            variants={staggerContainer(0.12)}
+          >
+            {TECH_STACK.map(({ label, dotClass, tags }) => (
+              <motion.div className="tech-stack-col" key={label} variants={fadeIn}>
+                <span className="tech-stack-label">
+                  <span
+                    className={`tech-stack-dot ${dotClass}`}
+                    aria-hidden="true"
+                  />
+                  {label}
+                </span>
+                <ul className="tech-tag-list">
+                  {tags.map((tag) => (
+                    <li className="tech-tag" key={tag}>
+                      {tag}
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+            ))}
+          </motion.div>
+        </section>
+
+        {/* CTA — fade+scale rather than fade+rise, so the one bold
+        color moment on the page also feels like the one distinct
+        entrance, not a repeat of every section above it. */}
+        <motion.section
+          className="cta-section"
+          initial={{ opacity: 0, scale: 0.97 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={viewportOnce}
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <h2>Take Control Of Your Finances</h2>
+
+          <p>
+            Start tracking, analyzing, and understanding your money through a
+            modern finance management experience.
+          </p>
+
+          <Link to={ROUTES.SIGNUP} className="cta-button">
+            Get Started
+            <Icons.ArrowRight size={18} aria-hidden="true" />
+          </Link>
+        </motion.section>
+
+        {/* FOOTER — deliberately NOT animated. By the time someone
+        scrolls here they want immediate access to links, not a
+        delay; entrance motion on a footer reads as an afterthought
+        rather than a polish. */}
+        <footer className="home-footer">
+          <div className="footer-top">
+            <div className="footer-brand">
+              <h3>Finsights</h3>
+              <p>Personal Finance Management & Financial Analytics Platform</p>
             </div>
 
-            <div className="showcase-preview">
-              <div className="placeholder-card">
-                <Preview />
-                <Link to={route} className="mock-cta">
-                  {ctaLabel} <Icons.ArrowRight size={13} aria-hidden="true" />
-                </Link>
+            <div className="footer-right">
+              <nav className="footer-nav" aria-label="Footer">
+                <Link to={ROUTES.DASHBOARD}>Dashboard</Link>
+                <Link to={ROUTES.TRANSACTIONS}>Transactions</Link>
+                <Link to={ROUTES.INSIGHTS}>Insights</Link>
+              </nav>
+
+              <div className="footer-socials">
+                {SOCIAL_LINKS.map(({ href, label, Icon, colorClass }) => (
+                  <a
+                    key={label}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={label}
+                    className={colorClass}
+                  >
+                    <Icon size={16} aria-hidden="true" />
+                  </a>
+                ))}
               </div>
             </div>
-          </section>
-        ),
-      )}
-
-      {/* GUEST MODE */}
-      <section className="guest-section">
-        <div className="guest-content">
-          <h2>Explore Before You Sign Up</h2>
-          <p>
-            Browse the dashboard, transactions, and insights pages without
-            creating an account. Sign up only when you're ready to manage your
-            own financial data.
-          </p>
-
-          <div className="guest-actions">
-            <Link to={ROUTES.DASHBOARD} className="btn-primary">
-              Explore Demo
-            </Link>
-            <span className="guest-stat">
-              No sign-up needed · 3 live pages to explore
-            </span>
-          </div>
-        </div>
-      </section>
-
-      {/* TECH STACK */}
-      <section className="section">
-        <a
-          href="https://github.com/sushantshinde7/finsights"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="oss-banner"
-        >
-          <FaGithub size={15} aria-hidden="true" />
-          <span>Open source on GitHub</span>
-          <Icons.ArrowRight
-            size={14}
-            className="oss-banner-arrow"
-            aria-hidden="true"
-          />
-        </a>
-
-        <div className="section-heading">
-          <h2>Built With Modern Technologies</h2>
-        </div>
-
-        <div className="tech-stack-card">
-          {TECH_STACK.map(({ label, dotClass, tags }) => (
-            <div className="tech-stack-col" key={label}>
-              <span className="tech-stack-label">
-                <span
-                  className={`tech-stack-dot ${dotClass}`}
-                  aria-hidden="true"
-                />
-                {label}
-              </span>
-              <ul className="tech-tag-list">
-                {tags.map((tag) => (
-                  <li className="tech-tag" key={tag}>
-                    {tag}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="cta-section">
-        <h2>Take Control Of Your Finances</h2>
-
-        <p>
-          Start tracking, analyzing, and understanding your money through a
-          modern finance management experience.
-        </p>
-
-        <Link to={ROUTES.SIGNUP} className="cta-button">
-          Get Started
-          <Icons.ArrowRight size={18} aria-hidden="true" />
-        </Link>
-      </section>
-
-      {/* FOOTER */}
-      <footer className="home-footer">
-        <div className="footer-top">
-          <div className="footer-brand">
-            <h3>Finsights</h3>
-            <p>Personal Finance Management & Financial Analytics Platform</p>
           </div>
 
-          <div className="footer-right">
-            <nav className="footer-nav" aria-label="Footer">
-              <Link to={ROUTES.DASHBOARD}>Dashboard</Link>
-              <Link to={ROUTES.TRANSACTIONS}>Transactions</Link>
-              <Link to={ROUTES.INSIGHTS}>Insights</Link>
-            </nav>
-
-            <div className="footer-socials">
-              {SOCIAL_LINKS.map(({ href, label, Icon, colorClass }) => (
-                <a
-                  key={label}
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={label}
-                  className={colorClass}
-                >
-                  <Icon size={16} aria-hidden="true" />
-                </a>
-              ))}
-            </div>
+          <div className="footer-bottom">
+            <p>
+              © {new Date().getFullYear()} Finsights. Built by Sushant Shinde.
+            </p>
           </div>
-        </div>
-
-        <div className="footer-bottom">
-          <p>
-            © {new Date().getFullYear()} Finsights. Built by Sushant Shinde.
-          </p>
-        </div>
-      </footer>
-    </div>
+        </footer>
+      </div>
+    </MotionConfig>
   );
 };
 
