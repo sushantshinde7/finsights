@@ -40,7 +40,7 @@
 .dashboard-period::before {
   content: "·";
   margin-right: 8px;
-  color: var(--color-text-tertiary, var(--color-text-secondary));
+  color: var(--color-text-tertiary);
 }
 
 .dashboard-insight {
@@ -63,19 +63,16 @@
 }
 
 .insight-dot.dot-good {
-  background: #16a34a;
+  background: var(--color-success);
 }
-
 .insight-dot.dot-warning {
-  background: #f59e0b;
+  background: var(--color-warning);
 }
-
 .insight-dot.dot-bad {
-  background: #ef4444;
+  background: var(--color-danger);
 }
-
 .insight-dot.dot-neutral {
-  background: var(--color-text-tertiary, #94a3b8);
+  background: var(--color-text-tertiary);
 }
 
 /* =========================
@@ -185,8 +182,12 @@
   flex-shrink: 0;
 }
 
-.recent-dot--income  { background: #16a34a; }
-.recent-dot--expense { background: #dc2626; }
+.recent-dot--income {
+  background: var(--color-success);
+}
+.recent-dot--expense {
+  background: var(--color-danger);
+}
 
 .recent-category {
   display: block;
@@ -208,8 +209,12 @@
   font-variant-numeric: tabular-nums;
 }
 
-.recent-amount--income  { color: #16a34a; }
-.recent-amount--expense { color: #dc2626; }
+.recent-amount--income {
+  color: var(--color-success);
+}
+.recent-amount--expense {
+  color: var(--color-danger);
+}
 
 /* =========================
    FOOTER LINK
