@@ -6,11 +6,12 @@
   /* Base */
   --color-bg: #f8fafc;
   --color-surface: #ffffff;
-  --color-surface-2: #f1f5f9; /* subtle sections (table header, filters) */
-  --color-surface-3: #e2e8f0; /* hover */
-  
+  --color-surface-2: #f1f5f9;
+  --color-surface-3: #e2e8f0;
+
   --color-surface-elevated: #ffffff;
   --color-surface-muted: #f1f5f9;
+  --color-surface-panel: var(--color-surface-muted); /* semantic name for alternating-section bg */
 
   --color-border: #e2e8f0;
 
@@ -18,14 +19,14 @@
   --color-text-primary: #0f172a;
   --color-text-secondary: #475569;
 
-  /* Primary */
-  --color-primary: #2563eb;
-  --color-primary-light: #eff6ff;
-  --color-primary-hover: #1d4ed8;
+  /* Primary — brand identity, used sparingly (CTAs, links, focus) */
+  --color-primary: #1e3a8a;
+  --color-primary-light: #e0e7ff;
+  --color-primary-hover: #1e40af;
 
-  /* Accent */
-  --color-accent: #7c3aed;
-  --color-accent-light: #f3e8ff;
+  /* Accent — secondary brand tone, distinct hue from primary */
+  --color-accent: #4338ca;
+  --color-accent-light: #ede9fe;
 
   /* Status */
   --color-success: #16a34a;
@@ -34,6 +35,15 @@
   --color-danger: #dc2626;
   --color-danger-bg: #fef2f2;
 
+  /* Chart / category colors — NOT brand colors, used for data
+     visualization, category dots, and per-page identity accents
+     (e.g. Transactions=purple, Insights=green) so pages stop
+     hardcoding hex values that drift from the brand palette */
+  --color-chart-blue: #2563eb;
+  --color-chart-purple: #8b5cf6;
+  --color-chart-green: #16a34a;
+  --color-chart-amber: #f59e0b;
+  --color-chart-red: #ef4444;
   /* =========================
      SPACING
   ========================= */
@@ -85,29 +95,30 @@
 ========================= */
 
 [data-theme="dark"] {
-  /* Base */
-  --color-bg: #0b1220;              /* deep navy */
-  --color-surface: #111827;        /* cards */
-  --color-surface-2: #1f2937;      /* headers, filters */
-  --color-surface-3: #374151;      /* hover */
-  
+   /* Base */
+  --color-bg: #0b1220;
+  --color-surface: #111827;
+  --color-surface-2: #1f2937;
+  --color-surface-3: #2b3b52;         /* was #374151 — smaller, matches light-mode step */
+
   --color-surface-elevated: #1f2937;
   --color-surface-muted: #0f172a;
+  --color-surface-panel: var(--color-surface-muted);
 
-  --color-border: #1f2937;
+  --color-border: #263244;            /* was #1f2937, identical to surface-2 — invisible borders on panels */
 
   /* Text */
   --color-text-primary: #f1f5f9;
   --color-text-secondary: #cbd5e1;
 
-  /* Primary (slightly brighter for contrast) */
-  --color-primary: #3b82f6;
-  --color-primary-light: rgba(59, 130, 246, 0.15);
-  --color-primary-hover: #60a5fa;
+  /* Primary */
+  --color-primary: #4c6ef5;
+  --color-primary-light: rgba(76, 110, 245, 0.15);
+  --color-primary-hover: #6478f7;
 
   /* Accent */
-  --color-accent: #a78bfa;
-  --color-accent-light: rgba(167, 139, 250, 0.15);
+  --color-accent: #818cf8;
+  --color-accent-light: rgba(129, 140, 248, 0.15);
 
   /* Status */
   --color-success: #22c55e;
@@ -115,6 +126,13 @@
 
   --color-danger: #ef4444;
   --color-danger-bg: rgba(239, 68, 68, 0.15);
+
+  /* Chart / category colors */
+  --color-chart-blue: #60a5fa;
+  --color-chart-purple: #a78bfa;
+  --color-chart-green: #22c55e;
+  --color-chart-amber: #fbbf24;
+  --color-chart-red: #f87171;
 
   /* Shadows (stronger depth in dark) */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
