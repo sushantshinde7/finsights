@@ -27,38 +27,9 @@
    PAGE VARIANTS
 ========================= */
 
-/* Signup page background */
-.auth-page--signup {
-  background:
-    radial-gradient(
-      circle at top left,
-      rgba(59, 130, 246, 0.1),
-      transparent 35%
-    ),
-    var(--color-bg);
-}
-
-/* Login page background */
-.auth-page--login {
-  background:
-    radial-gradient(
-      circle at top left,
-      rgba(16, 185, 129, 0.08),
-      transparent 35%
-    ),
-    var(--color-bg);
-}
-
-/* Forgot-password page background (was missing — fell back to plain --color-bg) */
-.auth-page--forgot {
-  background:
-    radial-gradient(
-      circle at top left,
-      rgba(124, 58, 237, 0.08),
-      transparent 35%
-    ),
-    var(--color-bg);
-}
+.auth-page--signup { background: radial-gradient(circle at top left, color-mix(in srgb, var(--color-chart-blue) 12%, transparent), transparent 35%), var(--color-bg); }
+.auth-page--login  { background: radial-gradient(circle at top left, color-mix(in srgb, var(--color-chart-green) 10%, transparent), transparent 35%), var(--color-bg); }
+.auth-page--forgot { background: radial-gradient(circle at top left, color-mix(in srgb, var(--color-chart-purple) 10%, transparent), transparent 35%), var(--color-bg); }
 
 /* =========================
    BRANDING PANEL
@@ -193,12 +164,10 @@
   padding: 10px 14px;
 
   font-size: var(--text-sm);
-  color: #dc2626;
-
   border-radius: var(--radius-md);
-  border: 1px solid rgba(239, 68, 68, 0.2);
-
-  background: rgba(239, 68, 68, 0.08);
+  color: var(--color-danger);
+  border: 1px solid var(--color-danger-bg);
+  background: var(--color-danger-bg);
 }
 
 /* =========================
@@ -281,18 +250,9 @@
   box-shadow: 0 0 0 3px var(--color-primary-light);
 }
 
-.auth-input--error {
-  border-color: #dc2626;
-}
-
-.auth-input--error:focus {
-  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);
-}
-
-.auth-error {
-  font-size: 12px;
-  color: #dc2626;
-}
+.auth-input--error { border-color: var(--color-danger); }
+.auth-input--error:focus { box-shadow: 0 0 0 3px var(--color-danger-bg); }
+.auth-error { font-size: 12px; color: var(--color-danger); }
 
 /* =========================
    PASSWORD REQUIREMENTS
@@ -325,9 +285,7 @@
   transition: color 0.15s ease;
 }
 
-.pw-rule--pass {
-  color: #16a34a;
-}
+.pw-rule--pass { color: var(--color-success); }
 
 .pw-rule-icon {
   width: 14px;
