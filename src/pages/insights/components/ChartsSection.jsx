@@ -14,7 +14,13 @@ import {
   Line,
 } from "recharts";
 
-const COLORS = ["#3b82f6", "#16a34a", "#f59e0b", "#ef4444", "#8b5cf6"];
+const COLORS = [
+  "var(--color-chart-blue)",
+  "var(--color-chart-green)",
+  "var(--color-chart-amber)",
+  "var(--color-chart-red)",
+  "var(--color-chart-purple)",
+];
 
 function getIntro(topCategory, expenseChange) {
   const spendTrend =
@@ -62,8 +68,8 @@ export default function ChartsSection({
                   formatter={(v) => formatCurrency(v)}
                   labelFormatter={(l) => formatMonth(l)}
                 />
-                <Bar dataKey="income" fill="#16a34a" radius={[6, 6, 0, 0]} />
-                <Bar dataKey="expense" fill="#ef4444" radius={[6, 6, 0, 0]} />
+                <Bar dataKey="income" fill="var(--color-chart-green)" radius={[6, 6, 0, 0]} />
+                <Bar dataKey="expense" fill="var(--color-chart-red)" radius={[6, 6, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           )}
@@ -149,13 +155,7 @@ export default function ChartsSection({
                   formatter={(v) => formatCurrency(v)}
                   labelFormatter={(l) => new Date(l).toLocaleDateString("en-IN")}
                 />
-                <Line
-                  type="monotone"
-                  dataKey="balance"
-                  stroke="#3b82f6"
-                  strokeWidth={2}
-                  dot={false}
-                />
+                <Line type="monotone" dataKey="balance" stroke="var(--color-primary)" strokeWidth={2} dot={false} />
               </LineChart>
             </ResponsiveContainer>
           )}
