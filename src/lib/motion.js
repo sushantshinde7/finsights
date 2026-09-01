@@ -7,7 +7,7 @@ import { animate, useReducedMotion } from "framer-motion";
 
 // Ease curve: quick start, gentle settle. Avoid spring() for page
 // entrances — springs read as "bouncy app", not "calm finance tool".
-const EASE = [0.22, 1, 0.36, 1];
+export const EASE = [0.22, 1, 0.36, 1];
 
 export const fadeUp = {
   hidden: { opacity: 0, y: 16 },
