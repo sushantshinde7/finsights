@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
+import { EASE } from "../../../lib/motion";
 import "./FilterModal.css";
 
 const DATE_OPTIONS = [
@@ -89,13 +91,24 @@ export default function FilterModal({
     filterCounts.amount;
 
   return (
-    <div className="filter-modal-overlay" onClick={onClose}>
-      <div
+    <motion.div
+      className="filter-modal-overlay"
+      onClick={onClose}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+    >
+      <motion.div
         className="filter-modal"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
         aria-labelledby="filter-modal-title"
+        initial={{ opacity: 0, scale: 0.96, y: 8 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.96, y: 8 }}
+        transition={{ duration: 0.22, ease: EASE }}
       >
         {/* HEADER */}
         <button
@@ -348,7 +361,7 @@ export default function FilterModal({
             )}
           </button>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
