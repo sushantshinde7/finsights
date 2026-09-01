@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { EASE } from "../../../lib/motion";
 import "./AddTransactionModal.css";
 
 export default function AddTransactionModal({
@@ -73,10 +75,27 @@ export default function AddTransactionModal({
   };
 
   return (
-    // ✅ OVERLAY CLICK CLOSE
-    <div className="modal-overlay" onClick={onClose}>
-      {/* ✅ STOP PROPAGATION */}
-      <div className="modal" onClick={(e) => e.stopPropagation()}>
+    // ✅ OVERLAY CLICK CLOSE — opacity only. This is the element
+    // that needs position: fixed to cover the viewport, so it's
+    // never the one that gets a transform-based animation.
+    <motion.div
+      className="modal-overlay"
+      onClick={onClose}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+    >
+      {/* ✅ STOP PROPAGATION — the inner card is the one that scales,
+      since it has no fixed-position descendants of its own to break. */}
+      <motion.div
+        className="modal"
+        onClick={(e) => e.stopPropagation()}
+        initial={{ opacity: 0, scale: 0.96, y: 8 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.96, y: 8 }}
+        transition={{ duration: 0.22, ease: EASE }}
+      >
         <button
           className="modal-close-btn"
           onClick={onClose}
@@ -167,7 +186,7 @@ export default function AddTransactionModal({
             {mode === "edit" ? "Save Changes" : "Add Transaction"}
           </button>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
