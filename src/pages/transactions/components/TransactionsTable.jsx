@@ -1,6 +1,8 @@
 import { useState, useMemo } from "react";
+import { motion } from "framer-motion";
 import "./TransactionsTable.css";
 import { Pencil, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
+import { fadeUp, EASE } from "../../../lib/motion";
 
 const PAGE_SIZE_OPTIONS = [10, 25, 50];
 
@@ -14,6 +16,11 @@ export default function TransactionsTable({
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
+  // Rows currently mid-delete-animation. A Set (not a single id) so
+  // deleting two rows in quick succession doesn't block the second
+  // click while the first is still animating.
+  const [deletingIds, setDeletingIds] = useState(() => new Set());
+
   // reset to page 1 whenever data changes (filter/search/sort)
   const totalPages = Math.ceil(data.length / pageSize);
   const safePage = Math.min(page, totalPages || 1);
@@ -26,6 +33,27 @@ export default function TransactionsTable({
   const handlePageSize = (e) => {
     setPageSize(Number(e.target.value));
     setPage(1);
+  };
+
+  // Start the visual fade for a row. The real onDelete(id) — the one
+  // that actually removes it from data — only fires once the fade
+  // finishes, via onAnimationComplete below. This is deliberate: it
+  // keeps the delete animation scoped to genuine delete clicks only,
+  // never to rows disappearing because of search/filter/sort/paging.
+  const handleDeleteClick = (id) => {
+    setDeletingIds((prev) => new Set(prev).add(id));
+  };
+
+  const handleRowFadeComplete = (id, wasDeleting) => {
+    if (!wasDeleting) return; // ignore the normal resting-state animation completing
+
+    onDelete(id);
+
+    setDeletingIds((prev) => {
+      const next = new Set(prev);
+      next.delete(id);
+      return next;
+    });
   };
 
   // page number buttons: always show first, last, current ±1, with ellipsis
@@ -46,7 +74,12 @@ export default function TransactionsTable({
 
   if (!data.length) {
     return (
-      <div className="empty-state">
+      <motion.div
+        className="empty-state"
+        initial="hidden"
+        animate="visible"
+        variants={fadeUp}
+      >
         <p className="empty-title">
           {emptyState?.title || "No data available"}
         </p>
@@ -58,7 +91,7 @@ export default function TransactionsTable({
             + Add your first transaction
           </button>
         )}
-      </div>
+      </motion.div>
     );
   }
 
@@ -89,55 +122,73 @@ export default function TransactionsTable({
           </thead>
 
           <tbody>
-            {pageData.map((tx) => (
-              <tr key={tx.id}>
-                <td className="td-date">
-                  {(() => {
-                    const d = new Date(tx.date);
-                    const isCurrentYear =
-                      d.getFullYear() === new Date().getFullYear();
-                    return d.toLocaleDateString("en-IN", {
-                      day: "2-digit",
-                      month: "short",
-                      ...(isCurrentYear ? {} : { year: "numeric" }),
-                    });
-                  })()}
-                </td>
+            {pageData.map((tx) => {
+              const isDeleting = deletingIds.has(tx.id);
 
-                <td className="td-category" title={tx.category}>
-                  {tx.category}
-                </td>
+              return (
+                <motion.tr
+                  key={tx.id}
+                  initial={false}
+                  animate={
+                    isDeleting
+                      ? { opacity: 0, x: -16, backgroundColor: "var(--color-danger-bg)" }
+                      : { opacity: 1, x: 0, backgroundColor: "rgba(0,0,0,0)" }
+                  }
+                  transition={{ duration: 0.25, ease: EASE }}
+                  onAnimationComplete={() =>
+                    handleRowFadeComplete(tx.id, isDeleting)
+                  }
+                >
+                  <td className="td-date">
+                    {(() => {
+                      const d = new Date(tx.date);
+                      const isCurrentYear =
+                        d.getFullYear() === new Date().getFullYear();
+                      return d.toLocaleDateString("en-IN", {
+                        day: "2-digit",
+                        month: "short",
+                        ...(isCurrentYear ? {} : { year: "numeric" }),
+                      });
+                    })()}
+                  </td>
 
-                <td className="td-amount">
-                  ₹{tx.amount.toLocaleString("en-IN")}
-                </td>
+                  <td className="td-category" title={tx.category}>
+                    {tx.category}
+                  </td>
 
-                <td>
-                  <span className={`badge badge-${tx.type}`}>{tx.type}</span>
-                </td>
+                  <td className="td-amount">
+                    ₹{tx.amount.toLocaleString("en-IN")}
+                  </td>
 
-                <td className="td-actions">
-                  <div className="actions-inner">
-                    <button
-                      className="icon-btn"
-                      onClick={() => onEdit(tx)}
-                      title="Edit"
-                      aria-label={`Edit ${tx.category}`}
-                    >
-                      <Pencil size={14} />
-                    </button>
-                    <button
-                      className="icon-btn danger"
-                      onClick={() => onDelete(tx.id)}
-                      title="Delete"
-                      aria-label={`Delete ${tx.category}`}
-                    >
-                      <Trash2 size={14} />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
+                  <td>
+                    <span className={`badge badge-${tx.type}`}>{tx.type}</span>
+                  </td>
+
+                  <td className="td-actions">
+                    <div className="actions-inner">
+                      <button
+                        className="icon-btn"
+                        onClick={() => onEdit(tx)}
+                        title="Edit"
+                        aria-label={`Edit ${tx.category}`}
+                        disabled={isDeleting}
+                      >
+                        <Pencil size={14} />
+                      </button>
+                      <button
+                        className="icon-btn danger"
+                        onClick={() => handleDeleteClick(tx.id)}
+                        title="Delete"
+                        aria-label={`Delete ${tx.category}`}
+                        disabled={isDeleting}
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+                  </td>
+                </motion.tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
