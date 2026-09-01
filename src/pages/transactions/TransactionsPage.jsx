@@ -1,4 +1,5 @@
 import { useMemo, useState, useEffect } from "react";
+import { motion, AnimatePresence, MotionConfig } from "framer-motion";
 
 import TransactionsTable from "./components/TransactionsTable";
 import TableControls from "./components/TableControls";
@@ -10,6 +11,8 @@ import AuthPrompt from "../../components/auth/AuthPrompt";
 import { useTransactions } from "../../context/TransactionContext";
 import { useAuth } from "../../context/AuthContext";
 
+import { fadeUp, staggerContainer } from "../../lib/motion";
+
 import "./transactions.css";
 import {
   Plus,
@@ -17,6 +20,8 @@ import {
   Download,
   ChevronDown,
 } from "lucide-react";
+
+const EASE = [0.22, 1, 0.36, 1];
 
 const MIN_AMOUNT = 0;
 const MAX_AMOUNT = 100000;
@@ -394,235 +399,316 @@ export default function TransactionsPage() {
         : "Break-even";
 
   return (
-    <section
-      className="transactions-overview"
-      aria-label="Transactions overview"
-    >
-      {/* PAGE HEADER */}
-      <div className="transactions-header">
-        <div className="transactions-header-top">
-          <h1 className="transactions-title">Transactions</h1>
+    <MotionConfig reducedMotion="user">
+      <section
+        className="transactions-overview"
+        aria-label="Transactions overview"
+      >
+        {/* PAGE HEADER — mount-triggered stagger, above the fold on
+        every load, same treatment as Dashboard's header. */}
+        <div className="transactions-header">
+          <motion.div
+            className="transactions-header-top"
+            initial="hidden"
+            animate="visible"
+            variants={staggerContainer(0.1)}
+          >
+            <motion.h1 className="transactions-title" variants={fadeUp}>
+              Transactions
+            </motion.h1>
 
-          <p className="transactions-subtitle">
-            Manage, search, filter and organize your financial activity.
-          </p>
+            <motion.p className="transactions-subtitle" variants={fadeUp}>
+              Manage, search, filter and organize your financial activity.
+            </motion.p>
 
-          <div className="header-actions">
-            <button
-              className="btn-add"
-              onClick={() => {
+            <motion.div className="header-actions" variants={fadeUp}>
+              <button
+                className="btn-add"
+                onClick={() => {
+                  if (!isAuthenticated) {
+                    setShowAuthPrompt(true);
+                    return;
+                  }
+                  setShowModal(true);
+                }}
+              >
+                <span aria-hidden="true"><Plus size={16} /></span> Add Transaction
+              </button>
+
+              <button
+                className="btn-transfer"
+                onClick={() => {
+                  if (!isAuthenticated) {
+                    setShowAuthPrompt(true);
+                    return;
+                  }
+                  /* import logic later */
+                }}
+              >
+                <span aria-hidden="true"><Upload size={15} /> </span> Import
+              </button>
+
+              <button
+                className="btn-transfer"
+                disabled={transactions.length === 0}
+                onClick={() => {
+                  if (!isAuthenticated) {
+                    setShowAuthPrompt(true);
+                    return;
+                  }
+                  /* export logic later */
+                }}
+              >
+                <span aria-hidden="true"><Download size={15} /></span> Export
+              </button>
+
+              <div className="sample-wrapper">
+                <button className="btn-transfer btn-sample">
+                  Sample <span aria-hidden="true"><ChevronDown size={15} /></span>
+                </button>
+
+                <div className="sample-dropdown">
+                  <button
+                    className={`sample-item ${activeSample === "sample1" ? "sample-item--active" : ""}`}
+                    onClick={() => handleLoadSample("sample1")}
+                  >
+                    <span className="sample-dot dot-blue" />
+                    Personal finance
+                    {activeSample === "sample1" && (
+                      <span className="sample-check">✓</span>
+                    )}
+                  </button>
+
+                  <button
+                    className={`sample-item ${activeSample === "sample2" ? "sample-item--active" : ""}`}
+                    onClick={() => handleLoadSample("sample2")}
+                  >
+                    <span className="sample-dot dot-green" />
+                    Senior professional
+                    {activeSample === "sample2" && (
+                      <span className="sample-check">✓</span>
+                    )}
+                  </button>
+
+                  <button
+                    className="sample-item sample-item--danger"
+                    onClick={() => handleLoadSample("clear")}
+                  >
+                    Clear all data
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+
+            {transactions.length > 0 && (
+              <motion.div variants={fadeUp}>
+                <p className="transactions-context">
+                  View, search and manage your complete transaction history in one place. Filter by category, amount or date, sort records instantly, and switch between sample datasets to explore different financial scenarios and workflows.
+                </p>
+
+                <div className="transactions-meta">
+                  <span className="meta-pill">{overviewStats.datasetLabel}</span>
+                  <span className="meta-pill">
+                    {overviewStats.transactionCount} Transactions
+                  </span>
+                  <span className="meta-pill">
+                    {overviewStats.categoryCount} Categories
+                  </span>
+                </div>
+              </motion.div>
+            )}
+          </motion.div>
+        </div>
+
+        {/* SUMMARY BAR — AnimatePresence keyed to `transactions.length`,
+        not `processedTransactions.length`, so this only mounts/unmounts
+        on dataset-level changes (load sample, clear data) — never on
+        every search/filter keystroke, which would just look like flicker. */}
+        <AnimatePresence>
+          {transactions.length > 0 && (
+            <motion.section
+              key="summary-bar"
+              className="summary-bar"
+              aria-label="Transaction summary"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.4, ease: EASE }}
+            >
+              <div className="summary-item">
+                <span className="summary-label">Transactions</span>
+                <span className="summary-value">{summary.count}</span>
+                {/*<span className="summary-status">{balanceStatus}</span>*/}
+              </div>
+              <div className="summary-item">
+                <span className="summary-label">Income</span>
+                <span className="summary-value summary-income">
+                  ₹{summary.income.toLocaleString("en-IN")}
+                </span>
+                {/*<span className="summary-status">{balanceStatus}</span>*/}
+              </div>
+              <div className="summary-item">
+                <span className="summary-label">Expenses</span>
+                <span className="summary-value summary-expense">
+                  ₹{summary.expense.toLocaleString("en-IN")}
+                </span>
+                {/*<span className="summary-status">{balanceStatus}</span>*/}
+              </div>
+              <div className="summary-item">
+                <span className="summary-label">Net Balance</span>
+
+                <span
+                  className={`summary-value ${
+                    summary.net >= 0 ? "summary-net-pos" : "summary-net-neg"
+                  }`}
+                >
+                  {summary.net >= 0 ? "+" : ""}₹
+                  {Math.abs(summary.net).toLocaleString("en-IN")}
+                </span>
+
+                {/*<span className="summary-status">{balanceStatus}</span>*/}
+              </div>
+            </motion.section>
+          )}
+        </AnimatePresence>
+
+        {/* CARD — mount-triggered fadeUp, arrives after the header/summary */}
+        <motion.div
+          className="card transactions-panel"
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.15, ease: EASE }}
+        >
+          <div className="panel-filters">
+            <TableControls
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+              sortField={sortField}
+              setSortField={setSortField}
+              sortOrder={sortOrder}
+              setSortOrder={setSortOrder}
+              resultCount={processedTransactions.length}
+              activeFilterCount={activeFilterCount}
+              onOpenFilters={() => setShowFiltersModal(true)}
+              filterSummary={filterSummary}
+              onClearFilters={clearFilters}
+            />
+          </div>
+          <div className="panel-divider" />
+          <div className="panel-table">
+            <TransactionsTable
+              data={processedTransactions}
+              emptyState={emptyState}
+              onAddClick={() => {
                 if (!isAuthenticated) {
                   setShowAuthPrompt(true);
                   return;
                 }
                 setShowModal(true);
               }}
-            >
-              <span aria-hidden="true"><Plus size={16} /></span> Add Transaction
-            </button>
-
-            <button
-              className="btn-transfer"
-              onClick={() => {
+              onEdit={(tx) => {
                 if (!isAuthenticated) {
                   setShowAuthPrompt(true);
                   return;
                 }
-                /* import logic later */
+                setEditingTx(tx);
+                setShowModal(true);
               }}
-            >
-              <span aria-hidden="true"><Upload size={15} /> </span> Import
-            </button>
-
-            <button
-              className="btn-transfer"
-              disabled={transactions.length === 0}
-              onClick={() => {
-                if (!isAuthenticated) {
-                  setShowAuthPrompt(true);
-                  return;
-                }
-                /* export logic later */
-              }}
-            >
-              <span aria-hidden="true"><Download size={15} /></span> Export
-            </button>
-
-            <div className="sample-wrapper">
-              <button className="btn-transfer btn-sample">
-                Sample <span aria-hidden="true"><ChevronDown size={15} /></span>
-              </button>
-
-              <div className="sample-dropdown">
-                <button
-                  className={`sample-item ${activeSample === "sample1" ? "sample-item--active" : ""}`}
-                  onClick={() => handleLoadSample("sample1")}
-                >
-                  <span className="sample-dot dot-blue" />
-                  Personal finance
-                  {activeSample === "sample1" && (
-                    <span className="sample-check">✓</span>
-                  )}
-                </button>
-
-                <button
-                  className={`sample-item ${activeSample === "sample2" ? "sample-item--active" : ""}`}
-                  onClick={() => handleLoadSample("sample2")}
-                >
-                  <span className="sample-dot dot-green" />
-                  Senior professional
-                  {activeSample === "sample2" && (
-                    <span className="sample-check">✓</span>
-                  )}
-                </button>
-
-                <button
-                  className="sample-item sample-item--danger"
-                  onClick={() => handleLoadSample("clear")}
-                >
-                  Clear all data
-                </button>
-              </div>
-            </div>
+              onDelete={handleDelete}
+            />
           </div>
+        </motion.div>
 
-          {transactions.length > 0 && (
-            <>
-              <p className="transactions-context">
-                View, search and manage your complete transaction history in one place. Filter by category, amount or date, sort records instantly, and switch between sample datasets to explore different financial scenarios and workflows.
-              </p>
-
-              <div className="transactions-meta">
-                <span className="meta-pill">{overviewStats.datasetLabel}</span>
-                <span className="meta-pill">
-                  {overviewStats.transactionCount} Transactions
-                </span>
-                <span className="meta-pill">
-                  {overviewStats.categoryCount} Categories
-                </span>
-              </div>
-            </>
+        {/* MODALS — opacity-only wrapper. Deliberately NOT animating
+        scale/x/y here: a transform on this wrapper would create a new
+        containing block, which breaks `position: fixed` inside the
+        modal components (they almost certainly use it). Opacity alone
+        is safe regardless of their internal CSS. For a scale-in on the
+        modal's inner card specifically, that has to happen inside the
+        modal component itself, targeting the inner element — not this
+        wrapper. */}
+        <AnimatePresence>
+          {showFiltersModal && (
+            <motion.div
+              key="filter-modal"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <FilterModal
+                isOpen={showFiltersModal}
+                onClose={() => setShowFiltersModal(false)}
+                filters={filters}
+                setFilters={setFilters}
+                categories={categories}
+                minAmount={MIN_AMOUNT}
+                maxAmount={MAX_AMOUNT}
+              />
+            </motion.div>
           )}
-        </div>
-      </div>
+        </AnimatePresence>
 
-      {/* SUMMARY BAR */}
-      {transactions.length > 0 && (
-        <section className="summary-bar" aria-label="Transaction summary">
-          <div className="summary-item">
-            <span className="summary-label">Transactions</span>
-            <span className="summary-value">{summary.count}</span>
-            {/*<span className="summary-status">{balanceStatus}</span>*/}
-          </div>
-          <div className="summary-item">
-            <span className="summary-label">Income</span>
-            <span className="summary-value summary-income">
-              ₹{summary.income.toLocaleString("en-IN")}
-            </span>
-            {/*<span className="summary-status">{balanceStatus}</span>*/}
-          </div>
-          <div className="summary-item">
-            <span className="summary-label">Expenses</span>
-            <span className="summary-value summary-expense">
-              ₹{summary.expense.toLocaleString("en-IN")}
-            </span>
-            {/*<span className="summary-status">{balanceStatus}</span>*/}
-          </div>
-          <div className="summary-item">
-            <span className="summary-label">Net Balance</span>
-
-            <span
-              className={`summary-value ${
-                summary.net >= 0 ? "summary-net-pos" : "summary-net-neg"
-              }`}
+        {/* TOAST — x: "-50%" is included in every state on purpose.
+        This element used to rely on a CSS `transform: translateX(-50%)`
+        for centering; once it's a motion element, Framer's inline
+        transform replaces the CSS one entirely, so the centering has
+        to be re-declared inside Framer's own animate/exit states. */}
+        <AnimatePresence>
+          {toast && (
+            <motion.div
+              key="toast"
+              className="toast"
+              initial={{ opacity: 0, y: 20, x: "-50%" }}
+              animate={{ opacity: 1, y: 0, x: "-50%" }}
+              exit={{ opacity: 0, y: 12, x: "-50%" }}
+              transition={{ duration: 0.25, ease: EASE }}
             >
-              {summary.net >= 0 ? "+" : ""}₹
-              {Math.abs(summary.net).toLocaleString("en-IN")}
-            </span>
+              <span>{toast.message}</span>
+              <button className="toast-action" onClick={toast.onAction}>
+                {toast.actionLabel}
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-            {/*<span className="summary-status">{balanceStatus}</span>*/}
-          </div>
-        </section>
-      )}
+        <AnimatePresence>
+          {showModal && (
+            <motion.div
+              key={editingTx ? `edit-${editingTx.id}` : "add"}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <AddTransactionModal
+                mode={editingTx ? "edit" : "add"}
+                initialData={editingTx}
+                onClose={() => {
+                  setShowModal(false);
+                  setEditingTx(null);
+                }}
+                onAdd={handleAdd}
+                onUpdate={handleUpdate}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-      {/* CARD */}
-      <div className="card transactions-panel">
-        <div className="panel-filters">
-          <TableControls
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-            sortField={sortField}
-            setSortField={setSortField}
-            sortOrder={sortOrder}
-            setSortOrder={setSortOrder}
-            resultCount={processedTransactions.length}
-            activeFilterCount={activeFilterCount}
-            onOpenFilters={() => setShowFiltersModal(true)}
-            filterSummary={filterSummary}
-            onClearFilters={clearFilters}
-          />
-        </div>
-        <div className="panel-divider" />
-        <div className="panel-table">
-          <TransactionsTable
-            data={processedTransactions}
-            emptyState={emptyState}
-            onAddClick={() => {
-              if (!isAuthenticated) {
-                setShowAuthPrompt(true);
-                return;
-              }
-              setShowModal(true);
-            }}
-            onEdit={(tx) => {
-              if (!isAuthenticated) {
-                setShowAuthPrompt(true);
-                return;
-              }
-              setEditingTx(tx);
-              setShowModal(true);
-            }}
-            onDelete={handleDelete}
-          />
-        </div>
-      </div>
-
-      {/* MODALS + TOAST — unchanged */}
-      {showFiltersModal && (
-        <FilterModal
-          isOpen={showFiltersModal}
-          onClose={() => setShowFiltersModal(false)}
-          filters={filters}
-          setFilters={setFilters}
-          categories={categories}
-          minAmount={MIN_AMOUNT}
-          maxAmount={MAX_AMOUNT}
-        />
-      )}
-      {toast && (
-        <div className="toast">
-          <span>{toast.message}</span>
-          <button className="toast-action" onClick={toast.onAction}>
-            {toast.actionLabel}
-          </button>
-        </div>
-      )}
-      {showModal && (
-        <AddTransactionModal
-          key={editingTx ? editingTx.id : "new"}
-          mode={editingTx ? "edit" : "add"}
-          initialData={editingTx}
-          onClose={() => {
-            setShowModal(false);
-            setEditingTx(null);
-          }}
-          onAdd={handleAdd}
-          onUpdate={handleUpdate}
-        />
-      )}
-      {showAuthPrompt && (
-        <AuthPrompt onClose={() => setShowAuthPrompt(false)} />
-      )}
-    </section>
+        <AnimatePresence>
+          {showAuthPrompt && (
+            <motion.div
+              key="auth-prompt"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <AuthPrompt onClose={() => setShowAuthPrompt(false)} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </section>
+    </MotionConfig>
   );
 }
