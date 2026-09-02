@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { motion, AnimatePresence, MotionConfig } from "framer-motion";
 import { ROUTES } from "../../routes/routes";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { fadeUp, staggerContainer, EASE } from "../../lib/motion";
 import "./AuthPages.css";
 
 export default function LoginPage() {
@@ -60,110 +62,155 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="auth-page auth-page--login">
-      <aside className="auth-branding auth-branding--login">
-        <div className="auth-branding-content">
-          {/* Logotype, not a heading — the card's <h1> is the page's real heading */}
-          <p className="auth-brand">Finsights</p>
+    <MotionConfig reducedMotion="user">
+      <div className="auth-page auth-page--login">
+        <aside className="auth-branding auth-branding--login">
+          <motion.div
+            className="auth-branding-content"
+            initial="hidden"
+            animate="visible"
+            variants={staggerContainer(0.1)}
+          >
+            {/* Logotype, not a heading — the card's <h1> is the page's real heading */}
+            <motion.p className="auth-brand" variants={fadeUp}>
+              Finsights
+            </motion.p>
 
-          <h2>Welcome back.</h2>
+            <motion.h2 variants={fadeUp}>Welcome back.</motion.h2>
 
-          <p>
-            Continue tracking expenses, monitoring budgets, and understanding
-            your financial habits.
-          </p>
-        </div>
-      </aside>
+            <motion.p variants={fadeUp}>
+              Continue tracking expenses, monitoring budgets, and understanding
+              your financial habits.
+            </motion.p>
+          </motion.div>
+        </aside>
 
-      <main className="auth-card auth-card--login">
-        <div className="auth-header">
-          <h1 className="auth-title">Sign in</h1>
-          <p className="auth-subtitle">Enter your details to continue.</p>
-        </div>
-
-        {serverError && (
-          <div className="auth-server-error" role="alert">
-            {serverError}
+        <motion.main
+          className="auth-card auth-card--login"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2, ease: EASE }}
+        >
+          <div className="auth-header">
+            <h1 className="auth-title">Sign in</h1>
+            <p className="auth-subtitle">Enter your details to continue.</p>
           </div>
-        )}
 
-        <form className="auth-form" onSubmit={handleSubmit} noValidate>
-          <div className="auth-field">
-            <label htmlFor="email" className="auth-label">
-              Email
-            </label>
-            <input
-              id="email"
-              className={`auth-input ${errors.email ? "auth-input--error" : ""}`}
-              type="email"
-              placeholder="you@example.com"
-              value={form.email}
-              onChange={(e) => update("email", e.target.value)}
-              autoComplete="email"
-              autoFocus
-              aria-describedby={errors.email ? "email-error" : undefined}
-            />
-            {errors.email && (
-              <span id="email-error" className="auth-error">
-                Invalid email
-              </span>
+          <AnimatePresence>
+            {serverError && (
+              <motion.div
+                key="server-error"
+                className="auth-server-error"
+                role="alert"
+                initial={{ opacity: 0, y: -6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+                transition={{ duration: 0.2 }}
+              >
+                {serverError}
+              </motion.div>
             )}
-          </div>
+          </AnimatePresence>
 
-          <div className="auth-field">
-            <div className="auth-label-row">
-              <label htmlFor="password" className="auth-label">
-                Password
+          <form className="auth-form" onSubmit={handleSubmit} noValidate>
+            <div className="auth-field">
+              <label htmlFor="email" className="auth-label">
+                Email
               </label>
-              <Link to={ROUTES.FORGOT_PASSWORD} className="auth-forgot">
-                Forgot password?
-              </Link>
+              <input
+                id="email"
+                className={`auth-input ${errors.email ? "auth-input--error" : ""}`}
+                type="email"
+                placeholder="you@example.com"
+                value={form.email}
+                onChange={(e) => update("email", e.target.value)}
+                autoComplete="email"
+                autoFocus
+                aria-describedby={errors.email ? "email-error" : undefined}
+              />
+              <AnimatePresence>
+                {errors.email && (
+                  <motion.span
+                    key="err-email"
+                    id="email-error"
+                    className="auth-error"
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    transition={{ duration: 0.15 }}
+                  >
+                    Invalid email
+                  </motion.span>
+                )}
+              </AnimatePresence>
             </div>
-            <input
-              id="password"
-              className={`auth-input ${errors.password ? "auth-input--error" : ""}`}
-              type="password"
-              placeholder="••••••••"
-              value={form.password}
-              onChange={(e) => update("password", e.target.value)}
-              autoComplete="current-password"
-            />
-            {errors.password && (
-              <span className="auth-error">{errors.password}</span>
-            )}
+
+            <div className="auth-field">
+              <div className="auth-label-row">
+                <label htmlFor="password" className="auth-label">
+                  Password
+                </label>
+                <Link to={ROUTES.FORGOT_PASSWORD} className="auth-forgot">
+                  Forgot password?
+                </Link>
+              </div>
+              <input
+                id="password"
+                className={`auth-input ${errors.password ? "auth-input--error" : ""}`}
+                type="password"
+                placeholder="••••••••"
+                value={form.password}
+                onChange={(e) => update("password", e.target.value)}
+                autoComplete="current-password"
+              />
+              <AnimatePresence>
+                {errors.password && (
+                  <motion.span
+                    key="err-password"
+                    className="auth-error"
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    transition={{ duration: 0.15 }}
+                  >
+                    {errors.password}
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            </div>
+
+            <button className="auth-btn-primary" type="submit" disabled={loading}>
+              {loading ? "Signing in…" : "Sign in"}
+            </button>
+
+            <div className="auth-card-footnote">
+              Secure authentication powered by Firebase.
+            </div>
+          </form>
+
+          <div className="auth-divider">
+            <span>or</span>
           </div>
 
-          <button className="auth-btn-primary" type="submit" disabled={loading}>
-            {loading ? "Signing in…" : "Sign in"}
+          <button
+            className="auth-btn-google"
+            onClick={handleGoogle}
+            disabled={loading}
+            type="button"
+          >
+            <GoogleIcon />
+            Continue with Google
           </button>
 
-          <div className="auth-card-footnote">
-            Secure authentication powered by Firebase.
-          </div>
-        </form>
-
-        <div className="auth-divider">
-          <span>or</span>
-        </div>
-
-        <button
-          className="auth-btn-google"
-          onClick={handleGoogle}
-          disabled={loading}
-          type="button"
-        >
-          <GoogleIcon />
-          Continue with Google
-        </button>
-
-        <p className="auth-switch">
-          Don't have an account?{" "}
-          <Link to={ROUTES.SIGNUP} className="auth-link">
-            Sign up
-          </Link>
-        </p>
-      </main>
-    </div>
+          <p className="auth-switch">
+            Don't have an account?{" "}
+            <Link to={ROUTES.SIGNUP} className="auth-link">
+              Sign up
+            </Link>
+          </p>
+        </motion.main>
+      </div>
+    </MotionConfig>
   );
 }
 

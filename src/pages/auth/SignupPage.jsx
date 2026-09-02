@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { motion, AnimatePresence, MotionConfig } from "framer-motion";
 import { ROUTES } from "../../routes/routes";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { fadeUp, staggerContainer, EASE } from "../../lib/motion";
 import "./AuthPages.css";
 
 const RULES = [
@@ -95,180 +97,283 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="auth-page auth-page--signup">
-      <aside className="auth-branding auth-branding--signup">
-        <div className="auth-branding-content">
-          <p className="auth-brand">Finsights</p>
+    <MotionConfig reducedMotion="user">
+      <div className="auth-page auth-page--signup">
+        <aside className="auth-branding auth-branding--signup">
+          <motion.div
+            className="auth-branding-content"
+            initial="hidden"
+            animate="visible"
+            variants={staggerContainer(0.1)}
+          >
+            <motion.p className="auth-brand" variants={fadeUp}>
+              Finsights
+            </motion.p>
 
-          <h2>Take control of your finances.</h2>
+            <motion.h2 variants={fadeUp}>
+              Take control of your finances.
+            </motion.h2>
 
-          <p>
-            Track expenses, manage budgets, and understand where your money goes
-            with clear insights.
-          </p>
+            <motion.p variants={fadeUp}>
+              Track expenses, manage budgets, and understand where your money goes
+              with clear insights.
+            </motion.p>
 
-          <ul className="auth-features">
-            <li>✓ Expense Tracking</li>
-            <li>✓ Budget Planning</li>
-            <li>✓ Financial Analytics</li>
-            <li>✓ Secure Cloud Storage</li>
-          </ul>
-        </div>
-      </aside>
+            <ul className="auth-features">
+              <li>✓ Expense Tracking</li>
+              <li>✓ Budget Planning</li>
+              <li>✓ Financial Analytics</li>
+              <li>✓ Secure Cloud Storage</li>
+            </ul>
+          </motion.div>
+        </aside>
 
-      <main className="auth-card auth-card--signup">
-        <div className="auth-header">
-          <h1 className="auth-title">Create account</h1>
-          <p className="auth-subtitle">Start tracking your finances today</p>
-        </div>
-
-        {serverError && (
-          <div className="auth-server-error" role="alert">
-            {serverError}
-          </div>
-        )}
-
-        <form className="auth-form" onSubmit={handleSubmit} noValidate>
-          <div className="auth-row">
-            <div className="auth-field">
-              <label htmlFor="firstname" className="auth-label">
-                First name
-              </label>
-              <input
-                id="firstname"
-                className={`auth-input ${errors.firstName ? "auth-input--error" : ""}`}
-                type="text"
-                placeholder="Sushant"
-                value={form.firstName}
-                onChange={(e) => update("firstName", e.target.value)}
-                autoComplete="given-name"
-                autoFocus
-              />
-              {errors.firstName && (
-                <span className="auth-error">{errors.firstName}</span>
-              )}
-            </div>
-
-            <div className="auth-field">
-              <label htmlFor="lastname" className="auth-label">
-                Last name
-              </label>
-              <input
-                id="lastname"
-                className={`auth-input ${errors.lastName ? "auth-input--error" : ""}`}
-                type="text"
-                placeholder="Shinde"
-                value={form.lastName}
-                onChange={(e) => update("lastName", e.target.value)}
-                autoComplete="family-name"
-              />
-              {errors.lastName && (
-                <span className="auth-error">{errors.lastName}</span>
-              )}
-            </div>
-          </div>
-
-          <div className="auth-field">
-            <label htmlFor="email" className="auth-label">
-              Email
-            </label>
-            <input
-              id="email"
-              aria-invalid={!!errors.email}
-              className={`auth-input ${errors.email ? "auth-input--error" : ""}`}
-              type="email"
-              placeholder="you@example.com"
-              value={form.email}
-              onChange={(e) => update("email", e.target.value)}
-              autoComplete="email"
-            />
-            {errors.email && <span className="auth-error">{errors.email}</span>}
-          </div>
-
-          <div className="auth-field">
-            <label htmlFor="password" className="auth-label">
-              Password
-            </label>
-            <input
-              id="password"
-              className={`auth-input ${errors.password ? "auth-input--error" : ""}`}
-              type="password"
-              placeholder="••••••••"
-              value={form.password}
-              onChange={(e) => update("password", e.target.value)}
-              onFocus={() => setPwFocused(true)}
-              onBlur={() => setPwFocused(false)}
-              autoComplete="new-password"
-            />
-            {errors.password && (
-              <span className="auth-error">{errors.password}</span>
-            )}
-
-            {/* Live password rules — show while focused or password has value */}
-            {(pwFocused || form.password) && (
-              <ul className="pw-rules">
-                {RULES.map((rule) => {
-                  const passed = rule.test(form.password);
-                  return (
-                    <li
-                      key={rule.id}
-                      className={`pw-rule ${passed ? "pw-rule--pass" : ""}`}
-                    >
-                      <span className="pw-rule-icon" aria-hidden="true">
-                        {passed ? "✓" : "○"}
-                      </span>
-                      {rule.label}
-                    </li>
-                  );
-                })}
-              </ul>
-            )}
-          </div>
-
-          <div className="auth-field">
-            <label htmlFor="confirmpassword" className="auth-label">
-              Confirm password
-            </label>
-            <input
-              id="confirmpassword"
-              className={`auth-input ${errors.confirm ? "auth-input--error" : ""}`}
-              type="password"
-              placeholder="••••••••"
-              value={form.confirm}
-              onChange={(e) => update("confirm", e.target.value)}
-              autoComplete="new-password"
-            />
-            {errors.confirm && (
-              <span className="auth-error">{errors.confirm}</span>
-            )}
-          </div>
-
-          <button className="auth-btn-primary" type="submit" disabled={loading}>
-            {loading ? "Creating account…" : "Create account"}
-          </button>
-        </form>
-
-        <div className="auth-divider">
-          <span>or</span>
-        </div>
-
-        <button
-          className="auth-btn-google"
-          onClick={handleGoogle}
-          disabled={loading}
+        <motion.main
+          className="auth-card auth-card--signup"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2, ease: EASE }}
         >
-          <GoogleIcon />
-          Continue with Google
-        </button>
+          <div className="auth-header">
+            <h1 className="auth-title">Create account</h1>
+            <p className="auth-subtitle">Start tracking your finances today</p>
+          </div>
 
-        <p className="auth-switch">
-          Already have an account?{" "}
-          <Link to={ROUTES.LOGIN} className="auth-link">
-            Sign in
-          </Link>
-        </p>
-      </main>
-    </div>
+          <AnimatePresence>
+            {serverError && (
+              <motion.div
+                key="server-error"
+                className="auth-server-error"
+                role="alert"
+                initial={{ opacity: 0, y: -6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+                transition={{ duration: 0.2 }}
+              >
+                {serverError}
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <form className="auth-form" onSubmit={handleSubmit} noValidate>
+            <div className="auth-row">
+              <div className="auth-field">
+                <label htmlFor="firstname" className="auth-label">
+                  First name
+                </label>
+                <input
+                  id="firstname"
+                  className={`auth-input ${errors.firstName ? "auth-input--error" : ""}`}
+                  type="text"
+                  placeholder="Sushant"
+                  value={form.firstName}
+                  onChange={(e) => update("firstName", e.target.value)}
+                  autoComplete="given-name"
+                  autoFocus
+                />
+                <AnimatePresence>
+                  {errors.firstName && (
+                    <motion.span
+                      key="err-firstname"
+                      className="auth-error"
+                      initial={{ opacity: 0, y: -4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -4 }}
+                      transition={{ duration: 0.15 }}
+                    >
+                      {errors.firstName}
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              <div className="auth-field">
+                <label htmlFor="lastname" className="auth-label">
+                  Last name
+                </label>
+                <input
+                  id="lastname"
+                  className={`auth-input ${errors.lastName ? "auth-input--error" : ""}`}
+                  type="text"
+                  placeholder="Shinde"
+                  value={form.lastName}
+                  onChange={(e) => update("lastName", e.target.value)}
+                  autoComplete="family-name"
+                />
+                <AnimatePresence>
+                  {errors.lastName && (
+                    <motion.span
+                      key="err-lastname"
+                      className="auth-error"
+                      initial={{ opacity: 0, y: -4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -4 }}
+                      transition={{ duration: 0.15 }}
+                    >
+                      {errors.lastName}
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+              </div>
+            </div>
+
+            <div className="auth-field">
+              <label htmlFor="email" className="auth-label">
+                Email
+              </label>
+              <input
+                id="email"
+                aria-invalid={!!errors.email}
+                className={`auth-input ${errors.email ? "auth-input--error" : ""}`}
+                type="email"
+                placeholder="you@example.com"
+                value={form.email}
+                onChange={(e) => update("email", e.target.value)}
+                autoComplete="email"
+              />
+              <AnimatePresence>
+                {errors.email && (
+                  <motion.span
+                    key="err-email"
+                    className="auth-error"
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    transition={{ duration: 0.15 }}
+                  >
+                    {errors.email}
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            </div>
+
+            <div className="auth-field">
+              <label htmlFor="password" className="auth-label">
+                Password
+              </label>
+              <input
+                id="password"
+                className={`auth-input ${errors.password ? "auth-input--error" : ""}`}
+                type="password"
+                placeholder="••••••••"
+                value={form.password}
+                onChange={(e) => update("password", e.target.value)}
+                onFocus={() => setPwFocused(true)}
+                onBlur={() => setPwFocused(false)}
+                autoComplete="new-password"
+              />
+              <AnimatePresence>
+                {errors.password && (
+                  <motion.span
+                    key="err-password"
+                    className="auth-error"
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    transition={{ duration: 0.15 }}
+                  >
+                    {errors.password}
+                  </motion.span>
+                )}
+              </AnimatePresence>
+
+              {/* Live password rules — show while focused or password has value */}
+              <AnimatePresence>
+                {(pwFocused || form.password) && (
+                  <motion.ul
+                    key="pw-rules"
+                    className="pw-rules"
+                    initial={{ opacity: 0, y: -6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -6 }}
+                    transition={{ duration: 0.18 }}
+                  >
+                    {RULES.map((rule) => {
+                      const passed = rule.test(form.password);
+                      return (
+                        <li
+                          key={rule.id}
+                          className={`pw-rule ${passed ? "pw-rule--pass" : ""}`}
+                        >
+                          <span className="pw-rule-icon" aria-hidden="true">
+                            <AnimatePresence mode="wait" initial={false}>
+                              <motion.span
+                                key={passed ? "pass" : "fail"}
+                                initial={{ opacity: 0, scale: 0.6 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.6 }}
+                                transition={{ duration: 0.15 }}
+                                style={{ display: "inline-block" }}
+                              >
+                                {passed ? "✓" : "○"}
+                              </motion.span>
+                            </AnimatePresence>
+                          </span>
+                          {rule.label}
+                        </li>
+                      );
+                    })}
+                  </motion.ul>
+                )}
+              </AnimatePresence>
+            </div>
+
+            <div className="auth-field">
+              <label htmlFor="confirmpassword" className="auth-label">
+                Confirm password
+              </label>
+              <input
+                id="confirmpassword"
+                className={`auth-input ${errors.confirm ? "auth-input--error" : ""}`}
+                type="password"
+                placeholder="••••••••"
+                value={form.confirm}
+                onChange={(e) => update("confirm", e.target.value)}
+                autoComplete="new-password"
+              />
+              <AnimatePresence>
+                {errors.confirm && (
+                  <motion.span
+                    key="err-confirm"
+                    className="auth-error"
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    transition={{ duration: 0.15 }}
+                  >
+                    {errors.confirm}
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            </div>
+
+            <button className="auth-btn-primary" type="submit" disabled={loading}>
+              {loading ? "Creating account…" : "Create account"}
+            </button>
+          </form>
+
+          <div className="auth-divider">
+            <span>or</span>
+          </div>
+
+          <button
+            className="auth-btn-google"
+            onClick={handleGoogle}
+            disabled={loading}
+          >
+            <GoogleIcon />
+            Continue with Google
+          </button>
+
+          <p className="auth-switch">
+            Already have an account?{" "}
+            <Link to={ROUTES.LOGIN} className="auth-link">
+              Sign in
+            </Link>
+          </p>
+        </motion.main>
+      </div>
+    </MotionConfig>
   );
 }
 
