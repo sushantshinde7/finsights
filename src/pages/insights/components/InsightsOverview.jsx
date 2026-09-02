@@ -1,3 +1,5 @@
+import { motion } from "framer-motion";
+import { fadeUp, staggerContainer, useCountUp } from "../../../lib/motion";
 import "./InsightsOverview.css";
 
 function getStatus(savingsRate) {
@@ -54,26 +56,37 @@ export default function InsightsOverview({
   const narrative = getNarrative(savingsRate, expenseChange);
   const isExpenseUp = expenseChange >= 0;
 
+  // Only the headline balance counts up — it's the one hero number on
+  // this page (same role as Dashboard's stat cards). The composition
+  // row below just fades in; animating every number simultaneously
+  // would be noise, not polish.
+  const displayBalance = useCountUp(balance, { format: formatCurrency });
+
   return (
-    <section className={`insights-overview status-${status}`}>
+    <motion.section
+      className={`insights-overview status-${status}`}
+      initial="hidden"
+      animate="visible"
+      variants={staggerContainer(0.12)}
+    >
       {/* VERDICT */}
       <div className="overview-verdict">
-        <div className="verdict-top">
+        <motion.div className="verdict-top" variants={fadeUp}>
           <span className="overview-eyebrow">Financial Insights</span>
           <span className={`overview-status-chip status-${status}`}>
             {STATUS_LABEL[status]}
           </span>
-        </div>
+        </motion.div>
 
-        <h1 className="verdict-headline">{narrative}</h1>
+        <motion.h1 className="verdict-headline" variants={fadeUp}>
+          {narrative}
+        </motion.h1>
 
-        <div className="verdict-stat">
+        <motion.div className="verdict-stat" variants={fadeUp}>
           <span className="verdict-stat-label">Net balance this month</span>
 
           <div className="verdict-stat-row">
-            <span className="verdict-stat-value">
-              {formatCurrency(balance)}
-            </span>
+            <span className="verdict-stat-value">{displayBalance}</span>
 
             <span
               className={`verdict-stat-trend ${isExpenseUp ? "up" : "down"}`}
@@ -82,36 +95,39 @@ export default function InsightsOverview({
               vs last month
             </span>
           </div>
-        </div>
+        </motion.div>
       </div>
 
       {/* COMPOSITION — the receipt behind the verdict above */}
-      <div className="overview-composition">
-        <div className="composition-item">
+      <motion.div
+        className="overview-composition"
+        variants={staggerContainer(0.08, 0.1)}
+      >
+        <motion.div className="composition-item" variants={fadeUp}>
           <span className="composition-label">Total income</span>
           <span className="composition-value income">
             {formatCurrency(income)}
           </span>
-        </div>
+        </motion.div>
 
         <div className="composition-divider" aria-hidden="true" />
 
-        <div className="composition-item">
+        <motion.div className="composition-item" variants={fadeUp}>
           <span className="composition-label">Total expenses</span>
           <span className="composition-value expense">
             {formatCurrency(expense)}
           </span>
-        </div>
+        </motion.div>
 
         <div className="composition-divider" aria-hidden="true" />
 
-        <div className="composition-item">
+        <motion.div className="composition-item" variants={fadeUp}>
           <span className="composition-label">Top spending category</span>
           <span className="composition-value category">
             {topCategory?.name || "—"}
           </span>
-        </div>
-      </div>
-    </section>
+        </motion.div>
+      </motion.div>
+    </motion.section>
   );
 }

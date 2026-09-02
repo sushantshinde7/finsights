@@ -1,3 +1,5 @@
+import { motion } from "framer-motion";
+import { fadeUp, staggerContainer, viewportOnce } from "../../../lib/motion";
 import "./InsightCards.css";
 
 export default function InsightCards({
@@ -30,8 +32,15 @@ export default function InsightCards({
 
   return (
     <div className="insights-narrative-block">
-      {/* FEATURED — spending behavior */}
-      <div className={`insight-featured status-${behaviorStatus}`}>
+      {/* FEATURED — spending behavior. No CSS hover-transform on this
+      element, so it's safe to animate directly, no wrapper needed. */}
+      <motion.div
+        className={`insight-featured status-${behaviorStatus}`}
+        initial="hidden"
+        whileInView="visible"
+        viewport={viewportOnce}
+        variants={fadeUp}
+      >
         <div className="featured-top">
           <span className="featured-tag">Spending behavior</span>
           <span className="featured-badge">{behaviorLabel}</span>
@@ -45,12 +54,18 @@ export default function InsightCards({
           </span>
           <span className="featured-stat-caption">vs last month</span>
         </div>
-      </div>
+      </motion.div>
 
-      {/* SECONDARY — supporting facts */}
-      <div className="insight-secondary-row">
+      {/* SECONDARY — supporting facts, staggered in as a group */}
+      <motion.div
+        className="insight-secondary-row"
+        initial="hidden"
+        whileInView="visible"
+        viewport={viewportOnce}
+        variants={staggerContainer(0.08)}
+      >
         {biggestTx && (
-          <div className="insight-fact">
+          <motion.div className="insight-fact" variants={fadeUp}>
             <span className="fact-label">Largest transaction</span>
             <span className="fact-value">{formatCurrency(biggestTx.amount)}</span>
             <span className="fact-caption">
@@ -60,21 +75,21 @@ export default function InsightCards({
                 month: "short",
               })}
             </span>
-          </div>
+          </motion.div>
         )}
 
         {highestMonth && (
-          <div className="insight-fact">
+          <motion.div className="insight-fact" variants={fadeUp}>
             <span className="fact-label">Highest spending month</span>
             <span className="fact-value">{highestMonth.month}</span>
             <span className="fact-caption">
               {formatCurrency(highestMonth.expense)} in expenses
             </span>
-          </div>
+          </motion.div>
         )}
 
         {concentration !== null && (
-          <div className="insight-fact">
+          <motion.div className="insight-fact" variants={fadeUp}>
             <span className="fact-label">Category concentration</span>
             <span className={`fact-value ${concentration >= 50 ? "warn" : "good"}`}>
               {concentration}%
@@ -84,9 +99,9 @@ export default function InsightCards({
                 ? `${topCategory.name} alone makes up over half your spend`
                 : `${topCategory.name} leads, but spend is fairly spread out`}
             </span>
-          </div>
+          </motion.div>
         )}
-      </div>
+      </motion.div>
     </div>
   );
 }

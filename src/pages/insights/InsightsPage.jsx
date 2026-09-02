@@ -1,6 +1,8 @@
+import { motion, MotionConfig } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useTransactions } from "../../context/TransactionContext";
 import { ROUTES } from "../../routes/routes";
+import { fadeUp, viewportOnce } from "../../lib/motion";
 
 import InsightsOverview from "./components/InsightsOverview";
 import InsightCards from "./components/InsightCards";
@@ -45,65 +47,89 @@ export default function InsightsPage() {
 
   if (isEmpty) {
     return (
-      <div className="insights-container">
-        <InsightsHeader />
-        <div className="insights-empty">
-          <div className="insights-empty-icon" aria-hidden="true">
-            📊
-          </div>
-          <h3 className="insights-empty-title">No insights available yet</h3>
-          <p className="insights-empty-subtitle">
-            Add transactions to unlock charts and financial insights
-          </p>
-          <button
-            className="insights-empty-cta"
-            onClick={() => navigate(ROUTES.TRANSACTIONS)}
+      <MotionConfig reducedMotion="user">
+        <div className="insights-container">
+          <motion.div
+            className="insights-empty"
+            initial="hidden"
+            animate="visible"
+            variants={fadeUp}
           >
-            Go to transactions
-          </button>
+            <div className="insights-empty-icon" aria-hidden="true">
+              📊
+            </div>
+            <h3 className="insights-empty-title">No insights available yet</h3>
+            <p className="insights-empty-subtitle">
+              Add transactions to unlock charts and financial insights
+            </p>
+            <button
+              className="insights-empty-cta"
+              onClick={() => navigate(ROUTES.TRANSACTIONS)}
+            >
+              Go to transactions
+            </button>
+          </motion.div>
         </div>
-      </div>
+      </MotionConfig>
     );
   }
 
   return (
-    <div className="insights-container">
-      <InsightsOverview
-        balance={balance}
-        savingsRate={savingsRate}
-        expenseChange={expenseChange}
-        income={income}
-        expense={expense}
-        topCategory={topCategory}
-        formatCurrency={formatCurrency}
-      />
-
-      {/* SECTION — SPENDING PATTERNS */}
-      <section className="insights-section">
-        <h3 className="insights-section-label">Spending patterns</h3>
-        <InsightCards
+    <MotionConfig reducedMotion="user">
+      <div className="insights-container">
+        <InsightsOverview
+          balance={balance}
+          savingsRate={savingsRate}
           expenseChange={expenseChange}
-          biggestTx={biggestTx}
-          highestMonth={highestMonth}
-          topCategory={topCategory}
+          income={income}
           expense={expense}
-          formatCurrency={formatCurrency}
-        />
-      </section>
-
-      {/* SECTION — CHARTS */}
-      <section className="insights-section">
-        <h3 className="insights-section-label">Trends and breakdown</h3>
-        <ChartsSection
-          monthlyTrend={monthlyTrend}
-          balanceTrend={balanceTrend}
-          categoryBreakdown={categoryBreakdown}
           topCategory={topCategory}
-          expenseChange={expenseChange}
           formatCurrency={formatCurrency}
-          formatMonth={(m) => m}
         />
-      </section>
-    </div>
+
+        {/* SECTION — SPENDING PATTERNS */}
+        <section className="insights-section">
+          <motion.h3
+            className="insights-section-label"
+            initial="hidden"
+            whileInView="visible"
+            viewport={viewportOnce}
+            variants={fadeUp}
+          >
+            Spending patterns
+          </motion.h3>
+          <InsightCards
+            expenseChange={expenseChange}
+            biggestTx={biggestTx}
+            highestMonth={highestMonth}
+            topCategory={topCategory}
+            expense={expense}
+            formatCurrency={formatCurrency}
+          />
+        </section>
+
+        {/* SECTION — CHARTS */}
+        <section className="insights-section">
+          <motion.h3
+            className="insights-section-label"
+            initial="hidden"
+            whileInView="visible"
+            viewport={viewportOnce}
+            variants={fadeUp}
+          >
+            Trends and breakdown
+          </motion.h3>
+          <ChartsSection
+            monthlyTrend={monthlyTrend}
+            balanceTrend={balanceTrend}
+            categoryBreakdown={categoryBreakdown}
+            topCategory={topCategory}
+            expenseChange={expenseChange}
+            formatCurrency={formatCurrency}
+            formatMonth={(m) => m}
+          />
+        </section>
+      </div>
+    </MotionConfig>
   );
 }

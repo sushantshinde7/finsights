@@ -1,3 +1,5 @@
+import { motion } from "framer-motion";
+import { fadeUp, staggerContainer, viewportOnce } from "../../../lib/motion";
 import "./ChartsSection.css";
 
 import {
@@ -50,11 +52,28 @@ export default function ChartsSection({
 
   return (
     <div className="charts-block">
-      <p className="charts-intro">{getIntro(topCategory, expenseChange)}</p>
+      <motion.p
+        className="charts-intro"
+        initial="hidden"
+        whileInView="visible"
+        viewport={viewportOnce}
+        variants={fadeUp}
+      >
+        {getIntro(topCategory, expenseChange)}
+      </motion.p>
 
-      <div className="insights-grid">
-        {/* BAR */}
-        <div className="chart-card span-2">
+      <motion.div
+        className="insights-grid"
+        initial="hidden"
+        whileInView="visible"
+        viewport={viewportOnce}
+        variants={staggerContainer(0.12)}
+      >
+        {/* BAR — no CSS hover-transform on .chart-card here, so it's
+        safe to animate directly, no wrapper div needed. Recharts
+        handles its own internal draw-in animation independently of
+        this card's fade — the two don't compete. */}
+        <motion.div className="chart-card span-2" variants={fadeUp}>
           <div className="chart-title">Income vs Expense Trend</div>
 
           {!(monthlyTrend && monthlyTrend.length > 1) ? (
@@ -73,10 +92,10 @@ export default function ChartsSection({
               </BarChart>
             </ResponsiveContainer>
           )}
-        </div>
+        </motion.div>
 
         {/* PIE */}
-        <div className="chart-card span-2">
+        <motion.div className="chart-card span-2" variants={fadeUp}>
           <div className="chart-title">Expense Breakdown</div>
 
           {!categoryBreakdown?.length ? (
@@ -102,7 +121,15 @@ export default function ChartsSection({
                 </ResponsiveContainer>
               </div>
 
-              <div className="pie-legend-list">
+              {/* Legend rows staggered as a small list reveal, same
+              pattern as the homepage checklist / dashboard recent-list. */}
+              <motion.div
+                className="pie-legend-list"
+                initial="hidden"
+                whileInView="visible"
+                viewport={viewportOnce}
+                variants={staggerContainer(0.05)}
+              >
                 {(() => {
                   const total = categoryBreakdown.reduce(
                     (sum, c) => sum + c.value,
@@ -112,7 +139,11 @@ export default function ChartsSection({
                     const percent =
                       total > 0 ? Math.round((c.value / total) * 100) : 0;
                     return (
-                      <div className="pie-legend-item" key={c.name}>
+                      <motion.div
+                        className="pie-legend-item"
+                        key={c.name}
+                        variants={fadeUp}
+                      >
                         <span
                           className="pie-legend-swatch"
                           style={{ background: COLORS[i % COLORS.length] }}
@@ -123,17 +154,17 @@ export default function ChartsSection({
                           {formatCurrency(c.value)}
                         </span>
                         <span className="pie-legend-percent">{percent}%</span>
-                      </div>
+                      </motion.div>
                     );
                   });
                 })()}
-              </div>
+              </motion.div>
             </div>
           )}
-        </div>
+        </motion.div>
 
         {/* LINE */}
-        <div className="chart-card span-2">
+        <motion.div className="chart-card span-2" variants={fadeUp}>
           <div className="chart-title">Balance Movement</div>
 
           {!balanceTrend?.length ? (
@@ -159,10 +190,9 @@ export default function ChartsSection({
               </LineChart>
             </ResponsiveContainer>
           )}
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </div>
   );
 }
-
 
