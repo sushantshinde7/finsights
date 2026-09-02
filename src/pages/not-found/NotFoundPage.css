@@ -34,7 +34,6 @@
   color: var(--color-primary);
   margin: 0;
   letter-spacing: -0.05em;
-  animation: error-bounce 1s infinite alternate;
 }
 
 .error-page-title {
@@ -108,10 +107,4 @@
   .error-btn-secondary {
     width: auto;
   }
-}
-
-/* Subtle bounce animation */
-@keyframes error-bounce {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(-10px); }
 }
