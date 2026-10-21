@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence, MotionConfig } from "framer-motion";
 
 import TransactionsTable from "./components/TransactionsTable";
@@ -14,14 +14,23 @@ import { useAuth } from "../../context/AuthContext";
 import { fadeUp, staggerContainer } from "../../lib/motion";
 
 import "./transactions.css";
-import {
-  Plus,
-  Upload,
-  Download,
-  ChevronDown,
-} from "lucide-react";
+import { Plus, Upload, Download, ChevronDown } from "lucide-react";
 
 const EASE = [0.22, 1, 0.36, 1];
+
+const KIND_LABELS = {
+  sample: "Sample dataset",
+  custom: "Custom dataset",
+  imported: "Imported file",
+};
+
+function InfoTip({ text }) {
+  return (
+    <button type="button" className="info-tip" data-tip={text} aria-label={text}>
+      i
+    </button>
+  );
+}
 
 const MIN_AMOUNT = 0;
 const MAX_AMOUNT = 100000;
@@ -39,14 +48,19 @@ const DEFAULT_FILTERS = {
 export default function TransactionsPage() {
   const {
     transactions,
-    activeSample,
-    loadSample,
+    activeDataset,
+    datasets,
+    switchDataset,
+    deleteDataset,
     addTransaction,
     updateTransaction,
     deleteTransaction,
   } = useTransactions();
-  const { isAuthenticated, isGuest, loading } = useAuth();
-  console.log({ isAuthenticated, isGuest, loading });
+
+  const activeInfo =
+    datasets.find((d) => d.id === activeDataset.id) ?? datasets[0];
+
+  const { isAuthenticated} = useAuth();
 
   const [searchTerm, setSearchTerm] = useState(() => {
     return localStorage.getItem("finance-dashboard-search") || "";
@@ -107,9 +121,81 @@ export default function TransactionsPage() {
   };
 
   // 2. add handler — after resetTransactionView()
-  const handleLoadSample = (key) => {
-    loadSample(key);
+  const [showDatasetMenu, setShowDatasetMenu] = useState(false);
+  const datasetMenuRef = useRef(null);
+
+  // close on outside click / Escape
+  useEffect(() => {
+    if (!showDatasetMenu) return;
+
+    const onPointerDown = (e) => {
+      if (
+        datasetMenuRef.current &&
+        !datasetMenuRef.current.contains(e.target)
+      ) {
+        setShowDatasetMenu(false);
+      }
+    };
+    const onKeyDown = (e) => {
+      if (e.key === "Escape") setShowDatasetMenu(false);
+    };
+
+    document.addEventListener("mousedown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [showDatasetMenu]);
+
+  const handleSwitchDataset = (id) => {
+    setShowDatasetMenu(false);
+    if (id === activeDataset.id) return;
+    switchDataset(id);
     resetTransactionView();
+  };
+
+  const handleDeleteDataset = (e, ds) => {
+    e.stopPropagation();
+    if (!window.confirm(`Delete "${ds.name}"? This can't be undone.`)) return;
+    const wasActive = ds.id === activeDataset.id;
+    deleteDataset(ds.id);
+    if (wasActive) resetTransactionView();
+  };
+
+  const samples = datasets.filter((d) => d.kind === "sample");
+  const customs = datasets.filter((d) => d.kind === "custom");
+  const importeds = datasets.filter((d) => d.kind === "imported");
+
+  const renderDatasetItem = (ds) => {
+    const isActive = ds.id === activeDataset.id;
+    return (
+      <div
+        key={ds.id}
+        className={`dataset-row ${isActive ? "dataset-row--active" : ""}`}
+      >
+        <button
+          type="button"
+          className="dataset-item"
+          onClick={() => handleSwitchDataset(ds.id)}
+        >
+          <span className="dataset-name">{ds.name}</span>
+          <span className="dataset-count">{ds.count}</span>
+          {isActive && <span className="sample-check">✓</span>}
+        </button>
+
+        {ds.kind === "imported" && (
+          <button
+            type="button"
+            className="dataset-remove"
+            aria-label={`Delete ${ds.name}`}
+            onClick={(e) => handleDeleteDataset(e, ds)}
+          >
+            ✕
+          </button>
+        )}
+      </div>
+    );
   };
 
   const categories = useMemo(() => {
@@ -122,15 +208,10 @@ export default function TransactionsPage() {
     return {
       transactionCount: transactions.length,
       categoryCount: categories.length,
-      datasetLabel:
-        activeSample === "sample1"
-          ? "Personal Finance"
-          : activeSample === "sample2"
-            ? "Senior Professional"
-            : "Custom Dataset",
+      datasetLabel: activeDataset.name,
       totalVolume,
     };
-  }, [transactions, categories, activeSample]);
+  }, [transactions, categories, activeDataset]);
 
   const activeFilterCount = useMemo(() => {
     let count = 0;
@@ -287,21 +368,21 @@ export default function TransactionsPage() {
     });
 
   const summary = useMemo(() => {
-    const income = processedTransactions
+    const income = transactions
       .filter((tx) => tx.type === "income")
       .reduce((sum, tx) => sum + tx.amount, 0);
 
-    const expense = processedTransactions
+    const expense = transactions
       .filter((tx) => tx.type === "expense")
       .reduce((sum, tx) => sum + tx.amount, 0);
 
     return {
-      count: processedTransactions.length,
+      count: transactions.length,
       income,
       expense,
       net: income - expense,
     };
-  }, [processedTransactions]);
+  }, [transactions]);
 
   const handleAdd = (tx) => {
     addTransaction(tx);
@@ -391,12 +472,6 @@ export default function TransactionsPage() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [searchTerm]);
 
-  const balanceStatus =
-    summary.net > 0
-      ? "Healthy Surplus"
-      : summary.net < 0
-        ? "Overspending"
-        : "Break-even";
 
   return (
     <MotionConfig reducedMotion="user">
@@ -432,7 +507,10 @@ export default function TransactionsPage() {
                   setShowModal(true);
                 }}
               >
-                <span aria-hidden="true"><Plus size={16} /></span> Add Transaction
+                <span aria-hidden="true">
+                  <Plus size={16} />
+                </span>{" "}
+                Add Transaction
               </button>
 
               <button
@@ -445,7 +523,10 @@ export default function TransactionsPage() {
                   /* import logic later */
                 }}
               >
-                <span aria-hidden="true"><Upload size={15} /> </span> Import
+                <span aria-hidden="true">
+                  <Upload size={15} />{" "}
+                </span>{" "}
+                Import
               </button>
 
               <button
@@ -459,61 +540,67 @@ export default function TransactionsPage() {
                   /* export logic later */
                 }}
               >
-                <span aria-hidden="true"><Download size={15} /></span> Export
+                <span aria-hidden="true">
+                  <Download size={15} />
+                </span>{" "}
+                Export
               </button>
 
-              <div className="sample-wrapper">
-                <button className="btn-transfer btn-sample">
-                  Sample <span aria-hidden="true"><ChevronDown size={15} /></span>
+              <div className="sample-wrapper" ref={datasetMenuRef}>
+                <button
+                  type="button"
+                  className="btn-transfer btn-sample"
+                  aria-label={`Active dataset: ${activeDataset.name}. Change dataset`}
+                  aria-haspopup="menu"
+                  aria-expanded={showDatasetMenu}
+                  onClick={() => setShowDatasetMenu((open) => !open)}
+                >
+                  <span className="dataset-btn-name">{activeDataset.name}</span>
+                  <span aria-hidden="true">
+                    <ChevronDown size={15} />
+                  </span>
                 </button>
 
-                <div className="sample-dropdown">
-                  <button
-                    className={`sample-item ${activeSample === "sample1" ? "sample-item--active" : ""}`}
-                    onClick={() => handleLoadSample("sample1")}
-                  >
-                    <span className="sample-dot dot-blue" />
-                    Personal finance
-                    {activeSample === "sample1" && (
-                      <span className="sample-check">✓</span>
-                    )}
-                  </button>
+                {showDatasetMenu && (
+                  <div className="sample-dropdown" role="menu">
+                    <p className="dataset-section-title">Samples</p>
+                    {samples.map(renderDatasetItem)}
 
-                  <button
-                    className={`sample-item ${activeSample === "sample2" ? "sample-item--active" : ""}`}
-                    onClick={() => handleLoadSample("sample2")}
-                  >
-                    <span className="sample-dot dot-green" />
-                    Senior professional
-                    {activeSample === "sample2" && (
-                      <span className="sample-check">✓</span>
-                    )}
-                  </button>
+                    <p className="dataset-section-title">Custom</p>
+                    {customs.map(renderDatasetItem)}
 
-                  <button
-                    className="sample-item sample-item--danger"
-                    onClick={() => handleLoadSample("clear")}
-                  >
-                    Clear all data
-                  </button>
-                </div>
+                    <p className="dataset-section-title">Imported</p>
+                    {importeds.length > 0 ? (
+                      importeds.map(renderDatasetItem)
+                    ) : (
+                      <p className="dataset-empty">Nothing imported yet</p>
+                    )}
+                  </div>
+                )}
               </div>
             </motion.div>
 
             {transactions.length > 0 && (
               <motion.div variants={fadeUp}>
                 <p className="transactions-context">
-                  View, search and manage your complete transaction history in one place. Filter by category, amount or date, sort records instantly, and switch between sample datasets to explore different financial scenarios and workflows.
+                  View, search and manage your complete transaction history in
+                  one place. Filter by category, amount or date, sort records
+                  instantly, and switch between sample datasets to explore
+                  different financial scenarios and workflows.
                 </p>
 
                 <div className="transactions-meta">
-                  <span className="meta-pill">{overviewStats.datasetLabel}</span>
                   <span className="meta-pill">
-                    {overviewStats.transactionCount} Transactions
+                    {KIND_LABELS[activeInfo.kind]}
                   </span>
                   <span className="meta-pill">
-                    {overviewStats.categoryCount} Categories
+                    {overviewStats.categoryCount} categories
                   </span>
+                  {activeInfo.originalCount !== null && (
+                    <span className="meta-pill">
+                      {activeInfo.originalCount} original transactions
+                    </span>
+                  )}
                 </div>
               </motion.div>
             )}
@@ -536,9 +623,11 @@ export default function TransactionsPage() {
               transition={{ duration: 0.4, ease: EASE }}
             >
               <div className="summary-item">
-                <span className="summary-label">Transactions</span>
+                <span className="summary-label">
+                  Total transactions
+                  <InfoTip text="All Total(original + newly added/removed) rows in this dataset right now. Filters don't change it." />
+                </span>
                 <span className="summary-value">{summary.count}</span>
-                {/*<span className="summary-status">{balanceStatus}</span>*/}
               </div>
               <div className="summary-item">
                 <span className="summary-label">Income</span>
