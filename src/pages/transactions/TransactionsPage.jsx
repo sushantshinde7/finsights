@@ -11,6 +11,12 @@ import AuthPrompt from "../../components/auth/AuthPrompt";
 import { useTransactions } from "../../context/TransactionContext";
 import { useAuth } from "../../context/AuthContext";
 
+import {
+  validateTransactionsCSV,
+  datasetNameFromFile,
+  MAX_FILE_BYTES,
+} from "../../lib/csv";
+
 import { fadeUp, staggerContainer } from "../../lib/motion";
 
 import "./transactions.css";
@@ -26,7 +32,12 @@ const KIND_LABELS = {
 
 function InfoTip({ text }) {
   return (
-    <button type="button" className="info-tip" data-tip={text} aria-label={text}>
+    <button
+      type="button"
+      className="info-tip"
+      data-tip={text}
+      aria-label={text}
+    >
       i
     </button>
   );
@@ -50,7 +61,9 @@ export default function TransactionsPage() {
     transactions,
     activeDataset,
     datasets,
+    maxImportedDatasets,
     switchDataset,
+    importDataset,
     deleteDataset,
     addTransaction,
     updateTransaction,
@@ -60,7 +73,7 @@ export default function TransactionsPage() {
   const activeInfo =
     datasets.find((d) => d.id === activeDataset.id) ?? datasets[0];
 
-  const { isAuthenticated} = useAuth();
+  const { isAuthenticated } = useAuth();
 
   const [searchTerm, setSearchTerm] = useState(() => {
     return localStorage.getItem("finance-dashboard-search") || "";
@@ -93,6 +106,18 @@ export default function TransactionsPage() {
   const [editingTx, setEditingTx] = useState(null);
 
   const [toast, setToast] = useState(null);
+
+  const toastTimer = useRef(null);
+  const fileInputRef = useRef(null);
+
+  const showToast = (message, options = {}) => {
+    clearTimeout(toastTimer.current);
+    setToast({ message, ...options });
+    toastTimer.current = setTimeout(
+      () => setToast(null),
+      options.duration ?? 4000,
+    );
+  };
 
   const [filters, setFilters] = useState(() => {
     try {
@@ -196,6 +221,87 @@ export default function TransactionsPage() {
         )}
       </div>
     );
+  };
+
+  const handleImportClick = () => {
+    if (!isAuthenticated) {
+      setShowAuthPrompt(true);
+      return;
+    }
+
+    if (importeds.length >= maxImportedDatasets) {
+      showToast(
+        `You can keep up to ${maxImportedDatasets} imported datasets. Delete one from the dataset menu first.`,
+        { duration: 6000 },
+      );
+      return;
+    }
+
+    fileInputRef.current?.click();
+  };
+
+  const handleFileSelected = async (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = ""; // lets the same file be chosen again later
+    if (!file) return;
+
+    if (!file.name.toLowerCase().endsWith(".csv")) {
+      showToast("Please choose a .csv file.", { duration: 5000 });
+      return;
+    }
+
+    if (file.size > MAX_FILE_BYTES) {
+      showToast("That file is too large (max 1 MB).", { duration: 5000 });
+      return;
+    }
+
+    let text;
+    try {
+      text = await file.text();
+    } catch {
+      showToast("Couldn't read that file.", { duration: 5000 });
+      return;
+    }
+
+    const result = validateTransactionsCSV(text);
+
+    if (!result.ok) {
+      showToast(result.error, { duration: 6000 });
+      return;
+    }
+
+    if (result.rows.length === 0) {
+      showToast(`No valid rows found (${result.skipped.length} skipped).`, {
+        duration: 6000,
+      });
+      return;
+    }
+
+    const imported = importDataset({
+      name: datasetNameFromFile(file.name),
+      rows: result.rows,
+    });
+
+    if (!imported.ok) {
+      showToast(
+        imported.reason === "limit"
+          ? `You can keep up to ${maxImportedDatasets} imported datasets. Delete one first.`
+          : "Import failed.",
+        { duration: 6000 },
+      );
+      return;
+    }
+
+    resetTransactionView();
+
+    const skippedCount = result.skipped.length;
+    showToast(
+      `Imported "${imported.name}": ${result.rows.length} transactions` +
+        (skippedCount > 0 ? `, ${skippedCount} skipped` : ""),
+      { duration: 5000 },
+    );
+
+    if (skippedCount > 0) console.table(result.skipped); // temporary, replaced in Stage B
   };
 
   const categories = useMemo(() => {
@@ -404,20 +510,13 @@ export default function TransactionsPage() {
 
     deleteTransaction(id);
 
-    setToast({
-      message: "Transaction deleted",
-
+    showToast("Transaction deleted", {
       actionLabel: "Undo",
-
       onAction: () => {
         addTransaction(deleted);
         setToast(null);
       },
     });
-
-    setTimeout(() => {
-      setToast(null);
-    }, 4000);
   };
 
   const getEmptyState = () => {
@@ -472,7 +571,6 @@ export default function TransactionsPage() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [searchTerm]);
 
-
   return (
     <MotionConfig reducedMotion="user">
       <section
@@ -513,21 +611,20 @@ export default function TransactionsPage() {
                 Add Transaction
               </button>
 
-              <button
-                className="btn-transfer"
-                onClick={() => {
-                  if (!isAuthenticated) {
-                    setShowAuthPrompt(true);
-                    return;
-                  }
-                  /* import logic later */
-                }}
-              >
+              <button className="btn-transfer" onClick={handleImportClick}>
                 <span aria-hidden="true">
                   <Upload size={15} />{" "}
                 </span>{" "}
                 Import
               </button>
+
+              <input
+                type="file"
+                accept=".csv,text/csv"
+                ref={fileInputRef}
+                onChange={handleFileSelected}
+                hidden
+              />
 
               <button
                 className="btn-transfer"
@@ -754,9 +851,11 @@ export default function TransactionsPage() {
               transition={{ duration: 0.25, ease: EASE }}
             >
               <span>{toast.message}</span>
-              <button className="toast-action" onClick={toast.onAction}>
-                {toast.actionLabel}
-              </button>
+              {toast.actionLabel && (
+                <button className="toast-action" onClick={toast.onAction}>
+                  {toast.actionLabel}
+                </button>
+              )}
             </motion.div>
           )}
         </AnimatePresence>
