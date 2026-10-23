@@ -4,7 +4,7 @@ import { motion, AnimatePresence, MotionConfig } from "framer-motion";
 import TransactionsTable from "./components/TransactionsTable";
 import TableControls from "./components/TableControls";
 import AddTransactionModal from "./components/AddTransactionModal";
-
+import ImportSummaryModal from "./components/ImportSummaryModal";
 import FilterModal from "./components/FilterModal";
 import AuthPrompt from "../../components/auth/AuthPrompt";
 
@@ -106,6 +106,7 @@ export default function TransactionsPage() {
   const [editingTx, setEditingTx] = useState(null);
 
   const [toast, setToast] = useState(null);
+  const [importReport, setImportReport] = useState(null);
 
   const toastTimer = useRef(null);
   const fileInputRef = useRef(null);
@@ -271,8 +272,20 @@ export default function TransactionsPage() {
     }
 
     if (result.rows.length === 0) {
-      showToast(`No valid rows found (${result.skipped.length} skipped).`, {
-        duration: 6000,
+      // Header only, no data lines at all
+      if (result.skipped.length === 0) {
+        showToast("That file has a header but no transactions.", {
+          duration: 6000,
+        });
+        return;
+      }
+
+      // Every row was bad: show why, create nothing
+      setImportReport({
+        fileName: file.name,
+        datasetName: null,
+        importedCount: 0,
+        skipped: result.skipped,
       });
       return;
     }
@@ -294,14 +307,22 @@ export default function TransactionsPage() {
 
     resetTransactionView();
 
-    const skippedCount = result.skipped.length;
-    showToast(
-      `Imported "${imported.name}": ${result.rows.length} transactions` +
-        (skippedCount > 0 ? `, ${skippedCount} skipped` : ""),
-      { duration: 5000 },
-    );
+    const count = result.rows.length;
 
-    if (skippedCount > 0) console.table(result.skipped); // temporary, replaced in Stage B
+    if (result.skipped.length > 0) {
+      // Some rows were bad: a toast is too easy to miss, so open the report
+      setImportReport({
+        fileName: file.name,
+        datasetName: imported.name,
+        importedCount: count,
+        skipped: result.skipped,
+      });
+    } else {
+      showToast(
+        `Imported "${imported.name}": ${count} transaction${count === 1 ? "" : "s"}`,
+        { duration: 5000 },
+      );
+    }
   };
 
   const categories = useMemo(() => {
@@ -757,6 +778,23 @@ export default function TransactionsPage() {
             </motion.section>
           )}
         </AnimatePresence>
+
+        <AnimatePresence>
+  {importReport && (
+    <motion.div
+      key="import-report"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+    >
+      <ImportSummaryModal
+        report={importReport}
+        onClose={() => setImportReport(null)}
+      />
+    </motion.div>
+  )}
+</AnimatePresence>
 
         {/* CARD — mount-triggered fadeUp, arrives after the header/summary */}
         <motion.div
