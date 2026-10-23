@@ -5,6 +5,7 @@ import TransactionsTable from "./components/TransactionsTable";
 import TableControls from "./components/TableControls";
 import AddTransactionModal from "./components/AddTransactionModal";
 import ImportSummaryModal from "./components/ImportSummaryModal";
+import ExportModal from "./components/ExportModal";
 import FilterModal from "./components/FilterModal";
 import AuthPrompt from "../../components/auth/AuthPrompt";
 
@@ -14,6 +15,9 @@ import { useAuth } from "../../context/AuthContext";
 import {
   validateTransactionsCSV,
   datasetNameFromFile,
+  transactionsToCSV,
+  exportFileName,
+  downloadCSV,
   MAX_FILE_BYTES,
 } from "../../lib/csv";
 
@@ -107,7 +111,7 @@ export default function TransactionsPage() {
 
   const [toast, setToast] = useState(null);
   const [importReport, setImportReport] = useState(null);
-
+  const [showExport, setShowExport] = useState(false);
   const toastTimer = useRef(null);
   const fileInputRef = useRef(null);
 
@@ -325,6 +329,31 @@ export default function TransactionsPage() {
     }
   };
 
+  const exportFile = exportFileName(activeDataset.name);
+
+  const handleExportClick = () => {
+    if (!isAuthenticated) {
+      setShowAuthPrompt(true);
+      return;
+    }
+    setShowExport(true);
+  };
+
+  const handleExportConfirm = (scope) => {
+    const rows =
+      scope === "results"
+        ? processedTransactions
+        : [...transactions].sort((a, b) => b.date.localeCompare(a.date));
+
+    downloadCSV(transactionsToCSV(rows), exportFile);
+    setShowExport(false);
+
+    showToast(
+      `Exported ${rows.length} transaction${rows.length === 1 ? "" : "s"}`,
+      { duration: 4000 },
+    );
+  };
+
   const categories = useMemo(() => {
     return [...new Set(transactions.map((tx) => tx.category))].sort();
   }, [transactions]);
@@ -358,6 +387,8 @@ export default function TransactionsPage() {
 
     return count;
   }, [filters]);
+
+  const isViewFiltered = activeFilterCount > 0 || searchTerm.trim() !== "";
 
   const clearFilters = () => {
     setFilters(DEFAULT_FILTERS);
@@ -650,13 +681,7 @@ export default function TransactionsPage() {
               <button
                 className="btn-transfer"
                 disabled={transactions.length === 0}
-                onClick={() => {
-                  if (!isAuthenticated) {
-                    setShowAuthPrompt(true);
-                    return;
-                  }
-                  /* export logic later */
-                }}
+                onClick={handleExportClick}
               >
                 <span aria-hidden="true">
                   <Download size={15} />
@@ -780,21 +805,43 @@ export default function TransactionsPage() {
         </AnimatePresence>
 
         <AnimatePresence>
-  {importReport && (
-    <motion.div
-      key="import-report"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.2 }}
-    >
-      <ImportSummaryModal
-        report={importReport}
-        onClose={() => setImportReport(null)}
-      />
-    </motion.div>
-  )}
-</AnimatePresence>
+          {importReport && (
+            <motion.div
+              key="import-report"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <ImportSummaryModal
+                report={importReport}
+                onClose={() => setImportReport(null)}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <AnimatePresence>
+          {showExport && (
+            <motion.div
+              key="export-modal"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <ExportModal
+                datasetName={activeDataset.name}
+                totalCount={transactions.length}
+                resultsCount={processedTransactions.length}
+                isFiltered={isViewFiltered}
+                fileName={exportFile}
+                onClose={() => setShowExport(false)}
+                onConfirm={handleExportConfirm}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* CARD — mount-triggered fadeUp, arrives after the header/summary */}
         <motion.div

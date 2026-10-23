@@ -154,3 +154,64 @@ export function datasetNameFromFile(filename) {
   const name = filename.replace(/\.csv$/i, "").trim().slice(0, 40);
   return name || "Imported Dataset";
 }
+
+/* =========================================================
+   EXPORT
+========================================================= */
+
+const BOM = "\uFEFF"; // lets Excel show non-English characters correctly
+
+// Quote a value if it contains a comma, quote or line break.
+// "Food, Dining" → "Food, Dining" (quoted); say "hi" → "say ""hi"""
+const escapeCell = (value) => {
+  const s = String(value);
+  return /[",\r\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+};
+
+export function transactionsToCSV(transactions) {
+  const lines = [REQUIRED_HEADERS.join(",")];
+
+  transactions.forEach((t) => {
+    lines.push(
+      [
+        t.date,
+        t.category,
+        t.amount,
+        t.type === "income" ? "Income" : "Expense",
+      ]
+        .map(escapeCell)
+        .join(",")
+    );
+  });
+
+  return BOM + lines.join("\r\n") + "\r\n";
+}
+
+// "Personal Finance" → finsights-personal-finance-2026-10-23.csv
+export function exportFileName(datasetName, date = new Date()) {
+  const slug =
+    datasetName
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 40) || "dataset";
+
+  const pad = (n) => String(n).padStart(2, "0");
+  const day = `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+
+  return `finsights-${slug}-${day}.csv`;
+}
+
+export function downloadCSV(csvText, filename) {
+  const blob = new Blob([csvText], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
