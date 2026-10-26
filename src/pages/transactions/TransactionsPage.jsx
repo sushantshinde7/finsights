@@ -5,6 +5,7 @@ import TransactionsTable from "./components/TransactionsTable";
 import TableControls from "./components/TableControls";
 import AddTransactionModal from "./components/AddTransactionModal";
 import ImportSummaryModal from "./components/ImportSummaryModal";
+import ImportModal from "./components/ImportModal";
 import ExportModal from "./components/ExportModal";
 import FilterModal from "./components/FilterModal";
 import AuthPrompt from "../../components/auth/AuthPrompt";
@@ -18,6 +19,7 @@ import {
   transactionsToCSV,
   exportFileName,
   downloadCSV,
+  downloadTemplate,
   MAX_FILE_BYTES,
 } from "../../lib/csv";
 
@@ -112,6 +114,7 @@ export default function TransactionsPage() {
   const [toast, setToast] = useState(null);
   const [importReport, setImportReport] = useState(null);
   const [showExport, setShowExport] = useState(false);
+  const [showImportDialog, setShowImportDialog] = useState(false);
   const toastTimer = useRef(null);
   const fileInputRef = useRef(null);
 
@@ -233,15 +236,11 @@ export default function TransactionsPage() {
       setShowAuthPrompt(true);
       return;
     }
+    setShowImportDialog(true);
+  };
 
-    if (importeds.length >= maxImportedDatasets) {
-      showToast(
-        `You can keep up to ${maxImportedDatasets} imported datasets. Delete one from the dataset menu first.`,
-        { duration: 6000 },
-      );
-      return;
-    }
-
+  const handleChooseFile = () => {
+    setShowImportDialog(false);
     fileInputRef.current?.click();
   };
 
@@ -801,6 +800,26 @@ export default function TransactionsPage() {
                 {/*<span className="summary-status">{balanceStatus}</span>*/}
               </div>
             </motion.section>
+          )}
+        </AnimatePresence>
+
+        <AnimatePresence>
+          {showImportDialog && (
+            <motion.div
+              key="import-dialog"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <ImportModal
+                importedCount={importeds.length}
+                maxImported={maxImportedDatasets}
+                onClose={() => setShowImportDialog(false)}
+                onChooseFile={handleChooseFile}
+                onDownloadTemplate={downloadTemplate}
+              />
+            </motion.div>
           )}
         </AnimatePresence>
 

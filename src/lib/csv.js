@@ -215,3 +215,38 @@ export function downloadCSV(csvText, filename) {
 
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
+
+/* =========================================================
+   TEMPLATE
+   Built with the same writer as Export, and the dialog's example
+   table reads the same rows, so spec and download can't disagree.
+========================================================= */
+
+export const TEMPLATE_FILE_NAME = "finsights-import-template.csv";
+
+const TEMPLATE_ROWS = [
+  { daysAgo: 4, category: "Salary", amount: 50000, type: "income" },
+  { daysAgo: 3, category: "Rent", amount: 15000, type: "expense" },
+  { daysAgo: 2, category: "Groceries", amount: 3200, type: "expense" },
+  { daysAgo: 1, category: "Freelance", amount: 8000, type: "income" },
+  { daysAgo: 0, category: "Utilities", amount: 2100, type: "expense" },
+];
+
+const localISODate = (date) => {
+  const pad = (n) => String(n).padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+};
+
+// Dates are relative to today, so the imported rows show up under
+// filters like "Last 7 days".
+export function getTemplateRows(today = new Date()) {
+  return TEMPLATE_ROWS.map(({ daysAgo, ...rest }) => {
+    const d = new Date(today);
+    d.setDate(d.getDate() - daysAgo);
+    return { date: localISODate(d), ...rest };
+  });
+}
+
+export function downloadTemplate() {
+  downloadCSV(transactionsToCSV(getTemplateRows()), TEMPLATE_FILE_NAME);
+}
