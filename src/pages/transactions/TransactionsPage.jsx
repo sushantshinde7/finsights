@@ -68,6 +68,7 @@ export default function TransactionsPage() {
     activeDataset,
     datasets,
     maxImportedDatasets,
+    storageError,
     switchDataset,
     importDataset,
     deleteDataset,
@@ -299,18 +300,21 @@ export default function TransactionsPage() {
     });
 
     if (!imported.ok) {
-      showToast(
-        imported.reason === "limit"
-          ? `You can keep up to ${maxImportedDatasets} imported datasets. Delete one first.`
-          : "Import failed.",
-        { duration: 6000 },
-      );
+      const messages = {
+        limit: `You can keep up to ${maxImportedDatasets} imported datasets. Delete one first.`,
+        storage:
+          "Not enough browser storage to save this dataset. Delete an imported dataset and try again.",
+      };
+      showToast(messages[imported.reason] ?? "Import failed.", {
+        duration: 6000,
+      });
       return;
     }
 
     resetTransactionView();
 
     const count = result.rows.length;
+    const duplicateOf = imported.duplicateOf;
 
     if (result.skipped.length > 0) {
       // Some rows were bad: a toast is too easy to miss, so open the report
@@ -319,11 +323,15 @@ export default function TransactionsPage() {
         datasetName: imported.name,
         importedCount: count,
         skipped: result.skipped,
+        duplicateOf,
       });
     } else {
       showToast(
-        `Imported "${imported.name}": ${count} transaction${count === 1 ? "" : "s"}`,
-        { duration: 5000 },
+        `Imported "${imported.name}": ${count} transaction${count === 1 ? "" : "s"}.` +
+          (duplicateOf
+            ? ` Same data as "${duplicateOf}" imported earlier. You can delete the extra copy from the dataset menu.`
+            : ""),
+        { duration: duplicateOf ? 8000 : 5000 },
       );
     }
   };
@@ -749,6 +757,15 @@ export default function TransactionsPage() {
           </motion.div>
         </div>
 
+        {storageError && (
+          <div className="storage-banner" role="alert">
+            <strong>Changes aren't being saved.</strong> Your browser's storage
+            is full. Delete an imported dataset from the dataset menu to free up
+            space.
+          </div>
+        )}
+
+
         {/* SUMMARY BAR — AnimatePresence keyed to `transactions.length`,
         not `processedTransactions.length`, so this only mounts/unmounts
         on dataset-level changes (load sample, clear data) — never on
@@ -976,6 +993,7 @@ export default function TransactionsPage() {
               <AddTransactionModal
                 mode={editingTx ? "edit" : "add"}
                 initialData={editingTx}
+                datasetName={activeDataset.name}
                 onClose={() => {
                   setShowModal(false);
                   setEditingTx(null);

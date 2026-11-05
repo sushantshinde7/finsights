@@ -64,3 +64,10 @@
   line-height: 1.5;
   color: var(--color-text-secondary);
 }
+
+.import-report-note {
+  margin: 0 0 6px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+}

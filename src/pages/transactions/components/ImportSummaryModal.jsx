@@ -8,7 +8,7 @@ const MAX_SHOWN = 50;
 const plural = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
 
 export default function ImportSummaryModal({ report, onClose }) {
-  const { fileName, datasetName, importedCount, skipped } = report;
+  const { fileName, datasetName, importedCount, skipped, duplicateOf } = report;
 
   useEffect(() => {
     const onKeyDown = (e) => {
@@ -61,6 +61,14 @@ export default function ImportSummaryModal({ report, onClose }) {
           <p className="import-report-line import-report-line--ok">
             ✓ {plural(importedCount, "transaction")} imported into "
             {datasetName}"
+          </p>
+        )}
+
+        {/* NEW: same-file note */}
+        {duplicateOf && (
+          <p className="import-report-note">
+            Same data as "{duplicateOf}", imported earlier. You can delete the
+            extra copy from the dataset menu.
           </p>
         )}
 
