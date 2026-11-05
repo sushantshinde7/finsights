@@ -4,7 +4,10 @@ import {
   useEffect,
   useMemo,
   useState,
+  useSyncExternalStore,
 } from "react";
+
+import { fingerprintRows } from "../lib/csv";
 
 import { sampleOneTransactions } from "../data/mockTransactions";
 import { sampleTwoTransactions } from "../data/mockTransactions2";
@@ -19,6 +22,23 @@ const LEGACY_TX_KEY = "finance_transactions_v1";
 const LEGACY_SAMPLE_KEY = "finance_active_sample";
 
 const MAX_IMPORTED_DATASETS = 5;
+
+/* ---------- save status (tiny external store) ----------
+   Lets the provider report "couldn't save" to the page without
+   calling setState inside an effect. */
+let saveFailed = false;
+const saveListeners = new Set();
+
+const subscribeSaveStatus = (listener) => {
+  saveListeners.add(listener);
+  return () => saveListeners.delete(listener);
+};
+const getSaveStatus = () => saveFailed;
+const setSaveStatus = (failed) => {
+  if (saveFailed === failed) return;
+  saveFailed = failed;
+  saveListeners.forEach((listener) => listener());
+};
 
 // Live from the data files: edit the .js file and this follows.
 const SAMPLE_ORIGINALS = {
@@ -102,7 +122,7 @@ const migrateLegacy = () => {
 
     if (targetId && Array.isArray(legacyRows)) {
       state.datasets = state.datasets.map((d) =>
-        d.id === targetId ? { ...d, transactions: legacyRows } : d
+        d.id === targetId ? { ...d, transactions: legacyRows } : d,
       );
       state.activeId = targetId;
     }
@@ -147,19 +167,20 @@ const makeUniqueName = (base, datasets) => {
 export function TransactionProvider({ children }) {
   const [state, setState] = useState(loadInitialState);
 
-
+  const storageError = useSyncExternalStore(subscribeSaveStatus, getSaveStatus);
   // Persist every change. If the browser's storage is full, flag it
   // instead of crashing.
-useEffect(() => {
-  try {
-    localStorage.setItem(DATASETS_KEY, JSON.stringify(state));
-    localStorage.removeItem(LEGACY_TX_KEY);
-    localStorage.removeItem(LEGACY_SAMPLE_KEY);
-  } catch (err) {
-    console.warn("Could not save datasets to localStorage:", err);
-  }
-}, [state]);
-
+  useEffect(() => {
+    try {
+      localStorage.setItem(DATASETS_KEY, JSON.stringify(state));
+      localStorage.removeItem(LEGACY_TX_KEY);
+      localStorage.removeItem(LEGACY_SAMPLE_KEY);
+      setSaveStatus(false);
+    } catch (err) {
+      console.warn("Could not save datasets to localStorage:", err);
+      setSaveStatus(true);
+    }
+  }, [state]);
   const activeDataset =
     state.datasets.find((d) => d.id === state.activeId) ?? state.datasets[0];
 
@@ -169,7 +190,7 @@ useEffect(() => {
 
   const switchDataset = (id) => {
     setState((prev) =>
-      prev.datasets.some((d) => d.id === id) ? { ...prev, activeId: id } : prev
+      prev.datasets.some((d) => d.id === id) ? { ...prev, activeId: id } : prev,
     );
   };
 
@@ -182,7 +203,7 @@ useEffect(() => {
   // Returns { ok, id, name } or { ok: false, reason }.
   const importDataset = ({ name, rows }) => {
     const importedCount = state.datasets.filter(
-      (d) => d.kind === "imported"
+      (d) => d.kind === "imported",
     ).length;
 
     if (importedCount >= MAX_IMPORTED_DATASETS) {
@@ -195,16 +216,23 @@ useEffect(() => {
 
     const finalName = makeUniqueName(
       (name || "Imported Dataset").trim() || "Imported Dataset",
-      state.datasets
+      state.datasets,
     );
 
     const id = `imported-${Date.now()}`;
+
+    // D2: a fingerprint of the file's rows, to spot the same file again
+    const fingerprint = fingerprintRows(rows);
+    const twin = state.datasets.find(
+      (d) => d.kind === "imported" && d.fingerprint === fingerprint,
+    );
 
     const dataset = {
       id,
       name: finalName,
       kind: "imported",
       originalCount: rows.length,
+      fingerprint,
       transactions: rows.map((r, i) => ({
         id: i + 1,
         date: r.date,
@@ -214,12 +242,26 @@ useEffect(() => {
       })),
     };
 
-    setState((prev) => ({
+    const nextState = {
       activeId: id,
-      datasets: [...prev.datasets, dataset],
-    }));
+      datasets: [...state.datasets, dataset],
+    };
 
-    return { ok: true, id, name: finalName };
+    // D1: make sure it actually fits BEFORE switching to it
+    try {
+      localStorage.setItem(DATASETS_KEY, JSON.stringify(nextState));
+    } catch {
+      return { ok: false, reason: "storage" };
+    }
+
+    setState(nextState);
+
+    return {
+      ok: true,
+      id,
+      name: finalName,
+      duplicateOf: twin ? twin.name : null,
+    };
   };
 
   // Only imported datasets can be removed. If it was the active one,
@@ -244,7 +286,7 @@ useEffect(() => {
       datasets: prev.datasets.map((d) =>
         d.id === prev.activeId
           ? { ...d, transactions: updater(d.transactions) }
-          : d
+          : d,
       ),
     }));
   };
@@ -255,7 +297,7 @@ useEffect(() => {
 
   const updateTransaction = (updated) => {
     updateActiveTransactions((list) =>
-      list.map((t) => (t.id === updated.id ? updated : t))
+      list.map((t) => (t.id === updated.id ? updated : t)),
     );
   };
 
@@ -266,21 +308,21 @@ useEffect(() => {
   /* ---------- dropdown-friendly list ---------- */
 
   const datasets = useMemo(
-  () =>
-    state.datasets.map((d) => ({
-      id: d.id,
-      name: d.name,
-      kind: d.kind,
-      count: d.transactions.length,
-      originalCount:
-        d.kind === "sample"
-          ? (SAMPLE_ORIGINALS[d.id]?.length ?? null)
-          : d.kind === "imported"
-            ? (d.originalCount ?? d.transactions.length)
-            : null, // custom has no original
-    })),
-  [state.datasets]
-);
+    () =>
+      state.datasets.map((d) => ({
+        id: d.id,
+        name: d.name,
+        kind: d.kind,
+        count: d.transactions.length,
+        originalCount:
+          d.kind === "sample"
+            ? (SAMPLE_ORIGINALS[d.id]?.length ?? null)
+            : d.kind === "imported"
+              ? (d.originalCount ?? d.transactions.length)
+              : null, // custom has no original
+      })),
+    [state.datasets],
+  );
 
   /* ---------- analytics (same outputs as before) ---------- */
 
@@ -303,7 +345,7 @@ useEffect(() => {
       }, {});
 
     const categoryBreakdown = Object.entries(byCategory).map(
-      ([name, value]) => ({ name, value })
+      ([name, value]) => ({ name, value }),
     );
 
     const monthlyMap = {};
@@ -317,8 +359,7 @@ useEffect(() => {
     });
 
     const sortedMonths = Object.keys(monthlyMap).sort(); // "YYYY-MM" sorts correctly
-    const spansYears =
-      new Set(sortedMonths.map((m) => m.slice(0, 4))).size > 1;
+    const spansYears = new Set(sortedMonths.map((m) => m.slice(0, 4))).size > 1;
 
     const formatMonth = (ym) => {
       const [year, month] = ym.split("-");
@@ -345,15 +386,15 @@ useEffect(() => {
       prev === 0 ? 0 : Math.round(((curr - prev) / prev) * 100);
 
     const sorted = [...transactions].sort(
-      (a, b) => new Date(a.date) - new Date(b.date)
+      (a, b) => new Date(a.date) - new Date(b.date),
     );
 
-const balanceTrend = sorted.reduce((trend, t) => {
-  const previous = trend.length ? trend[trend.length - 1].balance : 0;
-  const change = t.type === "income" ? t.amount : -t.amount;
-  trend.push({ date: t.date, balance: previous + change });
-  return trend;
-}, []);
+    const balanceTrend = sorted.reduce((trend, t) => {
+      const previous = trend.length ? trend[trend.length - 1].balance : 0;
+      const change = t.type === "income" ? t.amount : -t.amount;
+      trend.push({ date: t.date, balance: previous + change });
+      return trend;
+    }, []);
 
     return {
       income,
@@ -366,7 +407,7 @@ const balanceTrend = sorted.reduce((trend, t) => {
       expenseChange: calcChange(current.expense, previous.expense),
       balanceChange: calcChange(
         current.income - current.expense,
-        previous.income - previous.expense
+        previous.income - previous.expense,
       ),
     };
   }, [transactions]);
@@ -376,7 +417,7 @@ const balanceTrend = sorted.reduce((trend, t) => {
       value={{
         // rows of the ACTIVE dataset (what every page already reads)
         transactions,
-
+        storageError,
         // dataset info + actions (used by the Transactions page)
         datasets,
         activeDataset,

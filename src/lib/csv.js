@@ -4,6 +4,19 @@ export const MAX_ROWS = 5000;
 
 const VALID_TYPES = ["income", "expense"];
 
+/* Spreadsheet formula protection.
+   Export prefixes risky text with ' ; import removes exactly one such
+   prefix, so export → import gives back the original text. */
+const FORMULA_GUARD = /^'*[=+\-@\t\r]/;
+const FORMULA_UNGUARD = /^'('*[=+\-@\t\r])/;
+
+const guardFormula = (value) => {
+  const s = String(value);
+  return FORMULA_GUARD.test(s) ? `'${s}` : s;
+};
+
+const removeFormulaGuard = (value) => value.replace(FORMULA_UNGUARD, "$1");
+
 /* ---------- 1. text → table of cells ----------
    Handles quoted values ("Food, Dining"), escaped quotes ("") and
    both Windows (\r\n) and Unix (\n) line endings. */
@@ -92,7 +105,7 @@ function checkRow(cells) {
   return {
     row: {
       date: dateRaw,
-      category: categoryRaw,
+      category: removeFormulaGuard(categoryRaw),
       amount: Number(amountRaw),
       type,
     },
@@ -114,7 +127,9 @@ export function validateTransactionsCSV(text) {
   const header = table[headerIndex].map((c) => c.trim());
   const headerOk =
     header.length === REQUIRED_HEADERS.length &&
-    header.every((h, i) => h.toLowerCase() === REQUIRED_HEADERS[i].toLowerCase());
+    header.every(
+      (h, i) => h.toLowerCase() === REQUIRED_HEADERS[i].toLowerCase(),
+    );
 
   if (!headerOk) {
     return {
@@ -151,7 +166,10 @@ export function validateTransactionsCSV(text) {
 
 /* ---------- 4. filename → dataset name ---------- */
 export function datasetNameFromFile(filename) {
-  const name = filename.replace(/\.csv$/i, "").trim().slice(0, 40);
+  const name = filename
+    .replace(/\.csv$/i, "")
+    .trim()
+    .slice(0, 40);
   return name || "Imported Dataset";
 }
 
@@ -175,12 +193,12 @@ export function transactionsToCSV(transactions) {
     lines.push(
       [
         t.date,
-        t.category,
+        guardFormula(t.category),
         t.amount,
         t.type === "income" ? "Income" : "Expense",
       ]
         .map(escapeCell)
-        .join(",")
+        .join(","),
     );
   });
 
@@ -249,4 +267,19 @@ export function getTemplateRows(today = new Date()) {
 
 export function downloadTemplate() {
   downloadCSV(transactionsToCSV(getTemplateRows()), TEMPLATE_FILE_NAME);
+}
+
+/* ---------- fingerprint of a set of rows (same-file detection) ---------- */
+export function fingerprintRows(rows) {
+  const text = rows
+    .map((r) => `${r.date}|${r.category}|${r.amount}|${r.type}`)
+    .join("\n");
+
+  let hash = 2166136261; // FNV-1a, 32-bit
+  for (let i = 0; i < text.length; i++) {
+    hash ^= text.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+
+  return `${rows.length}-${(hash >>> 0).toString(16)}`;
 }
