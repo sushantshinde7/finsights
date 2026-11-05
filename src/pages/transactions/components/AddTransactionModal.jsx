@@ -9,6 +9,7 @@ export default function AddTransactionModal({
   onUpdate,
   mode = "add",
   initialData,
+  datasetName,
 }) {
   const [form, setForm] = useState({
     date: "",
@@ -106,6 +107,11 @@ export default function AddTransactionModal({
         <h3 className="modal-title">
           {mode === "edit" ? "Edit Transaction" : "Add Transaction"}
         </h3>
+        {mode === "add" && datasetName && (
+  <p className="modal-context">
+    Adding to <strong>{datasetName}</strong>
+  </p>
+)}
 
         <div className="modal-form">
           <div className="modal-field">

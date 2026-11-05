@@ -160,6 +160,17 @@
   margin-top: var(--space-5);
 }
 
+.modal-context {
+  margin: 0 0 14px;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.modal-context strong {
+  font-weight: var(--font-medium);
+  color: var(--color-text-primary);
+}
+
 /* PRIMARY BUTTON */
 .btn-primary {
   background: var(--color-primary);
