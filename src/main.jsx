@@ -12,11 +12,11 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <ErrorBoundary>
       <ThemeProvider>
-        <TransactionProvider>
-          <AuthProvider>
+        <AuthProvider>
+          <TransactionProvider>
             <App />
-          </AuthProvider>
-        </TransactionProvider>
+          </TransactionProvider>
+        </AuthProvider>
       </ThemeProvider>
     </ErrorBoundary>
   </React.StrictMode>,

@@ -8,18 +8,20 @@ import {
 } from "react";
 
 import { fingerprintRows } from "../lib/csv";
-
+import { useAuth } from "./AuthContext";
 import { sampleOneTransactions } from "../data/mockTransactions";
 import { sampleTwoTransactions } from "../data/mockTransactions2";
 
 /* =========================================================
-   STORAGE KEYS
-   New: one key holds every dataset + which one is active.
-   Legacy keys are read once (migration) and then removed.
+   STORAGE
+   Each signed-in account saves to its OWN key; guests save nothing.
+   SHARED_KEY is the old browser-wide save: the first account to sign
+   in after this update claims it once, then it is deleted.
 ========================================================= */
-const DATASETS_KEY = "finsights_datasets_v2";
-const LEGACY_TX_KEY = "finance_transactions_v1";
-const LEGACY_SAMPLE_KEY = "finance_active_sample";
+const USER_KEY_PREFIX = "finsights_datasets_v3_";
+const SHARED_KEY = "finsights_datasets_v2";
+
+const storageKeyFor = (uid) => `${USER_KEY_PREFIX}${uid}`;
 
 const MAX_IMPORTED_DATASETS = 5;
 
@@ -102,48 +104,24 @@ const normalize = (saved) => {
 
 // Old versions stored a single array + an "active sample" key.
 // Carry that forward so nobody loses their data.
-const migrateLegacy = () => {
-  const state = buildDefaults();
-
+const readState = (key) => {
   try {
-    const legacyKey = localStorage.getItem(LEGACY_SAMPLE_KEY);
-    const legacyRaw = localStorage.getItem(LEGACY_TX_KEY);
-    const legacyRows = legacyRaw ? JSON.parse(legacyRaw) : null;
-
-    // Only carry over edits made to a SAMPLE. Anything else ("clear",
-    // an old "imported", unknown values) is dropped, so Custom
-    // Dataset always starts empty.
-    const targetId =
-      legacyKey === "sample2"
-        ? "sample2"
-        : legacyKey === "sample1" || !legacyKey
-          ? "sample1"
-          : null;
-
-    if (targetId && Array.isArray(legacyRows)) {
-      state.datasets = state.datasets.map((d) =>
-        d.id === targetId ? { ...d, transactions: legacyRows } : d,
-      );
-      state.activeId = targetId;
-    }
+    const saved = localStorage.getItem(key);
+    if (!saved) return null;
+    const parsed = JSON.parse(saved);
+    return parsed && Array.isArray(parsed.datasets) ? normalize(parsed) : null;
   } catch {
-    /* fall back to defaults */
+    return null;
   }
-
-  return state;
 };
 
-const loadInitialState = () => {
-  try {
-    const saved = localStorage.getItem(DATASETS_KEY);
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      if (parsed && Array.isArray(parsed.datasets)) return normalize(parsed);
-    }
-  } catch {
-    /* fall through to migration/defaults */
-  }
-  return migrateLegacy();
+// Guest → clean samples. Signed in → their own saved data; if they
+// have none yet, claim the old browser-wide save once, else defaults.
+const loadStateFor = (uid) => {
+  if (!uid) return buildDefaults();
+  return (
+    readState(storageKeyFor(uid)) ?? readState(SHARED_KEY) ?? buildDefaults()
+  );
 };
 
 // Next id = highest existing id + 1 (no same-millisecond collisions).
@@ -165,22 +143,36 @@ const makeUniqueName = (base, datasets) => {
 ========================================================= */
 
 export function TransactionProvider({ children }) {
-  const [state, setState] = useState(loadInitialState);
+  const { user } = useAuth();
+  const uid = user?.uid ?? null;
+  const isGuest = uid === null;
+
+  const [state, setState] = useState(() => loadStateFor(uid));
+  const [loadedFor, setLoadedFor] = useState(uid);
+
+  // A different person is now signed in (or signed out): load THEIR data.
+  if (loadedFor !== uid) {
+    setLoadedFor(uid);
+    setState(loadStateFor(uid));
+  }
 
   const storageError = useSyncExternalStore(subscribeSaveStatus, getSaveStatus);
-  // Persist every change. If the browser's storage is full, flag it
-  // instead of crashing.
+
+  // Persist every change under this account's own key. Guests save nothing.
   useEffect(() => {
+    if (!uid) {
+      setSaveStatus(false);
+      return;
+    }
     try {
-      localStorage.setItem(DATASETS_KEY, JSON.stringify(state));
-      localStorage.removeItem(LEGACY_TX_KEY);
-      localStorage.removeItem(LEGACY_SAMPLE_KEY);
+      localStorage.setItem(storageKeyFor(uid), JSON.stringify(state));
+      localStorage.removeItem(SHARED_KEY); // the old shared save is claimed
       setSaveStatus(false);
     } catch (err) {
       console.warn("Could not save datasets to localStorage:", err);
       setSaveStatus(true);
     }
-  }, [state]);
+  }, [state, uid]);
   const activeDataset =
     state.datasets.find((d) => d.id === state.activeId) ?? state.datasets[0];
 
@@ -202,6 +194,7 @@ export function TransactionProvider({ children }) {
   // Never touches existing datasets (no merging, no overwriting).
   // Returns { ok, id, name } or { ok: false, reason }.
   const importDataset = ({ name, rows }) => {
+    if (isGuest) return { ok: false, reason: "auth" };
     const importedCount = state.datasets.filter(
       (d) => d.kind === "imported",
     ).length;
@@ -249,7 +242,7 @@ export function TransactionProvider({ children }) {
 
     // D1: make sure it actually fits BEFORE switching to it
     try {
-      localStorage.setItem(DATASETS_KEY, JSON.stringify(nextState));
+      localStorage.setItem(storageKeyFor(uid), JSON.stringify(nextState));
     } catch {
       return { ok: false, reason: "storage" };
     }
@@ -267,6 +260,7 @@ export function TransactionProvider({ children }) {
   // Only imported datasets can be removed. If it was the active one,
   // fall back to the first sample.
   const deleteDataset = (id) => {
+    if (isGuest) return false;
     const target = state.datasets.find((d) => d.id === id);
     if (!target || target.kind !== "imported") return false;
 
@@ -281,6 +275,7 @@ export function TransactionProvider({ children }) {
   /* ---------- row-level actions (always on the ACTIVE dataset) ---------- */
 
   const updateActiveTransactions = (updater) => {
+    if (isGuest) return;
     setState((prev) => ({
       ...prev,
       datasets: prev.datasets.map((d) =>
