@@ -8,6 +8,7 @@ import ImportSummaryModal from "./components/ImportSummaryModal";
 import ImportModal from "./components/ImportModal";
 import ExportModal from "./components/ExportModal";
 import FilterModal from "./components/FilterModal";
+import ConfirmModal from "../../components/common/ConfirmModal";
 import AuthPrompt from "../../components/auth/AuthPrompt";
 
 import { useTransactions } from "../../context/TransactionContext";
@@ -35,6 +36,47 @@ const KIND_LABELS = {
   custom: "Custom dataset",
   imported: "Imported file",
 };
+
+function getConfirmCopy({ kind, dataset }) {
+  if (kind === "reset") {
+    return {
+      title: "Reset to original?",
+      confirmLabel: "Reset",
+      body: (
+        <>
+          Reset <strong>{dataset.name}</strong> to its original{" "}
+          {dataset.originalCount} transactions? Your changes to it (added,
+          edited or deleted transactions) will be discarded. This can't be
+          undone.
+        </>
+      ),
+    };
+  }
+
+  if (kind === "clear") {
+    return {
+      title: "Clear all rows?",
+      confirmLabel: "Clear rows",
+      body: (
+        <>
+          Remove all {dataset.count} transactions from{" "}
+          <strong>{dataset.name}</strong>? This can't be undone.
+        </>
+      ),
+    };
+  }
+
+  return {
+    title: "Delete this dataset?",
+    confirmLabel: "Delete",
+    body: (
+      <>
+        Delete <strong>{dataset.name}</strong> and its {dataset.count}{" "}
+        transactions? This can't be undone. You can import the file again later.
+      </>
+    ),
+  };
+}
 
 function InfoTip({ text }) {
   return (
@@ -72,6 +114,7 @@ export default function TransactionsPage() {
     switchDataset,
     importDataset,
     deleteDataset,
+    resetDataset,
     addTransaction,
     updateTransaction,
     deleteTransaction,
@@ -115,6 +158,7 @@ export default function TransactionsPage() {
   const [toast, setToast] = useState(null);
   const [importReport, setImportReport] = useState(null);
   const [showExport, setShowExport] = useState(false);
+  const [confirmAction, setConfirmAction] = useState(null);
   const [showImportDialog, setShowImportDialog] = useState(false);
   const toastTimer = useRef(null);
   const fileInputRef = useRef(null);
@@ -191,12 +235,35 @@ export default function TransactionsPage() {
 
   const handleDeleteDataset = (e, ds) => {
     e.stopPropagation();
-    if (!window.confirm(`Delete "${ds.name}"? This can't be undone.`)) return;
-    const wasActive = ds.id === activeDataset.id;
-    deleteDataset(ds.id);
-    if (wasActive) resetTransactionView();
+    setShowDatasetMenu(false);
+    setConfirmAction({ kind: "delete", dataset: ds });
   };
 
+  const handleConfirm = () => {
+    if (!confirmAction) return;
+    const { kind, dataset } = confirmAction;
+    setConfirmAction(null);
+
+    const isActive = dataset.id === activeDataset.id;
+
+    if (kind === "delete") {
+      deleteDataset(dataset.id);
+      if (isActive) resetTransactionView();
+      return;
+    }
+
+    if (resetDataset(dataset.id)) {
+      if (isActive) resetTransactionView();
+      showToast(
+        kind === "clear"
+          ? `Cleared "${dataset.name}"`
+          : `"${dataset.name}" reset to its ${dataset.originalCount} original transactions`,
+        { duration: 4000 },
+      );
+    }
+  };
+
+  const confirmCopy = confirmAction ? getConfirmCopy(confirmAction) : null;
   const samples = datasets.filter((d) => d.kind === "sample");
   const customs = datasets.filter((d) => d.kind === "custom");
   const importeds = datasets.filter((d) => d.kind === "imported");
@@ -730,7 +797,7 @@ export default function TransactionsPage() {
               </div>
             </motion.div>
 
-            {transactions.length > 0 && (
+            {(transactions.length > 0 || activeInfo.isModified) && (
               <motion.div variants={fadeUp}>
                 <p className="transactions-context">
                   View, search and manage your complete transaction history in
@@ -751,6 +818,23 @@ export default function TransactionsPage() {
                       {activeInfo.originalCount} original transactions
                     </span>
                   )}
+                  {activeInfo.isModified && (
+                    <button
+                      type="button"
+                      className="meta-action"
+                      onClick={() =>
+                        setConfirmAction({
+                          kind:
+                            activeInfo.kind === "custom" ? "clear" : "reset",
+                          dataset: activeInfo,
+                        })
+                      }
+                    >
+                      {activeInfo.kind === "custom"
+                        ? "Clear all rows"
+                        : "Reset to original"}
+                    </button>
+                  )}
                 </div>
               </motion.div>
             )}
@@ -764,7 +848,6 @@ export default function TransactionsPage() {
             space.
           </div>
         )}
-
 
         {/* SUMMARY BAR — AnimatePresence keyed to `transactions.length`,
         not `processedTransactions.length`, so this only mounts/unmounts
@@ -784,7 +867,7 @@ export default function TransactionsPage() {
               <div className="summary-item">
                 <span className="summary-label">
                   Total transactions
-                  <InfoTip text="All Total(original + newly added/removed) rows in this dataset right now. Filters don't change it." />
+                  <InfoTip text="Original rows plus anything you added, minus anything you deleted. Filters don’t change it." />
                 </span>
                 <span className="summary-value">{summary.count}</span>
               </div>
@@ -857,6 +940,27 @@ export default function TransactionsPage() {
           )}
         </AnimatePresence>
 
+        <AnimatePresence>
+          {confirmAction && (
+            <motion.div
+              key="confirm-dialog"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <ConfirmModal
+                title={confirmCopy.title}
+                confirmLabel={confirmCopy.confirmLabel}
+                danger
+                onConfirm={handleConfirm}
+                onCancel={() => setConfirmAction(null)}
+              >
+                {confirmCopy.body}
+              </ConfirmModal>
+            </motion.div>
+          )}
+        </AnimatePresence>
         <AnimatePresence>
           {showExport && (
             <motion.div

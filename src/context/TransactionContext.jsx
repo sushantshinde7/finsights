@@ -102,8 +102,7 @@ const normalize = (saved) => {
   return { activeId, datasets };
 };
 
-// Old versions stored a single array + an "active sample" key.
-// Carry that forward so nobody loses their data.
+
 const readState = (key) => {
   try {
     const saved = localStorage.getItem(key);
@@ -127,6 +126,19 @@ const loadStateFor = (uid) => {
 // Next id = highest existing id + 1 (no same-millisecond collisions).
 const nextId = (list) =>
   list.reduce((max, t) => Math.max(max, Number(t.id) || 0), 0) + 1;
+// Same rows, same order, same values?
+const sameRows = (a, b) =>
+  a.length === b.length &&
+  a.every((t, i) => {
+    const o = b[i];
+    return (
+      t.id === o.id &&
+      t.date === o.date &&
+      t.category === o.category &&
+      t.amount === o.amount &&
+      t.type === o.type
+    );
+  });
 
 // "bank" → "bank", then "bank (2)", "bank (3)"…
 const makeUniqueName = (base, datasets) => {
@@ -272,6 +284,29 @@ export function TransactionProvider({ children }) {
     return true;
   };
 
+  // Samples go back to their coded rows; Custom goes back to empty.
+  // Imported datasets can't be reset (their original rows aren't stored).
+  const resetDataset = (id) => {
+    if (isGuest) return false;
+
+    const target = state.datasets.find((d) => d.id === id);
+    if (!target) return false;
+
+    let rows;
+    if (target.kind === "sample") rows = SAMPLE_ORIGINALS[id];
+    else if (target.kind === "custom") rows = [];
+    else return false;
+
+    setState((prev) => ({
+      ...prev,
+      datasets: prev.datasets.map((d) =>
+        d.id === id ? { ...d, transactions: rows } : d,
+      ),
+    }));
+
+    return true;
+  };
+
   /* ---------- row-level actions (always on the ACTIVE dataset) ---------- */
 
   const updateActiveTransactions = (updater) => {
@@ -315,6 +350,12 @@ export function TransactionProvider({ children }) {
             : d.kind === "imported"
               ? (d.originalCount ?? d.transactions.length)
               : null, // custom has no original
+        isModified:
+          d.kind === "sample"
+            ? !sameRows(d.transactions, SAMPLE_ORIGINALS[d.id] ?? [])
+            : d.kind === "custom"
+              ? d.transactions.length > 0
+              : false,
       })),
     [state.datasets],
   );
@@ -422,7 +463,7 @@ export function TransactionProvider({ children }) {
         loadSample,
         importDataset,
         deleteDataset,
-
+        resetDataset,
         // row actions
         addTransaction,
         updateTransaction,
