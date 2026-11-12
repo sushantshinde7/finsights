@@ -1,0 +1,23 @@
+.modal.confirm-modal {
+  width: min(420px, calc(100vw - 32px));
+}
+
+.confirm-body {
+  margin: 0 0 6px;
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+}
+
+.confirm-body strong {
+  font-weight: var(--font-medium);
+  color: var(--color-text-primary);
+}
+
+.confirm-modal .btn-primary.confirm-btn--danger {
+  background: var(--color-danger, #dc2626);
+}
+
+.confirm-modal .btn-primary.confirm-btn--danger:hover {
+  background: color-mix(in srgb, var(--color-danger, #dc2626) 88%, black);
+}
