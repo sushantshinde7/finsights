@@ -151,7 +151,7 @@ export default function TransactionsPage() {
   const [showModal, setShowModal] = useState(false);
   const [showFiltersModal, setShowFiltersModal] = useState(false);
 
-  const [showAuthPrompt, setShowAuthPrompt] = useState(false);
+  const [authAction, setAuthAction] = useState(null);
 
   const [editingTx, setEditingTx] = useState(null);
 
@@ -301,12 +301,11 @@ export default function TransactionsPage() {
 
   const handleImportClick = () => {
     if (!isAuthenticated) {
-      setShowAuthPrompt(true);
+      setAuthAction("import");
       return;
     }
     setShowImportDialog(true);
   };
-
   const handleChooseFile = () => {
     setShowImportDialog(false);
     fileInputRef.current?.click();
@@ -407,7 +406,7 @@ export default function TransactionsPage() {
 
   const handleExportClick = () => {
     if (!isAuthenticated) {
-      setShowAuthPrompt(true);
+      setAuthAction("export");
       return;
     }
     setShowExport(true);
@@ -626,7 +625,7 @@ export default function TransactionsPage() {
 
   const handleDelete = (id) => {
     if (!isAuthenticated) {
-      setShowAuthPrompt(true);
+      setAuthAction("delete");
       return;
     }
 
@@ -725,7 +724,7 @@ export default function TransactionsPage() {
                 className="btn-add"
                 onClick={() => {
                   if (!isAuthenticated) {
-                    setShowAuthPrompt(true);
+                    setAuthAction("add");
                     return;
                   }
                   setShowModal(true);
@@ -1012,14 +1011,14 @@ export default function TransactionsPage() {
               emptyState={emptyState}
               onAddClick={() => {
                 if (!isAuthenticated) {
-                  setShowAuthPrompt(true);
+                  setAuthAction("add");
                   return;
                 }
                 setShowModal(true);
               }}
               onEdit={(tx) => {
                 if (!isAuthenticated) {
-                  setShowAuthPrompt(true);
+                  setAuthAction("edit");
                   return;
                 }
                 setEditingTx(tx);
@@ -1110,7 +1109,7 @@ export default function TransactionsPage() {
         </AnimatePresence>
 
         <AnimatePresence>
-          {showAuthPrompt && (
+          {authAction && (
             <motion.div
               key="auth-prompt"
               initial={{ opacity: 0 }}
@@ -1118,7 +1117,10 @@ export default function TransactionsPage() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
             >
-              <AuthPrompt onClose={() => setShowAuthPrompt(false)} />
+              <AuthPrompt
+                action={authAction}
+                onClose={() => setAuthAction(null)}
+              />
             </motion.div>
           )}
         </AnimatePresence>
