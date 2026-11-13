@@ -13,10 +13,10 @@ import {
 } from "../../lib/motion";
 
 import "./HomePage.css";
-import HeroPreview from "./HeroPreview";
-import LiveLedgerPreview from "./LiveLedgerPreview";
-import LiveSnapshotPreview from "./LiveSnapshotPreview";
-import InsightVerdictPreview from "./InsightVerdictPreview";
+import HeroPreview from "./components/HeroPreview";
+import LiveLedgerPreview from "./components/LiveLedgerPreview";
+import LiveSnapshotPreview from "./components/LiveSnapshotPreview";
+import InsightVerdictPreview from "./components/InsightVerdictPreview";
 
 // Static content lives outside the component so it isn't
 // recreated on every render, and so each card/column/section
@@ -116,7 +116,14 @@ const TECH_STACK = [
   {
     label: "Frontend",
     dotClass: "",
-    tags: ["React 19", "Vite", "React Router", "Context API", "Framer Motion", "Lucide Icons"],
+    tags: [
+      "React 19",
+      "Vite",
+      "React Router",
+      "Context API",
+      "Framer Motion",
+      "Lucide Icons",
+    ],
   },
   {
     label: "Authentication",
