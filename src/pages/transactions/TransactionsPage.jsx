@@ -26,7 +26,7 @@ import {
 
 import { fadeUp, staggerContainer } from "../../lib/motion";
 
-import "./transactions.css";
+import "./TransactionsPage.css";
 import { Plus, Upload, Download, ChevronDown } from "lucide-react";
 
 const EASE = [0.22, 1, 0.36, 1];

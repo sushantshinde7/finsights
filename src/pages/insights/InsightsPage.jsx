@@ -8,7 +8,7 @@ import InsightsOverview from "./components/InsightsOverview";
 import InsightCards from "./components/InsightCards";
 import ChartsSection from "./components/ChartsSection";
 
-import "./insights.css";
+import "./InsightsPage.css";
 
 export default function InsightsPage() {
   const navigate = useNavigate();

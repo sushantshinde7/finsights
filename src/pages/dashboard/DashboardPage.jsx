@@ -7,7 +7,7 @@ import ExpenseChart from "./components/ExpenseChart";
 import { useTransactions } from "../../context/TransactionContext";
 import { ROUTES } from "../../routes/routes";
 import { fadeUp, fadeIn, staggerContainer, viewportOnce } from "../../lib/motion";
-import "./dashboard.css";
+import "./DashboardPage.css";
 
 export default function DashboardPage() {
   const {
