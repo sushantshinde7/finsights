@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import {
   LineChart,
   Line,
@@ -30,21 +31,38 @@ const formatCurrency = (value) => {
   return `₹${value}`;
 };
 
+/* =========================
+   CUSTOM TOOLTIP
+========================= */
+
+const CustomTooltip = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="chart-tooltip">
+        <p className="tooltip-label">{formatDate(label)}</p>
+        <p className="tooltip-value">₹{payload[0].value.toLocaleString()}</p>
+      </div>
+    );
+  }
+  return null;
+};
+
 const BalanceChart = ({ transactions }) => {
+const data = useMemo(() => {
   const sorted = [...transactions].sort(
     (a, b) => new Date(a.date) - new Date(b.date)
   );
 
+  const result = [];
   let running = 0;
 
-  const data = sorted.map((tx) => {
+  for (const tx of sorted) {
     running += tx.type === "income" ? tx.amount : -tx.amount;
+    result.push({ date: tx.date, balance: running });
+  }
 
-    return {
-      date: tx.date,
-      balance: running,
-    };
-  });
+  return result;
+}, [transactions]);
 
   return (
     <div className="chart">
@@ -58,18 +76,13 @@ const BalanceChart = ({ transactions }) => {
           <LineChart data={data}>
             <CartesianGrid strokeDasharray="3 3" className="chart-grid" />
 
-            {/* ✅ Formatted Dates */}
             <XAxis
               dataKey="date"
               tickFormatter={formatDate}
               className="chart-axis"
             />
 
-            {/* ✅ Formatted Currency */}
-            <YAxis
-              tickFormatter={formatCurrency}
-              className="chart-axis"
-            />
+            <YAxis tickFormatter={formatCurrency} className="chart-axis" />
 
             <Tooltip content={<CustomTooltip />} />
 
@@ -85,24 +98,6 @@ const BalanceChart = ({ transactions }) => {
       </div>
     </div>
   );
-};
-
-/* =========================
-   CUSTOM TOOLTIP
-========================= */
-
-const CustomTooltip = ({ active, payload, label }) => {
-  if (active && payload && payload.length) {
-    return (
-      <div className="chart-tooltip">
-        <p className="tooltip-label">{formatDate(label)}</p>
-        <p className="tooltip-value">
-          ₹{payload[0].value.toLocaleString()}
-        </p>
-      </div>
-    );
-  }
-  return null;
 };
 
 export default BalanceChart;

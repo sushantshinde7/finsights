@@ -3,6 +3,21 @@ import { motion } from "framer-motion";
 import { EASE } from "../../../lib/motion";
 import "./AddTransactionModal.css";
 
+const EMPTY_FORM = {
+  date: "",
+  amount: "",
+  category: "",
+  type: "expense",
+};
+
+// Builds the starting form values (prefilled when editing)
+const getInitialForm = (mode, initialData) => {
+  if (mode === "edit" && initialData) {
+    return { ...initialData, amount: String(initialData.amount) };
+  }
+  return EMPTY_FORM;
+};
+
 export default function AddTransactionModal({
   onClose,
   onAdd,
@@ -11,27 +26,9 @@ export default function AddTransactionModal({
   initialData,
   datasetName,
 }) {
-  const [form, setForm] = useState({
-    date: "",
-    amount: "",
-    category: "",
-    type: "expense",
-  });
-
-  const [initialSnapshot, setInitialSnapshot] = useState(null);
-
-  // PREFILL for edit
-  useEffect(() => {
-    if (mode === "edit" && initialData) {
-      const data = {
-        ...initialData,
-        amount: String(initialData.amount),
-      };
-
-      setForm(data);
-      setInitialSnapshot(data);
-    }
-  }, [mode, initialData]);
+  // Snapshot of the starting values, used for the dirty check
+  const [initialSnapshot] = useState(() => getInitialForm(mode, initialData));
+  const [form, setForm] = useState(initialSnapshot);
 
   useEffect(() => {
     const handleEscape = (e) => {
@@ -44,7 +41,8 @@ export default function AddTransactionModal({
   }, [onClose]);
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   // dirty check
@@ -108,10 +106,10 @@ export default function AddTransactionModal({
           {mode === "edit" ? "Edit Transaction" : "Add Transaction"}
         </h3>
         {mode === "add" && datasetName && (
-  <p className="modal-context">
-    Adding to <strong>{datasetName}</strong>
-  </p>
-)}
+          <p className="modal-context">
+            Adding to <strong>{datasetName}</strong>
+          </p>
+        )}
 
         <div className="modal-form">
           <div className="modal-field">
