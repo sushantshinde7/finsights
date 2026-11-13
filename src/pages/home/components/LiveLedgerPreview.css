@@ -1,0 +1,207 @@
+.live-ledger {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* HEADER */
+.live-ledger-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.live-ledger-label {
+  font-size: 11px;
+  font-weight: var(--font-semibold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+.live-ledger-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: var(--font-medium);
+  color: var(--color-text-secondary);
+}
+
+.live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #16a34a;
+  animation: live-pulse 2s ease-in-out infinite;
+}
+
+@keyframes live-pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.35); }
+  50% { opacity: 0.6; box-shadow: 0 0 0 4px rgba(22, 163, 74, 0); }
+}
+
+/* INCOME / EXPENSE SPLIT BAR */
+.live-ledger-split {
+  display: flex;
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--color-surface-muted);
+}
+
+.live-ledger-split-income {
+  height: 100%;
+  background: #16a34a;
+  transition: width 0.5s ease;
+}
+
+.live-ledger-split-expense {
+  height: 100%;
+  background: #ef4444;
+  transition: width 0.5s ease;
+}
+
+/* NET BALANCE */
+.live-ledger-net {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.live-ledger-net-label {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+}
+
+.live-ledger-net-value {
+  font-size: 28px;
+  font-weight: var(--font-bold, 700);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+.live-ledger-net-value.positive { color: #16a34a; }
+.live-ledger-net-value.negative { color: #ef4444; }
+
+.live-ledger-net-value.settled {
+  animation: settle-pulse 0.4s ease-out;
+}
+
+@keyframes settle-pulse {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.04); }
+  100% { transform: scale(1); }
+}
+
+/* ROWS */
+.live-ledger-rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.live-ledger-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.live-ledger-row.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* proportional fill bar sitting behind the row content */
+.live-ledger-row-fill {
+  position: absolute;
+  inset: 0;
+  left: 0;
+  border-radius: var(--radius-sm);
+  transition: width 0.5s ease;
+  z-index: 0;
+}
+
+.live-ledger-row-fill[data-type="income"] {
+  background: rgba(22, 163, 74, 0.08);
+}
+
+.live-ledger-row-fill[data-type="expense"] {
+  background: rgba(239, 68, 68, 0.07);
+}
+
+.live-ledger-icon {
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-sm);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.live-ledger-icon.icon-income {
+  background: rgba(22, 163, 74, 0.14);
+  color: #16a34a;
+}
+
+.live-ledger-icon.icon-expense {
+  background: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+}
+
+.live-ledger-category {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  font-size: var(--text-sm);
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.live-ledger-amount {
+  position: relative;
+  z-index: 1;
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.live-ledger-amount.income { color: #16a34a; }
+.live-ledger-amount.expense { color: #ef4444; }
+
+/* Respect reduced-motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .live-dot {
+    animation: none;
+  }
+  .live-ledger-net-value.settled {
+    animation: none;
+  }
+  .live-ledger-row {
+    transition: opacity 0.2s ease;
+    transform: none;
+  }
+  .live-ledger-split-income,
+  .live-ledger-split-expense,
+  .live-ledger-row-fill {
+    transition: none;
+  }
+}
