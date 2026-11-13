@@ -26,3 +26,6 @@ dist-ssr
 # in .gitignore
 .env
 .env.local
+
+# Private project notes (not for GitHub)
+private-docs/
