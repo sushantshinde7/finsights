@@ -1,12 +1,12 @@
 import "./Navbar.css";
 import { Moon, Sun, User } from "lucide-react";
-import { useTheme } from "../context/ThemeContext";
-import { useAuth } from "../context/AuthContext";
+import { useTheme } from "../../context/ThemeContext";
+import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 const Navbar = ({ sidebarOpen, setSidebarOpen }) => {
   const { theme, toggleTheme } = useTheme();
-  const { isAuthenticated, firstName, logout } = useAuth();
+  const { isAuthenticated, firstName } = useAuth();
   const navigate = useNavigate();
 
   return (

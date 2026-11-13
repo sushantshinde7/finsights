@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { ROUTES } from "../routes/routes";
+import { ROUTES } from "../../routes/routes";
 
 import "./Sidebar.css";
 
@@ -11,7 +11,7 @@ import {
   LogOut,
 } from "lucide-react";
 
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 const Sidebar = ({ closeSidebar }) => {
