@@ -38,7 +38,7 @@ const Sidebar = ({ closeSidebar }) => {
     },
   ];
 
-  const { logout } = useAuth();
+  const { logout, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -61,15 +61,16 @@ const Sidebar = ({ closeSidebar }) => {
           </NavLink>
         ))}
       </nav>
-      <div className="sidebar-account">
-        <button className="nav-item logout-item" onClick={handleLogout}>
-          <span className="nav-icon">
-            <LogOut size={18} />
-          </span>
-
-          <span>Logout</span>
-        </button>
-      </div>
+      {isAuthenticated && (
+        <div className="sidebar-account">
+          <button className="nav-item logout-item" onClick={handleLogout}>
+            <span className="nav-icon">
+              <LogOut size={18} />
+            </span>
+            <span>Logout</span>
+          </button>
+        </div>
+      )}
 
       <div className="sidebar-footer">
         <div className="sidebar-footer-divider" />
