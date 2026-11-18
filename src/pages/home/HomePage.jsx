@@ -257,18 +257,51 @@ const HomePage = () => {
                 // CSS :hover rule.
                 <motion.div key={title} variants={fadeUp}>
                   <article className={`feature-card ${accentClass}`}>
-                    <span className="feature-card-step">{step}</span>
-                    <span className="feature-card-icon" aria-hidden="true">
-                      <Icon size={22} />
-                    </span>
-                    <h3>{title}</h3>
-                    <p>{description}</p>
+                    <div className="feature-card-meta">
+                      <span className="feature-card-step">{step}</span>
+
+                      <span className="feature-card-icon" aria-hidden="true">
+                        <Icon size={22} />
+                      </span>
+                    </div>
+
+                    <div className="feature-card-content">
+                      <h3>{title}</h3>
+                      <p>{description}</p>
+                    </div>
                   </article>
                 </motion.div>
               ),
             )}
           </motion.div>
         </section>
+
+        {/* GUEST MODE */}
+        <motion.section
+          className="guest-section"
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportOnce}
+          variants={fadeUp}
+        >
+          <div className="guest-content">
+            <h2>Explore Before You Sign Up</h2>
+            <p>
+              Browse the dashboard, transactions, and insights pages without
+              creating an account. Sign up only when you're ready to manage your
+              own financial data.
+            </p>
+
+            <div className="guest-actions">
+              <Link to={ROUTES.DASHBOARD} className="btn-primary">
+                Explore Demo
+              </Link>
+              <span className="guest-stat">
+                No sign-up needed · 3 live pages to explore
+              </span>
+            </div>
+          </div>
+        </motion.section>
 
         {/* DASHBOARD / TRANSACTIONS / INSIGHTS SHOWCASES */}
         {SHOWCASES.map(
@@ -349,33 +382,6 @@ const HomePage = () => {
             </section>
           ),
         )}
-
-        {/* GUEST MODE */}
-        <motion.section
-          className="guest-section"
-          initial="hidden"
-          whileInView="visible"
-          viewport={viewportOnce}
-          variants={fadeUp}
-        >
-          <div className="guest-content">
-            <h2>Explore Before You Sign Up</h2>
-            <p>
-              Browse the dashboard, transactions, and insights pages without
-              creating an account. Sign up only when you're ready to manage your
-              own financial data.
-            </p>
-
-            <div className="guest-actions">
-              <Link to={ROUTES.DASHBOARD} className="btn-primary">
-                Explore Demo
-              </Link>
-              <span className="guest-stat">
-                No sign-up needed · 3 live pages to explore
-              </span>
-            </div>
-          </div>
-        </motion.section>
 
         {/* TECH STACK */}
         <section className="section">

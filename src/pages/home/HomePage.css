@@ -153,7 +153,6 @@
   color: var(--color-text-primary);
 }
 
-
 .section--panel {
   background: var(--color-surface-panel);
   border-radius: var(--radius-lg);
@@ -166,21 +165,21 @@
    eyebrow is earned here (not just decorative numbering).
 ========================= */
 
-.feature-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-4);
-}
-
 .feature-card {
   position: relative;
   overflow: hidden;
-  padding: var(--space-6) var(--space-5);
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr); /* column sizes to its widest child */
+  align-items: center;                         /* centers both columns vertically */
+  column-gap: var(--space-5);
+  padding: var(--space-5);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   background: var(--color-surface);
   box-shadow: var(--shadow-sm);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .feature-card:hover {
@@ -198,18 +197,48 @@
   background: var(--accent-color, var(--color-primary));
 }
 
-.feature-card--dashboard { --accent-color: var(--color-primary); }
-.feature-card--transactions { --accent-color: var(--color-chart-purple); }
-.feature-card--insights { --accent-color: var(--color-chart-green); }
+.feature-card--dashboard {
+  --accent-color: var(--color-primary);
+}
+.feature-card--transactions {
+  --accent-color: var(--color-chart-purple);
+}
+.feature-card--insights {
+  --accent-color: var(--color-chart-green);
+}
+
+
+.feature-card-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;      /* label and icon share one center line */
+  gap: var(--space-3);
+  min-width: 64px;          /* same left column width in every card */
+}
 
 .feature-card-step {
   display: block;
+  margin: 0;
   font-size: 11px;
   font-weight: var(--font-semibold);
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  white-space: nowrap;      /* "STEP 01" never wraps */
+  text-align: center;
   color: var(--accent-color, var(--color-primary));
-  margin-bottom: var(--space-3);
+}
+
+.feature-card-content h3 {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-lg, 1.2rem);
+  line-height: 1.4;
+  color: var(--color-text-primary);
+}
+
+.feature-card-content p {
+  margin: 0;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
 }
 
 .feature-card-icon {
@@ -219,19 +248,27 @@
   width: 48px;
   height: 48px;
   border-radius: var(--radius-md);
-  background: color-mix(in srgb, var(--accent-color, var(--color-primary)) 14%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--accent-color, var(--color-primary)) 14%,
+    transparent
+  );
   color: var(--accent-color, var(--color-primary));
 }
 
-.feature-card h3 {
-  margin: var(--space-4) 0 var(--space-3);
-  font-size: var(--text-lg, 1.2rem);
-  color: var(--color-text-primary);
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-5);
 }
 
-.feature-card p {
-  color: var(--color-text-secondary);
-  line-height: 1.6;
+.feature-grid > div {
+  display: flex;
+}
+
+.feature-grid .feature-card {
+  flex: 1;
 }
 
 .showcase-section {
@@ -274,10 +311,15 @@
   flex-shrink: 0;
 }
 
-.showcase-label-dot--dashboard { background: var(--color-primary); }
-.showcase-label-dot--transactions { background: var(--color-chart-purple); }
-.showcase-label-dot--insights { background: var(--color-chart-green); }
-
+.showcase-label-dot--dashboard {
+  background: var(--color-primary);
+}
+.showcase-label-dot--transactions {
+  background: var(--color-chart-purple);
+}
+.showcase-label-dot--insights {
+  background: var(--color-chart-green);
+}
 
 .showcase-content h2 {
   margin-bottom: var(--space-3);
@@ -289,10 +331,15 @@
   line-height: 1.6;
 }
 
-.showcase-content--dashboard { --accent-color: var(--color-primary); }
-.showcase-content--transactions { --accent-color: var(--color-chart-purple); }
-.showcase-content--insights { --accent-color: var(--color-chart-green); }
-
+.showcase-content--dashboard {
+  --accent-color: var(--color-primary);
+}
+.showcase-content--transactions {
+  --accent-color: var(--color-chart-purple);
+}
+.showcase-content--insights {
+  --accent-color: var(--color-chart-green);
+}
 
 .showcase-check-list {
   list-style: none;
@@ -318,7 +365,11 @@
   box-sizing: border-box;
   border-radius: 50%;
   color: var(--accent-color, var(--color-primary));
-  background: color-mix(in srgb, var(--accent-color, var(--color-primary)) 14%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--accent-color, var(--color-primary)) 14%,
+    transparent
+  );
 }
 
 .placeholder-card {
@@ -407,9 +458,15 @@
   background: var(--color-primary-light);
 }
 
-.mock-bars span:nth-child(1) { height: 55%; }
-.mock-bars span:nth-child(2) { height: 85%; }
-.mock-bars span:nth-child(3) { height: 40%; }
+.mock-bars span:nth-child(1) {
+  height: 55%;
+}
+.mock-bars span:nth-child(2) {
+  height: 85%;
+}
+.mock-bars span:nth-child(3) {
+  height: 40%;
+}
 
 .guest-section {
   text-align: center;
@@ -487,7 +544,6 @@
   outline-offset: 2px;
 }
 
-
 .tech-stack-card {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -527,8 +583,12 @@
   background: var(--color-primary);
   flex-shrink: 0;
 }
-.tech-stack-dot--auth { background: var(--color-chart-purple); }
-.tech-stack-dot--analytics { background: var(--color-chart-green); }
+.tech-stack-dot--auth {
+  background: var(--color-chart-purple);
+}
+.tech-stack-dot--analytics {
+  background: var(--color-chart-green);
+}
 
 .tech-tag-list {
   list-style: none;
@@ -572,7 +632,11 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 18% 15%, rgba(255, 255, 255, 0.12), transparent 55%);
+  background: radial-gradient(
+    circle at 18% 15%,
+    rgba(255, 255, 255, 0.12),
+    transparent 55%
+  );
   pointer-events: none;
 }
 
@@ -623,7 +687,11 @@
   margin-bottom: -20px;
   padding: var(--space-7, 3.5rem) var(--space-5) var(--space-5);
   border-top: 1px solid var(--color-border);
-  background: color-mix(in srgb, var(--color-primary) 6%, var(--color-surface-muted));
+  background: color-mix(
+    in srgb,
+    var(--color-primary) 6%,
+    var(--color-surface-muted)
+  );
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
 }
 
@@ -741,7 +809,6 @@
   background: color-mix(in srgb, #0d9488 12%, transparent);
 }
 
-
 .footer-bottom {
   padding-top: var(--space-4);
   border-top: 1px solid var(--color-border);
@@ -836,7 +903,6 @@
     flex-wrap: wrap;
   }
 }
-
 
 @media (max-width: 480px) {
   .home-page {
