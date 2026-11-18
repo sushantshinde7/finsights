@@ -1,14 +1,9 @@
-// HeroPreview.jsx
 import { useEffect, useRef, useState } from "react";
-import { TrendingUp, Radio } from "lucide-react";
+import { TrendingUp } from "lucide-react";
+import { homePreviewData } from "../../../data/homePreviewData";
 import "./HeroPreview.css";
 
-const TICKER_ITEMS = [
-  "Spending on Groceries dropped 12% this month",
-  "You saved ₹18,400 more than last month",
-  "Top category: Rent — ₹22,900",
-  "Net balance trending upward for 3 weeks",
-];
+const { totalBalance, balanceIncrease, tickerItems } = homePreviewData.hero;
 
 function useCountUp(target, duration = 1400) {
   const [value, setValue] = useState(0);
@@ -19,13 +14,21 @@ function useCountUp(target, duration = 1400) {
     started.current = true;
 
     let start;
+
     const step = (timestamp) => {
       if (!start) start = timestamp;
+
       const progress = Math.min((timestamp - start) / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+
+      const eased = 1 - Math.pow(1 - progress, 3);
+
       setValue(Math.floor(eased * target));
-      if (progress < 1) requestAnimationFrame(step);
+
+      if (progress < 1) {
+        requestAnimationFrame(step);
+      }
     };
+
     requestAnimationFrame(step);
   }, [target, duration]);
 
@@ -35,7 +38,8 @@ function useCountUp(target, duration = 1400) {
 export default function HeroPreview() {
   const [tickIndex, setTickIndex] = useState(0);
   const [drawn, setDrawn] = useState(false);
-  const balance = useCountUp(505300);
+
+  const balance = useCountUp(totalBalance);
 
   useEffect(() => {
     const t = setTimeout(() => setDrawn(true), 150);
@@ -44,8 +48,9 @@ export default function HeroPreview() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setTickIndex((i) => (i + 1) % TICKER_ITEMS.length);
+      setTickIndex((i) => (i + 1) % tickerItems.length);
     }, 3600);
+
     return () => clearInterval(interval);
   }, []);
 
@@ -57,15 +62,17 @@ export default function HeroPreview() {
           <span />
           <span />
         </div>
-        <div className="live-indicator">
-          <Radio size={11} />
-          Live Preview
-        </div>
+
+        <span className="home-preview-data-label">
+          <span className="home-preview-data-label-dot" />
+          Illustrative Preview
+        </span>
       </div>
 
       <div className="preview-body-live">
         <div className="preview-live-top">
           <span className="preview-live-label">Total Balance</span>
+
           <span className="preview-live-value">
             ₹{balance.toLocaleString("en-IN")}
           </span>
@@ -79,8 +86,20 @@ export default function HeroPreview() {
           >
             <defs>
               <linearGradient id="heroFill" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" style={{ stopColor: "var(--color-primary)", stopOpacity: 0.35 }} />
-                <stop offset="100%" style={{ stopColor: "var(--color-primary)", stopOpacity: 0 }} />
+                <stop
+                  offset="0%"
+                  style={{
+                    stopColor: "var(--color-primary)",
+                    stopOpacity: 0.35,
+                  }}
+                />
+                <stop
+                  offset="100%"
+                  style={{
+                    stopColor: "var(--color-primary)",
+                    stopOpacity: 0,
+                  }}
+                />
               </linearGradient>
             </defs>
 
@@ -100,14 +119,15 @@ export default function HeroPreview() {
 
           <div className={`preview-badge ${drawn ? "is-visible" : ""}`}>
             <TrendingUp size={13} />
-            +₹18,400
+            +₹{balanceIncrease.toLocaleString("en-IN")}
           </div>
         </div>
 
         <div className="preview-ticker">
           <span className="preview-ticker-dot" />
+
           <p key={tickIndex} className="preview-ticker-text">
-            {TICKER_ITEMS[tickIndex]}
+            {tickerItems[tickIndex]}
           </p>
         </div>
       </div>

@@ -20,17 +20,32 @@
   background: var(--color-border);
 }
 
-.live-indicator {
+.home-preview-data-label {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  font-size: 11px;
-  font-weight: var(--font-semibold);
-  color: var(--color-primary);
+  gap: 6px;
+  width: fit-content;
+  max-width: 100%;
+  flex: 0 0 auto;
+  align-self: flex-start;
+  padding: 4px 9px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface-muted);
+  color: var(--color-text-secondary);
+  font-size: 10px;
+  font-weight: var(--font-medium);
+  line-height: 1.2;
+  white-space: nowrap;
 }
 
-.live-indicator svg {
-  animation: pulse-radio 1.8s ease-in-out infinite;
+.home-preview-data-label-dot {
+  display: block;
+  width: 5px;
+  height: 5px;
+  flex: 0 0 5px;
+  border-radius: 50%;
+  background: var(--color-primary);
 }
 
 @keyframes pulse-radio {
@@ -144,6 +159,24 @@
   font-size: 13px;
   color: var(--color-text-secondary);
   animation: fade-slide-in 0.5s ease;
+}
+
+/* Keep the illustrative label independent of header-dot styles */
+.preview-header > .home-preview-data-label {
+  width: fit-content;
+  height: auto;
+  border-radius: 999px;
+  background: var(--color-surface-muted);
+}
+
+/* Keep the label indicator circular */
+.preview-header > .home-preview-data-label > .home-preview-data-label-dot {
+  width: 5px;
+  height: 5px;
+  min-width: 5px;
+  flex: 0 0 5px;
+  border-radius: 50%;
+  background: var(--color-primary);
 }
 
 @keyframes fade-slide-in {

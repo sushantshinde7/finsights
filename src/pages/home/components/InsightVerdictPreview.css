@@ -133,16 +133,16 @@
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
   grid-template-areas:
-    "rent rent groceries"
-    "rent rent groceries"
-    "dining other other";
+    "home home school"
+    "home home groceries"
+    "mutual other other";
   gap: 4px;
   height: 110px;
 }
 
 .verdict-tile {
   border-radius: var(--radius-sm);
-  padding: 6px;
+  padding: 4px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -159,13 +159,15 @@
   transform: scale(1);
 }
 
-.verdict-tile--lg { grid-area: rent; }
-.verdict-tile--md { grid-area: groceries; }
-.verdict-tile--sm { grid-area: dining; }
-.verdict-tile--md2 { grid-area: other; }
+.verdict-tile--lg { grid-area: home; }
+.verdict-tile--md { grid-area: school; }
+.verdict-tile--md2 { grid-area: groceries; }
+.verdict-tile--sm { grid-area: mutual; }
+.verdict-tile--xs { grid-area: other; }
 
 .verdict-tile-name {
-  font-size: 10px;
+  font-size: 9px;
+  line-height: 1.1;
   font-weight: var(--font-medium);
   white-space: nowrap;
   overflow: hidden;
@@ -173,7 +175,8 @@
 }
 
 .verdict-tile-percent {
-  font-size: 14px;
+  font-size: 13px;
+  line-height: 1;
   font-weight: var(--font-bold, 700);
   font-variant-numeric: tabular-nums;
 }

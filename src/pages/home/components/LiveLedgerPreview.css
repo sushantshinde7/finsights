@@ -20,27 +20,6 @@
   color: var(--color-text-secondary);
 }
 
-.live-ledger-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 11px;
-  font-weight: var(--font-medium);
-  color: var(--color-text-secondary);
-}
-
-.live-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #16a34a;
-  animation: live-pulse 2s ease-in-out infinite;
-}
-
-@keyframes live-pulse {
-  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.35); }
-  50% { opacity: 0.6; box-shadow: 0 0 0 4px rgba(22, 163, 74, 0); }
-}
 
 /* INCOME / EXPENSE SPLIT BAR */
 .live-ledger-split {
