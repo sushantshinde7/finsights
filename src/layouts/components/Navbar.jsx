@@ -2,7 +2,8 @@ import "./Navbar.css";
 import { Moon, Sun, User } from "lucide-react";
 import { useTheme } from "../../context/ThemeContext";
 import { useAuth } from "../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { ROUTES } from "../../routes/routes";
 
 const Navbar = ({ sidebarOpen, setSidebarOpen }) => {
   const { theme, toggleTheme } = useTheme();
@@ -16,13 +17,22 @@ const Navbar = ({ sidebarOpen, setSidebarOpen }) => {
           className={`hamburger-btn ${sidebarOpen ? "active" : ""}`}
           onClick={() => setSidebarOpen(!sidebarOpen)}
           aria-label="Toggle Sidebar"
+          aria-expanded={sidebarOpen}
+          aria-controls="app-sidebar"
         >
           <span />
           <span />
           <span />
         </button>
 
-        <h2>Finsights</h2>
+        <Link
+          to={ROUTES.HOME}
+          className="navbar-brand"
+          aria-label="Finsights home"
+          onClick={() => setSidebarOpen(false)}
+        >
+          <h2>Finsights</h2>
+        </Link>
       </div>
 
       <div className="navbar-right">

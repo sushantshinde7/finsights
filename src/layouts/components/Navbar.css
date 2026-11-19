@@ -128,6 +128,24 @@
   box-shadow: 0 0 0 2px var(--color-primary-light);
 }
 
+.navbar-brand {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: opacity 0.15s ease;
+}
+
+.navbar-brand:hover {
+  opacity: 0.8;
+}
+
+.navbar-brand:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 4px;
+}
+
 .navbar-left h2 {
   margin: 0;
 
