@@ -35,6 +35,22 @@ const Layout = () => {
     };
   }, []);
 
+  const MOBILE_QUERY = "(max-width: 768px)"; // same breakpoint as AppLayout.css
+
+  // inside Layout(), next to the other state:
+  const [isMobile, setIsMobile] = useState(
+    () => window.matchMedia(MOBILE_QUERY).matches,
+  );
+
+  useEffect(() => {
+    const mq = window.matchMedia(MOBILE_QUERY);
+    const onChange = (e) => setIsMobile(e.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+
+  const sidebarHidden = isMobile && !sidebarOpen;
+
   return (
     <div className="layout">
       <Navbar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
@@ -47,9 +63,10 @@ const Layout = () => {
           />
         )}
 
-        <aside
+        <aside 
+          id="app-sidebar"
           className={`sidebar ${sidebarOpen ? "open" : ""}`}
-          aria-hidden={!sidebarOpen}
+          inert={sidebarHidden}
         >
           <Sidebar closeSidebar={() => setSidebarOpen(false)} />
         </aside>
