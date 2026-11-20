@@ -189,92 +189,88 @@
 
 
 /* =========================
-   AUTH BUTTONS
+   LOGIN BUTTON (guest)
+   Two-part control, same language as the Filters button:
+   filled icon block + label, one shared border.
 ========================= */
-.nav-user {
-  display: flex;
-  align-items: center;
-  gap: 4px;
 
-  height: 32px;
-  padding: 0 8px;
+.nav-login-btn {
+  display: inline-flex;
+  align-items: stretch;
 
-  border-radius: 12px;
+  height: 30px;
+  overflow: hidden;
 
-  background: rgba(99, 102, 241, 0.06);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
 
   color: var(--color-text-primary);
-
-  transition:
-    background-color 0.2s ease,
-    transform 0.15s ease;
-}
-
-.nav-user:hover {
-  background: rgba(99, 102, 241, 0.1);
-}
-
-.nav-user svg {
-  color: var(--color-text-secondary);
-  flex-shrink: 0;
-}
-
-.nav-user-name {
-  font-size: 0.875rem;
-  font-weight: 600;
-
-  letter-spacing: -0.01em;
+  text-decoration: none;
   white-space: nowrap;
+
+  transition: transform 0.15s ease;
 }
 
-[data-theme="dark"] .nav-user {
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.nav-auth-btn {
+.nav-login-icon {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  
-  height: 30px;
+  justify-content: center;
 
-  padding: 0 12px;
+  width: 34px;
+  background: var(--color-primary);
+  color: #fff;
 
-  border: 1px solid var(--color-border);
+  transition: background 0.2s ease;
+}
 
-  border-radius: 12px;
+.nav-login-icon svg {
+  transition: transform 0.2s ease;
+}
 
-  background: transparent;
+.nav-login-label {
+  display: inline-flex;
+  align-items: center;
 
-  color: var(--color-text);
+  padding: 0 10px;
 
-  font-size: 0.85rem;
-  font-weight: 500;
-
-  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
 
   transition:
     background 0.2s ease,
-    border-color 0.2s ease,
-    transform 0.15s ease;
+    color 0.2s ease;
 }
 
-.nav-auth-btn:hover {
-  background: var(--color-surface-hover);
+.nav-login-btn:hover .nav-login-icon {
+  background: var(--color-primary-hover);
 }
 
-.nav-auth-btn:active {
-  transform: scale(0.98);
+.nav-login-btn:hover .nav-login-icon svg {
+  transform: translateX(2px);
 }
 
-.nav-auth-btn.primary {
-  background: var(--color-primary);
-  color: white;
-  border-color: var(--color-primary);
+.nav-login-btn:hover .nav-login-label {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
 }
 
-.nav-auth-btn.primary:hover {
-  opacity: 0.92;
+.nav-login-btn:active {
+  transform: scale(0.97);
+}
+
+.nav-login-btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-login-btn,
+  .nav-login-icon,
+  .nav-login-icon svg,
+  .nav-login-label {
+    transition: none;
+  }
 }
 
 /* =========================
@@ -289,7 +285,7 @@
   justify-content: center;
 
   width: 32px;
-  height: 36px;
+  height: 34px;
 
   border-radius: var(--radius-md);
   border: 1px solid var(--color-border);

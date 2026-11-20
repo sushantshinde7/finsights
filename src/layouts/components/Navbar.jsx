@@ -1,14 +1,16 @@
 import "./Navbar.css";
-import { Moon, Sun, User } from "lucide-react";
+import { LogIn, Moon, Sun } from "lucide-react";
+import { Link } from "react-router-dom";
+
 import { useTheme } from "../../context/ThemeContext";
 import { useAuth } from "../../context/AuthContext";
-import { Link, useNavigate } from "react-router-dom";
 import { ROUTES } from "../../routes/routes";
+
+import AccountMenu from "./AccountMenu";
 
 const Navbar = ({ sidebarOpen, setSidebarOpen }) => {
   const { theme, toggleTheme } = useTheme();
-  const { isAuthenticated, firstName } = useAuth();
-  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
 
   return (
     <div className="navbar">
@@ -37,22 +39,14 @@ const Navbar = ({ sidebarOpen, setSidebarOpen }) => {
 
       <div className="navbar-right">
         {isAuthenticated ? (
-          <div className="nav-user">
-            <User size={15} />
-            <span className="nav-user-name">{firstName}</span>
-          </div>
+          <AccountMenu />
         ) : (
-          <>
-            <button className="nav-auth-btn" onClick={() => navigate("/login")}>
-              Login
-            </button>
-            <button
-              className="nav-auth-btn primary"
-              onClick={() => navigate("/signup")}
-            >
-              Sign Up
-            </button>
-          </>
+          <Link to={ROUTES.LOGIN} className="nav-login-btn">
+            <span className="nav-login-icon" aria-hidden="true">
+              <LogIn size={16} />
+            </span>
+            <span className="nav-login-label">Login</span>
+          </Link>
         )}
 
         <button
