@@ -119,52 +119,6 @@
 }
 
 /* =========================
-   ACCOUNT / LOGOUT
-========================= */
-
-.sidebar-account {
-  margin-top: 14px;
-  padding-top: 10px;
-  border-top: 2px dotted var(--color-border);
-}
-
-.logout-item {
-  width: 100%;
-
-  border: none;
-  background: transparent;
-
-  color: var(--color-text-secondary);
-}
-
-.logout-item:hover {
-  background: color-mix(
-    in srgb,
-    #ef4444 7%,
-    transparent
-  );
-
-  color: #ef4444;
-}
-
-.logout-item:hover .nav-icon {
-  color: #ef4444;
-}
-
-.logout-item:hover {
-  color: #ef4444;
-  background: color-mix(
-    in srgb,
-    #ef4444 7%,
-    transparent
-  );
-}
-
-.logout-item:hover .nav-icon {
-  color: #ef4444;
-}
-
-/* =========================
    FOOTER
 ========================= */
 

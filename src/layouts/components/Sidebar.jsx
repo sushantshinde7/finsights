@@ -8,11 +8,7 @@ import {
   LayoutDashboard,
   ArrowLeftRight,
   BarChart3,
-  LogOut,
 } from "lucide-react";
-
-import { useAuth } from "../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
 
 const Sidebar = ({ closeSidebar }) => {
   const navItems = [
@@ -38,13 +34,6 @@ const Sidebar = ({ closeSidebar }) => {
     },
   ];
 
-  const { logout, isAuthenticated } = useAuth();
-  const navigate = useNavigate();
-
-  const handleLogout = async () => {
-    await logout();
-    navigate("/");
-  };
 
   return (
     <div className="sidebar-inner">
@@ -61,16 +50,6 @@ const Sidebar = ({ closeSidebar }) => {
           </NavLink>
         ))}
       </nav>
-      {isAuthenticated && (
-        <div className="sidebar-account">
-          <button className="nav-item logout-item" onClick={handleLogout}>
-            <span className="nav-icon">
-              <LogOut size={18} />
-            </span>
-            <span>Logout</span>
-          </button>
-        </div>
-      )}
 
       <div className="sidebar-footer">
         <div className="sidebar-footer-divider" />
