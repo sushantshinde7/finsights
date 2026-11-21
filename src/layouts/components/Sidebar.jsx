@@ -37,7 +37,7 @@ const Sidebar = ({ closeSidebar }) => {
 
   return (
     <div className="sidebar-inner">
-      <nav className="nav-group" aria-label="Sidebar Navigation">
+      <nav className="nav-group" aria-label="Primary">
         {navItems.map((item) => (
           <NavLink
             key={item.path}

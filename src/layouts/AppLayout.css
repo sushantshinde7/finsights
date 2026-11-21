@@ -1,5 +1,6 @@
 .layout {
   min-height: 100vh;
+  min-height: 100dvh;
   background: var(--color-bg);
   isolation: isolate;
 }
@@ -7,7 +8,38 @@
 .layout-body {
   display: flex;
   height: calc(100vh - 56px);
+  height: calc(100dvh - 56px);
   position: relative;
+}
+
+/* =========================
+   SKIP LINK
+   Hidden until it receives keyboard focus.
+========================= */
+
+.skip-link {
+  position: fixed;
+  top: var(--space-2);
+  left: var(--space-2);
+  z-index: 200;
+
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+
+  background: var(--color-primary);
+  color: #fff;
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  text-decoration: none;
+
+  transform: translateY(-200%);
+  transition: transform 0.2s ease;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+  outline: 2px solid var(--color-text-primary);
+  outline-offset: 2px;
 }
 
 /* =========================
@@ -30,12 +62,13 @@
 
 /* =========================
    MAIN CONTENT
+   The scroller fills the available width (so its scrollbar sits at the
+   window edge); .main-inner keeps the content capped and centered.
 ========================= */
 
 .main-content {
   flex: 1;
   min-width: 0;
-  max-width: 1600px;
   height: 100%;
   overflow-y: auto;
   scrollbar-gutter: stable;
@@ -45,6 +78,21 @@
   display: flex;
   flex-direction: column;
   border-left: 1px solid var(--color-border);
+}
+
+/* focused programmatically (skip link / after navigation), not via Tab */
+.main-content:focus {
+  outline: none;
+}
+
+.main-inner {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  max-width: 1600px;
+  margin: 0 auto;
 }
 
 /* =========================
@@ -68,6 +116,7 @@
     width: min(170px, 82vw);
     min-width: unset;
     height: calc(100vh - 56px);
+    height: calc(100dvh - 56px);
 
     transform: translateX(-108%);
     opacity: 0.98;
@@ -118,5 +167,16 @@
   }
   to {
     opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebar,
+  .skip-link {
+    transition: none;
+  }
+
+  .sidebar-backdrop {
+    animation: none;
   }
 }

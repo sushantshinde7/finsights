@@ -8,14 +8,15 @@ import { ROUTES } from "../../routes/routes";
 
 import AccountMenu from "./AccountMenu";
 
-const Navbar = ({ sidebarOpen, setSidebarOpen }) => {
+const Navbar = ({ sidebarOpen, setSidebarOpen, toggleRef }) => {
   const { theme, toggleTheme } = useTheme();
   const { isAuthenticated } = useAuth();
 
   return (
-    <div className="navbar">
+    <header className="navbar">
       <div className="navbar-left">
         <button
+          ref={toggleRef}
           className={`hamburger-btn ${sidebarOpen ? "active" : ""}`}
           onClick={() => setSidebarOpen(!sidebarOpen)}
           aria-label="Toggle Sidebar"
@@ -58,7 +59,7 @@ const Navbar = ({ sidebarOpen, setSidebarOpen }) => {
           <Moon className="theme-icon moon-icon" size={18} />
         </button>
       </div>
-    </div>
+    </header>
   );
 };
 
