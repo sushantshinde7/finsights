@@ -252,7 +252,7 @@
 
 .nav-login-btn:hover .nav-login-label {
   background: var(--color-primary-light);
-  color: var(--color-primary);
+  color: var(--color-primary-text);
 }
 
 .nav-login-btn:active {

@@ -28,6 +28,7 @@
   --color-primary: #1e3a8a;
   --color-primary-light: #e0e7ff;
   --color-primary-hover: #1e40af;
+  --color-primary-text: var(--color-primary);
 
   /* Accent — secondary brand tone, distinct hue from primary */
   --color-accent: #4338ca;
@@ -127,6 +128,7 @@
   --color-primary: #4c6ef5;
   --color-primary-light: rgba(76, 110, 245, 0.15);
   --color-primary-hover: #6478f7;
+  --color-primary-text: #8da2fb; /* 6.2:1 on the primary tint; #4c6ef5 was 3.5:1 */
 
   /* Accent */
   --color-accent: #818cf8;

@@ -67,7 +67,7 @@
 
 .nav-item:hover {
   background: var(--color-primary-light);
-  color: var(--color-primary);
+  color: var(--color-primary-text);
   transform: translateX(1px);
 }
 
@@ -82,7 +82,7 @@
 
 .nav-item.active {
   background: var(--color-primary-light);
-  color: var(--color-primary);
+  color: var(--color-primary-text);
   font-weight: var(--font-semibold);
 }
 
