@@ -162,8 +162,6 @@
 
   letter-spacing: 0.02em;
 
-  color: var(--color-text-primary);
-
   user-select: none;
   white-space: nowrap;
   background: linear-gradient(
@@ -371,12 +369,6 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-  }
-}
-
-@media (min-width: 769px) {
-  .hamburger-btn {
-    display: none;
   }
 }
 
