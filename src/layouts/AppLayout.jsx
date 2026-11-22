@@ -36,19 +36,6 @@ const Layout = () => {
   const sidebarHidden = isMobile && !sidebarOpen; // closed drawer: out of tab order + a11y tree
   const mainInert = isMobile && sidebarOpen; // open drawer: page behind it is not interactive
 
-  /* ---------- body scroll lock while the drawer is open ---------- */
-  useEffect(() => {
-    if (sidebarOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [sidebarOpen]);
-
   /* ---------- Escape closes the drawer ---------- */
   useEffect(() => {
     const handleEsc = (e) => {
