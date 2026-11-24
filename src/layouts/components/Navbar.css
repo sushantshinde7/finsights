@@ -12,7 +12,8 @@
   align-items: center;
   justify-content: space-between;
 
-  padding: 0 var(--space-5);
+  --nav-control: 32px;
+  padding: 0 var(--space-3);
 
   position: sticky;
   top: 0;
@@ -43,8 +44,8 @@
 .hamburger-btn {
   display: none;
 
-  width: 32px;
-  height: 36px;
+  width: var(--nav-control);
+  height: var(--nav-control);
 
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
@@ -156,7 +157,7 @@
     "Segoe UI",
     sans-serif;
 
-  font-size: 1.05rem;
+  font-size: 1.125rem;
   font-weight: 700;
   line-height: normal;
 
@@ -182,7 +183,7 @@
 .navbar-right {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: var(--space-2);
 }
 
 
@@ -196,7 +197,7 @@
   display: inline-flex;
   align-items: stretch;
 
-  height: 30px;
+  height: var(--nav-control);
   overflow: hidden;
 
   border: 1px solid var(--color-primary);
@@ -215,7 +216,7 @@
   align-items: center;
   justify-content: center;
 
-  width: 34px;
+  width: calc(var(--nav-control) - 2px); /* square inside the 1px border */
   background: var(--color-primary);
   color: #fff;
 
@@ -282,8 +283,8 @@
   align-items: center;
   justify-content: center;
 
-  width: 32px;
-  height: 34px;
+  width: var(--nav-control);
+  height: var(--nav-control);
 
   border-radius: var(--radius-md);
   border: 1px solid var(--color-border);
@@ -374,11 +375,11 @@
 
 @media (max-width: 480px) {
   .navbar {
-    padding: 0 var(--space-4);
+    padding: 0 10px;
   }
 
-  .navbar-left h2 {
-    font-size: var(--text-md);
+  .navbar-left,
+  .navbar-right {
+    gap: 10px;
   }
-
 }

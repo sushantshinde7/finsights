@@ -4,18 +4,26 @@
 
 .account-menu {
   position: relative;
+  display: flex; /* a block wrapper added ~2px of line space around the button */
+  align-items: center;
 }
 
+/* ---- Navbar profile trigger ---- */
 .account-trigger {
   display: inline-flex;
   align-items: center;
   gap: 8px;
 
-  height: 34px;
-  padding: 0 10px 0 4px;
+  height: var(--nav-control);
+  padding: 0 10px 0 1px; /* 1px = same gap as above/below the avatar, so it's concentric */
+
+  overflow: hidden;
 
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+  /* Left cap = exactly half the height. Don't use 999px: browsers scale ALL
+     corner radii down when two adjacent radii exceed the side length. */
+  border-radius: calc(var(--nav-control) / 2) var(--radius-md)
+    var(--radius-md) calc(var(--nav-control) / 2);
 
   background: var(--color-surface);
   color: var(--color-text-primary);
@@ -24,8 +32,8 @@
   cursor: pointer;
 
   transition:
-    background 0.2s ease,
-    border-color 0.2s ease;
+    background 0.25s ease,
+    border-color 0.25s ease;
 }
 
 .account-trigger:hover,
@@ -39,17 +47,20 @@
   outline-offset: 2px;
 }
 
+/* ---- Profile image / initial ---- */
+
 .account-avatar {
   display: inline-flex;
   align-items: center;
   justify-content: center;
 
-  width: 26px;
-  height: 26px;
+  width: calc(var(--nav-control) - 4px);
+  height: calc(var(--nav-control) - 4px);
   flex-shrink: 0;
 
   border-radius: 50%;
   overflow: hidden;
+
   background: var(--color-primary);
   color: #fff;
 
@@ -59,16 +70,13 @@
 }
 
 .account-avatar img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.account-avatar--lg {
-  width: 38px;
-  height: 38px;
-  font-size: 16px;
-}
+/* ---- Name ---- */
 
 .account-name {
   max-width: 12ch;
@@ -81,17 +89,49 @@
   letter-spacing: -0.01em;
 }
 
+/* ---- Chevron ---- */
+
+/* ---- Chevron ---- */
+
 .account-chevron {
   flex-shrink: 0;
+
+  /* 14px icon centred in a 22px chip (global border-box: 4px padding + 14px icon) */
+  width: 22px;
+  height: 22px;
+  padding: 4px;
+  border-radius: var(--radius-sm);
+
+  /* pulls the chip in so the button's overall width stays the same */
+  margin: 0 -4px;
+
   color: var(--color-text-secondary);
-  transition: transform 0.2s ease;
+  background: transparent;
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+/* hover only on devices that really hover, so it doesn't stick after a tap on phones */
+@media (hover: hover) {
+  .account-trigger:hover .account-chevron {
+    background: var(--color-primary-light);
+    color: var(--color-primary-text);
+  }
 }
 
 .account-trigger.open .account-chevron {
   transform: rotate(180deg);
+  background: var(--color-primary-light);
+  color: var(--color-primary-text);
 }
 
-/* ---- Dropdown panel ---- */
+
+/* =========================
+   ACCOUNT PANEL (opened menu)
+========================= */
 
 .account-panel {
   position: absolute;
@@ -99,13 +139,14 @@
   right: 0;
   z-index: 110;
 
-  min-width: 240px;
-  max-width: min(300px, calc(100vw - 24px));
-  padding: 6px;
+  min-width: 220px;
+  max-width: min(280px, calc(100vw - 24px));
+  padding: 4px;
 
   background: var(--color-surface-elevated);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
+
   box-shadow: var(--shadow-md, 0 10px 24px rgba(0, 0, 0, 0.14));
 
   animation: accountPanelIn 0.15s ease;
@@ -116,11 +157,14 @@
     opacity: 0;
     transform: translateY(-4px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
+
+/* ---- Panel user information ---- */
 
 .account-panel-header {
   display: flex;
@@ -129,6 +173,7 @@
 
   padding: 8px 10px 12px;
   margin-bottom: 6px;
+
   border-bottom: 1px solid var(--color-border);
 }
 
@@ -136,13 +181,25 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
-  min-width: 0; /* lets long names/emails truncate instead of stretching the panel */
+
+  min-width: 0;
+}
+
+/* Small avatar inside the panel — not oversized */
+
+.account-avatar--lg {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+
+  font-size: 12px;
 }
 
 .account-panel-name {
   font-size: var(--text-md);
   font-weight: 600;
   color: var(--color-text-primary);
+
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -151,10 +208,13 @@
 .account-panel-email {
   font-size: var(--text-sm);
   color: var(--color-text-secondary);
+
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+/* ---- Logout ---- */
 
 .account-logout {
   display: flex;
@@ -173,6 +233,7 @@
   font-size: var(--text-sm);
   font-weight: 500;
   text-align: left;
+
   cursor: pointer;
 
   transition:
@@ -190,13 +251,17 @@
   outline-offset: -2px;
 }
 
-/* ---- Phones: avatar only ---- */
+
+/* =========================
+   MOBILE
+========================= */
 
 @media (max-width: 480px) {
   .account-trigger {
-    width: 34px;
+    width: var(--nav-control);
     padding: 0;
     justify-content: center;
+    border-radius: 50%;
   }
 
   .account-name,
@@ -204,6 +269,10 @@
     display: none;
   }
 }
+
+/* =========================
+   REDUCED MOTION
+========================= */
 
 @media (prefers-reduced-motion: reduce) {
   .account-panel {
