@@ -1,0 +1,52 @@
+/* =========================
+   BRAND (logomark + wordmark)
+========================= */
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  user-select: none;
+}
+
+.brand-mark {
+  display: block;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+/* navy in light mode, brighter blue in dark mode (follows the primary token) */
+.brand-mark-tile {
+  fill: var(--color-primary);
+}
+
+.brand-name {
+  font-family:
+    "Plus Jakarta Sans",
+    -apple-system,
+    "Segoe UI",
+    sans-serif;
+
+  font-size: 1.125rem;
+  font-weight: 800;
+  line-height: 1;
+  white-space: nowrap;
+
+  /* neutral -> blue, spread across the whole word; "n" sits where it starts to turn */
+  background: linear-gradient(
+    90deg,
+    var(--color-text-primary) 5%,
+    var(--color-brand-accent, #3b5bdb) 75%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@supports not ((-webkit-background-clip: text) or (background-clip: text)) {
+  .brand-name {
+    color: var(--color-text-primary);
+  }
+}
