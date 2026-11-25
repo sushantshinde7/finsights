@@ -1,6 +1,7 @@
 import "./Navbar.css";
 import { LogIn, Moon, Sun } from "lucide-react";
 import { Link } from "react-router-dom";
+import Brand from "../../components/common/Brand";
 
 import { useTheme } from "../../context/ThemeContext";
 import { useAuth } from "../../context/AuthContext";
@@ -34,7 +35,7 @@ const Navbar = ({ sidebarOpen, setSidebarOpen, toggleRef }) => {
           aria-label="Finsights home"
           onClick={() => setSidebarOpen(false)}
         >
-          <h2>Finsights</h2>
+          <Brand />
         </Link>
       </div>
 
