@@ -23,14 +23,15 @@
 }
 
 .brand-name {
-  font-family:
-    "Plus Jakarta Sans",
-    -apple-system,
-    "Segoe UI",
-    sans-serif;
+    font-family:
+    "Fraunces",
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-weight: 700;
 
   font-size: 1.125rem;
-  font-weight: 800;
   line-height: 1.4;
   white-space: nowrap;
 

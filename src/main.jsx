@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
-import "@fontsource/plus-jakarta-sans/800.css";
+import "@fontsource/fraunces/700.css";
 import "./styles/global.css";
 
 import { ThemeProvider } from "./context/ThemeContext";
